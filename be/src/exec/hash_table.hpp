@@ -41,7 +41,7 @@ inline HashTable::Iterator HashTable::find(TupleRow* probe_row) {
     while (node_idx != -1) {
         Node* node = get_node(node_idx);
 
-        if (node->_hash == hash && equals(node->data())) {
+        if (node->_hash == hash && equals(node->data())) {  //jungle comment : the same hash value and  build eval value == probe eval value, haven't do PREDICATE PUSHDOWN
             return Iterator(this, bucket_idx, node_idx, hash);
         }
 
@@ -82,7 +82,7 @@ inline void HashTable::insert_impl(TupleRow* row) {
         return;
     }
 
-    uint32_t hash = hash_current_row();
+    uint32_t hash = hash_current_row(); //jungle comment the hash val of current row  after eval
     int64_t bucket_idx = hash & (_num_buckets - 1);
 
     if (_num_nodes == _nodes_capacity) {
@@ -92,7 +92,7 @@ inline void HashTable::insert_impl(TupleRow* row) {
     Node* node = get_node(_num_nodes);
     TupleRow* data = node->data();
     node->_hash = hash;
-    memcpy(data, row, sizeof(Tuple*) * _num_build_tuples);
+    memcpy(data, row, sizeof(Tuple*) * _num_build_tuples);   //jungle commnet:copy the tuple pointer
     add_to_bucket(&_buckets[bucket_idx], _num_nodes, node);
     ++_num_nodes;
 }

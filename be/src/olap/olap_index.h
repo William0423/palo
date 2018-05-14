@@ -53,7 +53,7 @@ struct OLAPIndexFixedHeader {
     uint64_t num_rows;
 };
 
-struct Slice {
+struct Slice {    //jungle comment as a entry ,thus a  index short key in a segment ,see get_entry in olap_index.cpp
     char* data;
     size_t length;
 };
@@ -77,8 +77,8 @@ struct OLAPIndexOffset {
         return segment == other.segment && offset == other.offset;
     }
 
-    iterator_offset_t segment;
-    iterator_offset_t offset;
+    iterator_offset_t segment; //jungle comment : the file segment
+    iterator_offset_t offset;  //jungle comment : the index of the index item ,length equals to short_key_length() plus sizeof(data_file_offset_t)
 };
 
 // 唯一标识一个RowBlock在Data文件和Index文件中的位置
@@ -178,7 +178,7 @@ public:
     // 初始化MemIndex, 传入short_key的总长度和对应的Field数组
     OLAPStatus init(size_t short_key_len, size_t short_key_num, RowFields* fields);
 
-    // 加载一个segment到内存
+    // 加载一个segment到内存 ,index segment
     OLAPStatus load_segment(const char* file, size_t *current_num_rows_per_row_block);
 
     // Return the IndexOffset of the first element, physically, it's (0, 0)
@@ -320,7 +320,7 @@ private:
     std::vector<SegmentMetaInfo> _meta;
     size_t _key_length;
     size_t _key_num;
-    size_t _num_entries;
+    size_t _num_entries;  //jungle comment index number,thus one index corresponding to one Rowblock
     size_t _index_size;
     size_t _data_size;
     size_t _num_rows;
@@ -427,7 +427,7 @@ private:
 // index is sparse because we only have one pointer per row block. Each
 // index entry contains the short key for the first row of the
 // corresponding row block
-class OLAPIndex {
+class OLAPIndex {      //jungle  comment :  short key and then data_file_offset of uint32 type ,see entry_length
     friend class MemIndex;
 public:
     OLAPIndex(OLAPTable* table,

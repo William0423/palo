@@ -225,16 +225,16 @@ Status HashJoinNode::construct_hash_table(RuntimeState* state) {
     // The hash join node needs to keep in memory all build tuples, including the tuple
     // row ptrs.  The row ptrs are copied into the hash table's internal structure so they
     // don't need to be stored in the _build_pool.
-    RowBatch build_batch(child(1)->row_desc(), state->batch_size(), mem_tracker());
+    RowBatch build_batch(child(1)->row_desc(), state->batch_size(), mem_tracker());   //jungle comment:child(1) is the right table
     RETURN_IF_ERROR(child(1)->open(state));
 
     while (true) {
         RETURN_IF_CANCELLED(state);
         bool eos = true;
-        RETURN_IF_ERROR(child(1)->get_next(state, &build_batch, &eos));
+        RETURN_IF_ERROR(child(1)->get_next(state, &build_batch, &eos));   //jungle commnet: fill the  build_batch of right table
         SCOPED_TIMER(_build_timer);
         // take ownership of tuple data of build_batch
-        _build_pool->acquire_data(build_batch.tuple_data_pool(), false);
+        _build_pool->acquire_data(build_batch.tuple_data_pool(), false);  //jungle commnet:_build_pool is the member of hash_join_node
         RETURN_IF_LIMIT_EXCEEDED(state);
 
         // Call codegen version if possible
@@ -251,7 +251,7 @@ Status HashJoinNode::construct_hash_table(RuntimeState* state) {
         COUNTER_SET(_hash_tbl_load_factor_counter, _hash_tbl->load_factor());
         build_batch.reset();
 
-        if (eos) {
+        if (eos) {    //jungle comment:consume all the build batch
             break;
         }
     }
@@ -684,14 +684,14 @@ Status HashJoinNode::left_join_get_next(RuntimeState* state,
 
         // Check to see if we're done processing the current probe batch
         if (!_hash_tbl_iterator.has_next() && _probe_batch_pos == _probe_batch->num_rows()) {
-            _probe_batch->transfer_resource_ownership(out_batch);
+            _probe_batch->transfer_resource_ownership(out_batch);   //jungle comment : transfer the tuple data,process_probe_batch only add tuple data pointer to out_row
             _probe_batch_pos = 0;
 
             if (out_batch->is_full() || out_batch->at_resource_limit()) {
                 break;
             }
 
-            if (_probe_eos) {
+            if (_probe_eos) {     //jungle comment : build batch are all in hash table,if no more probe data ,then no more out_batch
                 *eos = _eos = true;
                 break;
             } else {

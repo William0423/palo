@@ -110,7 +110,7 @@ void BackendService::exec_plan_fragment(TExecPlanFragmentResult& return_val,
 }
 
 Status BackendService::start_plan_fragment_execution(const TExecPlanFragmentParams& exec_params) {
-    if (!exec_params.fragment.__isset.output_sink) {
+    if (!exec_params.fragment.__isset.output_sink) {      //jungle comment : output_sink must be set ,then plan get next and send data in PlanFragmentExecutor::open()
         return Status("missing sink in plan fragment");
     }
     return _exec_env->fragment_mgr()->exec_plan_fragment(exec_params);

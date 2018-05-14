@@ -84,7 +84,7 @@ private:
     boost::scoped_ptr<MemPool> _agg_fn_pool;
   
     // Exprs used to evaluate input rows
-    std::vector<ExprContext*> _probe_expr_ctxs;
+    std::vector<ExprContext*> _probe_expr_ctxs;    //jungle comment:maybe input rows from join node ,different from probe in hash join node
     // Exprs used to insert constructed aggregation tuple into the hash table.
     // All the exprs are simply SlotRefs for the agg tuple.
     std::vector<ExprContext*> _build_expr_ctxs;

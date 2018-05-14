@@ -141,7 +141,7 @@ DataStreamRecvr::SenderQueue::SenderQueue(
     _received_first_batch(false) {
 }
 
-Status DataStreamRecvr::SenderQueue::get_batch(RowBatch** next_batch) {
+Status DataStreamRecvr::SenderQueue::get_batch(RowBatch** next_batch) {   //jungle comment:maybe call in exechange node : fill_input_row_batch ,will wait if _batch_queue is empty,once add_batch,notice _data_arrival_cv
     unique_lock<mutex> l(_lock);
     // wait until something shows up or we know we're done
     while (!_is_cancelled && _batch_queue.empty() && _num_remaining_senders > 0) {

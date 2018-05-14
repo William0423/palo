@@ -336,7 +336,7 @@ public:
     }
 
 private:
-    bool _compare(const iterator_offset_t& index,
+    bool _compare(const iterator_offset_t& index,   //jungle comment index from 0 to (_end_block_position - _start_block_position)
                   const RowCursor& key,
                   ComparatorEnum comparator_enum) const {
         OLAPStatus res = OLAP_SUCCESS;

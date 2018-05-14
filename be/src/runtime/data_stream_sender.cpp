@@ -573,7 +573,7 @@ Status DataStreamSender::send(RuntimeState* state, RowBatch* batch) {
                 hash_val = RawValue::get_hash_value_fvn(
                     partition_val, ctx->root()->type(), hash_val);
             }
-            RETURN_IF_ERROR(_channels[hash_val % num_channels]->add_row(row));
+            RETURN_IF_ERROR(_channels[hash_val % num_channels]->add_row(row));   //jungle comment: in shuffle join,send to EXCHANGE node
         }
     } else {
         // Range partition

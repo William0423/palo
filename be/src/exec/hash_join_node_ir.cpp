@@ -61,7 +61,7 @@ int HashJoinNode::process_probe_batch(RowBatch* out_batch, RowBatch* probe_batch
 
     while (true) {
         // Create output row for each matching build row
-        while (_hash_tbl_iterator.has_next()) {
+        while (_hash_tbl_iterator.has_next()) {      //jungle commnet:  find the probe in hash table case
             TupleRow* matched_build_row = _hash_tbl_iterator.get_row();
             _hash_tbl_iterator.next<true>();
             create_output_row(out_row, _current_probe_row, matched_build_row);
@@ -88,24 +88,24 @@ int HashJoinNode::process_probe_batch(RowBatch* out_batch, RowBatch* probe_batch
                 }
 
                 // Advance to next out row
-                out_row_mem += out_batch->row_byte_size();
+                out_row_mem += out_batch->row_byte_size();   //jungle comment : row_byte_size == _probe_tuple_row_size + _build_tuple_row_size ?
                 out_row = reinterpret_cast<TupleRow*>(out_row_mem);
             }
 
             // Handle left semi-join
-            if (_match_one_build) {
+            if (_match_one_build) {                         //jungle comment : left semi-join only match one build for one probe
                 _hash_tbl_iterator = _hash_tbl->end();
                 break;
             }
         }
         
         // Handle left outer-join and left semi-join
-        if ((!_matched_probe && _match_all_probe) || 
+        if ((!_matched_probe && _match_all_probe) ||        //jungle commnet: haven't find the probe case
                 ((!_matched_probe && _join_op == TJoinOp::LEFT_ANTI_JOIN))) {
             create_output_row(out_row, _current_probe_row, NULL);
             _matched_probe = true;
 
-            if (ExecNode::eval_conjuncts(conjunct_ctxs, num_conjunct_ctxs, out_row)) {
+            if (ExecNode::eval_conjuncts(conjunct_ctxs, num_conjunct_ctxs, out_row)) {  //jungle commnet : do PREDICATE PUSHDOWN
                 ++rows_returned;
 
                 if (UNLIKELY(rows_returned == max_added_rows)) {
@@ -120,7 +120,7 @@ int HashJoinNode::process_probe_batch(RowBatch* out_batch, RowBatch* probe_batch
 
         if (!_hash_tbl_iterator.has_next()) {
             // Advance to the next probe row
-            if (UNLIKELY(_probe_batch_pos == probe_rows)) {
+            if (UNLIKELY(_probe_batch_pos == probe_rows)) {     //jungle commnet:consume all current  probe batch
                 goto end;
             }
 

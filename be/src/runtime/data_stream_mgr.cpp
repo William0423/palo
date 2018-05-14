@@ -98,7 +98,7 @@ shared_ptr<DataStreamRecvr> DataStreamMgr::find_recvr(
     return shared_ptr<DataStreamRecvr>();
 }
 
-Status DataStreamMgr::add_data(
+Status DataStreamMgr::add_data(        //jungle commnet:call in receiver_dispatcher.h 115
         const TUniqueId& fragment_instance_id, PlanNodeId dest_node_id,
         const TRowBatch& thrift_batch, int sender_id, bool* buffer_overflow,
         std::pair<InetAddr, CommBufPtr> response) {

@@ -237,7 +237,7 @@ Status PartitionedAggregationNode::open(RuntimeState* state) {
         RETURN_IF_CANCELLED(state);
         // RETURN_IF_ERROR(QueryMaintenance(state));
         RETURN_IF_ERROR(state->check_query_state());
-        RETURN_IF_ERROR(_children[0]->get_next(state, &batch, &eos));
+        RETURN_IF_ERROR(_children[0]->get_next(state, &batch, &eos));   //jungle comment : consumed all of the input from the children
 
         if (UNLIKELY(VLOG_ROW_IS_ON)) {
             for (int i = 0; i < batch.num_rows(); ++i) {

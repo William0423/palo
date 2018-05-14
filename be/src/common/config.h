@@ -122,6 +122,8 @@ namespace config {
     CONF_String(sys_log_roll_mode, "SIZE-MB-1024");
     // log roll num
     CONF_Int32(sys_log_roll_num, "10");
+    // vlog
+    CONF_Int32(sys_log_vlog, "0");
     // verbose log
     CONF_Strings(sys_log_verbose_modules, "");
     // log buffer level

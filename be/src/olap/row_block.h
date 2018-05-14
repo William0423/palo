@@ -328,7 +328,7 @@ inline OLAPStatus RowBlock::get_row_to_write(uint32_t row_index, RowCursor* curs
     return res;
 }
 
-inline OLAPStatus RowBlock::get_row_to_read(uint32_t row_index, 
+inline OLAPStatus RowBlock::get_row_to_read(uint32_t row_index,   //jungle comment,data store by column ,RowCursor attach field by index
                                             RowCursor* cursor,
                                             bool force_read_raw_data) const {
     CHECK_ROWBLOCK_INIT();

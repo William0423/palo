@@ -215,7 +215,7 @@ void MemPool::acquire_data(MemPool* src, bool keep_current) {
 
     // insert new chunks after _current_chunk_idx
     std::vector<ChunkInfo>::iterator insert_chunk = _chunks.begin() + _current_chunk_idx + 1;
-    _chunks.insert(insert_chunk, src->_chunks.begin(), end_chunk);
+    _chunks.insert(insert_chunk, src->_chunks.begin(), end_chunk);    //jungle comment : insert ChunkInfo to _chunks , ChunkInfo has data pointer
     src->_chunks.erase(src->_chunks.begin(), end_chunk);
     _current_chunk_idx += num_acquired_chunks;
 

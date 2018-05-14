@@ -237,7 +237,7 @@ private:
 
     OLAPStatus _write(char* buf, StorageFormatEnum format) const;
 
-    field_array_t _field_array;        // 内部保存field指针的数组
+    field_array_t _field_array;        // 内部保存field指针的数组   //jungle comment data store by column
     size_t _null_byte_num;
     size_t _field_array_size;          // field指针数组的长度
     uint32_t* _columns;                // 部分列操作模式下的列序号数组

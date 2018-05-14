@@ -248,7 +248,7 @@ Status PreAggregationNode::get_next(RuntimeState* state, RowBatch* row_batch, bo
 
     // reach here, need use _hash_tbl to aggregate
     // read data from child
-    while (true) {
+    while (true) {     // jungle commnet:read all children input batch and insert into the grouping hash map
         //RETURN_IF_CANCELLED(state);
         RowBatch child_batch(_children[0]->row_desc(), state->batch_size());
         // read _children data
@@ -311,7 +311,7 @@ read_from_hash:
     while (_output_iterator.has_next() && !row_batch->is_full()) {
         int row_idx = row_batch->add_row();
         TupleRow* row = row_batch->get_row(row_idx);
-        row_batch->copy_row(_output_iterator.get_row(), row);
+        row_batch->copy_row(_output_iterator.get_row(), row);   //jungle comment:note the difference with aggregation_node
         // there is no need to compute conjuncts.
         row_batch->commit_last_row();
         ++_num_rows_returned;

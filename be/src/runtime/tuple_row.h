@@ -30,13 +30,13 @@ namespace palo {
 
 // A TupleRow encapsulates a contiguous sequence of Tuple pointers which
 // together make up a row.
-class TupleRow {
+class TupleRow {     //jungle comment : fix num of pointers ,type is Tuple*
 public:
     Tuple* get_tuple(int tuple_idx) {
         return _tuples[tuple_idx];
     }
 
-    void set_tuple(int tuple_idx, Tuple* tuple) {
+    void set_tuple(int tuple_idx, Tuple* tuple) {    //jungle comment :set the Tuple pointer  
         _tuples[tuple_idx] = tuple;
     }
 

@@ -90,7 +90,7 @@ bool Reader::MergeSet::next(const RowCursor** element, bool* delete_flag) {
     return true;
 }
 
-bool Reader::MergeSet::_pop_from_heap() {
+bool Reader::MergeSet::_pop_from_heap() {  //jungle comment :  reorder the heap
     MergeElement merge_element = _heap->top();
     const RowCursor* row = merge_element->get_next_row();
 
@@ -489,7 +489,7 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
                 }
 
                 (*it)->set_end_key(end_key, end_key_find_last_row);
-                start_row_cursor = (*it)->find_row(*start_key, find_last_row, false);
+                start_row_cursor = (*it)->find_row(*start_key, find_last_row, false); //jungle comment : find the row in the *it
             } else {
                 if ((*it)->empty()) {
                     continue;
@@ -520,7 +520,7 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
                                "[version=%d-%d read_params='%s']",
                                (*it)->version().first, (*it)->version().second,
                                _keys_param.to_string().c_str());
-                continue;
+                continue;  //jungle comment : not find in this IData ,continue
             }
 
             if (!start_row_cursor) {
@@ -529,7 +529,7 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
                 return OLAP_ERR_READER_GET_ITERATOR_ERROR;
             }
 
-            _merge_set.attach(*it, start_row_cursor);
+            _merge_set.attach(*it, start_row_cursor);   //jungle comment : MergeElement is not sort global ,use heap to sort , see RowCursorComparator
         }
 
         _next_key = _merge_set.curr(&_next_delete_flag);

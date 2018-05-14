@@ -162,7 +162,7 @@ OLAPStatus RowCursor::_init(
     
     for (size_t i = 0; i < _field_array_size; ++i) {
         _field_array[i] = NULL;
-        _field_length_array[i] = field_buf_lens[i] + sizeof(char);
+        _field_length_array[i] = field_buf_lens[i] + sizeof(char);   //jungle comment add sizeof(char) for _is_null padding?
         _field_offset[i] = field_buf_lens[i] + sizeof(char);
     }
 
@@ -210,7 +210,7 @@ OLAPStatus RowCursor::_init(
         is_last_column_key = is_current_column_key;
     }
 
-    _length = len + _columns_size;
+    _length = len + _columns_size;    //jungle comment: add _columns_size for _is_null padding ,see  attach_field?
     _length_mysql = len;
     _buf = new (nothrow) char[_length];
     if (_buf == NULL) {

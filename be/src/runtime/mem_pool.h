@@ -198,7 +198,7 @@ private:
     struct ChunkInfo {
         bool owns_data;  // true if we eventually need to dealloc data
         uint8_t* data;
-        int64_t size;  // in bytes
+        int64_t size;  // in bytes    //jungle comment: chunk capacity ,see in find_chunk
 
         // number of bytes allocated via allocate() up to but excluding this chunk;
         // *not* valid for chunks > _current_chunk_idx (because that would create too
@@ -284,7 +284,7 @@ private:
     }
 
     template <bool CHECK_LIMIT_FIRST>
-    uint8_t* allocate(int size) {
+    uint8_t* allocate(int size) {       //jungle comment: tuple data will be hold on the _chunks[i] ,see olap_scan_node.cpp :1557 ,1574
         if (size == 0) {
             return (uint8_t*)&_s_zero_length_region;
         }

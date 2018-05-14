@@ -698,7 +698,7 @@ OLAPStatus MemIndex::load_segment(const char* file, size_t *current_num_rows_per
         return res;
     }
     if (false == null_supported) {
-        num_entries = meta.buffer.length / (entry_length() - num_short_key_fields);
+        num_entries = meta.buffer.length / (entry_length() - num_short_key_fields);  //jungle commnet : one segment have num_entries of rowblock index
         meta.buffer.data = reinterpret_cast<char*>(
                 calloc(meta.buffer.length + num_entries * num_short_key_fields, 1));
     } else {
@@ -807,7 +807,7 @@ OLAPStatus MemIndex::init(size_t short_key_len, size_t short_key_num, RowFields*
 // because of our sparse index, the first item which short key equals 5(5, xxxx) is indexed
 // by shortkey 4 in the first index item, if we want to find the first key not less than 6, we
 // should return the first index instead the second.
-const OLAPIndexOffset MemIndex::find(const RowCursor& k,
+const OLAPIndexOffset MemIndex::find(const RowCursor& k,   //jungle comment : the  segment index in _meta must be sorted ?
                                      RowCursor* helper_cursor,
                                      bool find_last) const {
     if (begin() == end()) {

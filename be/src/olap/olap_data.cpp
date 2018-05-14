@@ -360,7 +360,7 @@ const RowCursor* OLAPData::find_row(const RowCursor& key, bool find_last_key, bo
         }
 
         // 调整start_position
-        uint32_t distance = olap_index()->compute_distance(start_position, end_position);
+        uint32_t distance = olap_index()->compute_distance(start_position, end_position); //jungle commnet row block distance
         BinarySearchIterator it_start(0u);
         BinarySearchIterator it_end(distance + 1);
         BinarySearchIterator it_result(0u);

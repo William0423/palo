@@ -129,7 +129,7 @@ bool init_glog(const char* basename, bool install_signal_handler) {
     }
 
     // set verbose modules. only use vlog(0)
-    FLAGS_v = -1;
+    FLAGS_v = config::sys_log_vlog;
     std::vector<std::string>& verbose_modules = config::sys_log_verbose_modules;
     for (size_t i = 0; i < verbose_modules.size(); i++) {
         if (verbose_modules[i].size() != 0) {

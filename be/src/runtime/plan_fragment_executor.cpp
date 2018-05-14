@@ -160,7 +160,7 @@ Status PlanFragmentExecutor::prepare(const TExecPlanFragmentParams& request) {
         DCHECK_EQ(exch_node->type(), TPlanNodeType::EXCHANGE_NODE);
         int num_senders = find_with_default(params.per_exch_num_senders, exch_node->id(), 0);
         DCHECK_GT(num_senders, 0);
-        static_cast<ExchangeNode*>(exch_node)->set_num_senders(num_senders);
+        static_cast<ExchangeNode*>(exch_node)->set_num_senders(num_senders);   //jungle comment:set the ExchangeNode sender number
     }
 
     RETURN_IF_ERROR(_plan->prepare(_runtime_state.get()));
@@ -270,7 +270,7 @@ Status PlanFragmentExecutor::open() {
 
     optimize_llvm_module();
 
-    Status status = open_internal();
+    Status status = open_internal();    //jungle comment:if the fragment has sink ,then exec the plan and send to sink
 
     if (!status.ok() && !status.is_cancelled() && _runtime_state->log_has_space()) {
         // Log error message in addition to returning in Status. Queries that do not

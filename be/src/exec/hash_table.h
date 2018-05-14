@@ -290,7 +290,7 @@ private:
         TupleRow* data() {
             uint8_t* mem = reinterpret_cast<uint8_t*>(this);
             DCHECK_EQ(reinterpret_cast<uint64_t>(mem) % 8, 0);
-            return reinterpret_cast<TupleRow*>(mem + sizeof(Node));
+            return reinterpret_cast<TupleRow*>(mem + sizeof(Node)); //jungle comment:  _node_byte_size = sizeof(Node) + sizeof(n * Tuple*)
         }
     };
 

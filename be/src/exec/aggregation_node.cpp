@@ -204,7 +204,7 @@ Status AggregationNode::open(RuntimeState* state) {
         bool eos = false;
         RETURN_IF_CANCELLED(state);
         RETURN_IF_ERROR(state->check_query_state());
-        RETURN_IF_ERROR(_children[0]->get_next(state, &batch, &eos));
+        RETURN_IF_ERROR(_children[0]->get_next(state, &batch, &eos));   //jungle comment:_children[0] maybe hash join node ?
         // SCOPED_TIMER(_build_timer);
         if (VLOG_ROW_IS_ON) {
             for (int i = 0; i < batch.num_rows(); ++i) {
@@ -258,7 +258,7 @@ Status AggregationNode::open(RuntimeState* state) {
 
     VLOG_ROW << "id=" << id() << " aggregated " << num_input_rows << " input rows into "
               << num_agg_rows << " output rows";
-    _output_iterator = _hash_tbl->begin();
+    _output_iterator = _hash_tbl->begin();     //jungle commnet:child node's data are all consumed and grouped in hash_tbl
     return Status::OK;
 }
 
@@ -291,7 +291,7 @@ Status AggregationNode::get_next(RuntimeState* state, RowBatch* row_batch, bool*
         Tuple* intermediate_tuple = _output_iterator.get_row()->get_tuple(0);
         Tuple* output_tuple =
             finalize_tuple(intermediate_tuple, row_batch->tuple_data_pool());
-        row->set_tuple(0, output_tuple);
+        row->set_tuple(0, output_tuple);  //jungle comment: this tuple include all the aggregate slot and the count slot ?
 
         if (ExecNode::eval_conjuncts(ctxs, num_ctxs, row)) {
             VLOG_ROW << "output row: " << print_row(row, row_desc());

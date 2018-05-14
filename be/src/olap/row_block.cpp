@@ -589,7 +589,7 @@ void RowBlock::_set_field_offsets() {
             }
         }
 
-        offset += _grid_items[i].width * _info.row_num;
+        offset += _grid_items[i].width * _info.row_num;    //jungle comment data store by column ?
     }
 }
 
