@@ -250,7 +250,7 @@ private:
 };
 
 // FileHandler implementation
-template <typename MessageType, typename ExtraType, typename FileHandlerType>
+template <typename MessageType, typename ExtraType, typename FileHandlerType>   //jungle comment:FileHeader is data file header or index file header,in load_pb() ,MessageType is ColumnDataHeaderMessage
 OLAPStatus FileHeader<MessageType, ExtraType, FileHandlerType>::prepare(
         FileHandlerType* file_handler) {
     if (NULL == file_handler) {
@@ -285,14 +285,14 @@ OLAPStatus FileHeader<MessageType, ExtraType, FileHandlerType>::prepare(
 }
 
 template <typename MessageType, typename ExtraType, typename FileHandlerType>
-OLAPStatus FileHeader<MessageType, ExtraType, FileHandlerType>::serialize(
+OLAPStatus FileHeader<MessageType, ExtraType, FileHandlerType>::serialize(      //jungle comment MessageType maybe OLAPIndexHeaderMessage ,or ColumnDataHeaderMessage
         FileHandlerType* file_handler) {
     if (NULL == file_handler) {
         return OLAP_ERR_INPUT_PARAMETER_ERROR;
     }
 
     // 写入文件
-    if (OLAP_SUCCESS != file_handler->pwrite(&_fixed_file_header,
+    if (OLAP_SUCCESS != file_handler->pwrite(&_fixed_file_header,  //jungle comment : _current_file_handler.seek
             _fixed_file_header_size, 0)) {
         OLAP_LOG_WARNING("fail to write fixed header to file. [file='%s' message='%m']",
                          file_handler->file_name().c_str());

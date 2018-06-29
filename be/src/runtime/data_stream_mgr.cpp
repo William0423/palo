@@ -105,7 +105,7 @@ Status DataStreamMgr::add_data(        //jungle commnet:call in receiver_dispatc
     VLOG_ROW << "add_data(): fragment_instance_id=" << fragment_instance_id
             << " node=" << dest_node_id
             << " size=" << RowBatch::get_batch_size(thrift_batch);
-    shared_ptr<DataStreamRecvr> recvr = find_recvr(fragment_instance_id, dest_node_id);
+    shared_ptr<DataStreamRecvr> recvr = find_recvr(fragment_instance_id, dest_node_id); //jungle comment:find the receiver by the node id and fragment id
     if (recvr == NULL) {
         // The receiver may remove itself from the receiver map via deregister_recvr()
         // at any time without considering the remaining number of senders.

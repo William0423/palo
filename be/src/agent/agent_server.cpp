@@ -247,6 +247,7 @@ void AgentServer::submit_tasks(
             }
             break;
         case TTaskType::PUSH:
+        case TTaskType::STREAMING_PUSH:
             if (task.__isset.push_req) {
                 if (task.push_req.push_type == TPushType::LOAD
                         || task.push_req.push_type == TPushType::LOAD_DELETE) {
@@ -397,6 +398,7 @@ void AgentServer::publish_cluster_state(TAgentResult& _return, const TAgentPubli
 
 void AgentServer::submit_etl_task(TAgentResult& return_value,
                                  const TMiniLoadEtlTaskRequest& request) {
+    OLAP_LOG_DEBUG("AgentServer::submit_etl_task");
     Status status = _exec_env->etl_job_mgr()->start_job(request);
     if (status.ok()) {
         VLOG_RPC << "start etl task successfull id="
@@ -411,6 +413,7 @@ void AgentServer::submit_etl_task(TAgentResult& return_value,
 
 void AgentServer::get_etl_status(TMiniLoadEtlStatusResult& return_value,
                                  const TMiniLoadEtlStatusRequest& request) {
+    OLAP_LOG_DEBUG("AgentServer::get_etl_status");
     Status status = _exec_env->etl_job_mgr()->get_job_state(request.mini_load_id, &return_value);
     if (!status.ok()) {
         LOG(WARNING) << "get job state failed. [id=" << request.mini_load_id << "]";
@@ -427,6 +430,7 @@ void AgentServer::get_etl_status(TMiniLoadEtlStatusResult& return_value,
 
 void AgentServer::delete_etl_files(TAgentResult& result,
                                    const TDeleteEtlFilesRequest& request) {
+    OLAP_LOG_DEBUG("AgentServer::delete_etl_files");
     Status status = _exec_env->etl_job_mgr()->erase_job(request);
     if (!status.ok()) {
         LOG(WARNING) << "delete etl files failed. because " << status.get_error_msg()

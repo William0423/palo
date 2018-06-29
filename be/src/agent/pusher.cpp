@@ -251,6 +251,7 @@ AgentStatus Pusher::process(vector<TTabletInfo>* tablet_infos) {
             
             if (status == PALO_SUCCESS) {
                 _push_req.http_file_path = _downloader_param.local_file_path;
+                OLAP_LOG_DEBUG("set _push_req.http_file_path = _downloader_param.local_file_path :%s ",_downloader_param.local_file_path);
                 break;
             }
 #ifndef BE_TEST
@@ -260,7 +261,7 @@ AgentStatus Pusher::process(vector<TTabletInfo>* tablet_infos) {
     }
 
     if (status == PALO_SUCCESS) {
-        // Load delta file
+        //jungle comment: Load delta file
         time_t push_begin = time(NULL);
         OLAPStatus push_status = _command_executor->push(_push_req, tablet_infos);
         time_t push_finish = time(NULL);
@@ -271,6 +272,8 @@ AgentStatus Pusher::process(vector<TTabletInfo>* tablet_infos) {
     }
 
     // Delete download file
+    // jungle modify:do not delete for debug
+    /**
     boost::filesystem::path download_file_path(_downloader_param.local_file_path);
     if (boost::filesystem::exists(download_file_path)) {
         if (remove(_downloader_param.local_file_path.c_str()) == -1) {
@@ -278,6 +281,7 @@ AgentStatus Pusher::process(vector<TTabletInfo>* tablet_infos) {
                              _downloader_param.local_file_path.c_str());
         }
     }
+     ***/
 
     return status;
 }

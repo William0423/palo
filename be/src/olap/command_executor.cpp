@@ -162,8 +162,8 @@ OLAPStatus CommandExecutor::push(
         const TPushReq& request,
         vector<TTabletInfo>* tablet_info_vec) {
     OLAPStatus res = OLAP_SUCCESS;
-    OLAP_LOG_INFO("begin to process push. [tablet_id=%ld version=%ld]",
-                  request.tablet_id, request.version);
+    OLAP_LOG_INFO("begin to process push. [tablet_id=%ld version=%ld] , file path :%s",
+                  request.tablet_id, request.version ,request.http_file_path.c_str());
 
     time_t start = time(NULL);
     if (PaloMetrics::palo_push_count() != NULL) {
@@ -237,6 +237,7 @@ OLAPStatus CommandExecutor::base_expansion(
 }
 
 OLAPStatus CommandExecutor::create_table(const TCreateTabletReq& request) {
+    OLAP_LOG_DEBUG("CommandExecutor::create_table");
     OLAPStatus res = OLAP_SUCCESS;
     OLAPTable* olap_table = NULL;
     bool is_table_added = false;

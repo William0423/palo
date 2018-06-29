@@ -178,6 +178,7 @@ Status OLAPReader::close() {
 }
 
 Status OLAPReader::next_tuple(Tuple* tuple, int64_t* raw_rows_read, bool* eof) {
+    OLAP_LOG_DEBUG("OLAPReader::next_tuple");
     OLAPStatus res = OLAP_SUCCESS;
     res = _reader.next_row_with_aggregation(&_read_row_cursor, raw_rows_read, eof);
     if (res != OLAP_SUCCESS) {
@@ -337,6 +338,7 @@ OLAPStatus OLAPReader::_init_params(TFetchRequest& fetch_request, RuntimeProfile
         OLAP_LOG_WARNING("fail to init row cursor.[res=%d]", res);
         return res;
     }
+    OLAP_LOG_DEBUG("reader_params info :%s" ,reader_params.to_string().c_str());
     res = _reader.init(reader_params);
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init reader.[res=%d]", res);

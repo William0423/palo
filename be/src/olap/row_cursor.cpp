@@ -16,6 +16,7 @@
 #include "olap/row_cursor.h"
 
 #include <algorithm>
+#include <glog/logging.h>
 
 using std::min;
 using std::nothrow;

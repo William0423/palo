@@ -367,12 +367,13 @@ private:
     std::vector<VectorizedPositionInfo> _vectorized_position;
 
     RuntimeState* _runtime_state;  // 用于统计内存消耗等运行时信息
-    ByteBuffer* _shared_buffer;
+    ByteBuffer* _shared_buffer;   // jungle comment :  multiple column use it
 
     DISALLOW_COPY_AND_ASSIGN(SegmentReader);
 };
 
 inline OLAPStatus SegmentReader::_read_next_and_attach() {
+    OLAP_LOG_DEBUG("SegmentReader::_read_next_and_attach");
     OLAPStatus res = OLAP_SUCCESS;
 
     for (std::vector<ColumnReader*>::iterator it = _column_readers.begin();
@@ -385,7 +386,9 @@ inline OLAPStatus SegmentReader::_read_next_and_attach() {
             return res;
         }
 
-        res = (*it)->attach(&_cursor);
+        res = (*it)->attach(&_cursor);   //jungle comment:write to current cursor
+        OLAP_LOG_DEBUG("attach _cursor : %s  ",_cursor.to_string().c_str());
+
 
         if (OLAP_SUCCESS != res) {
             OLAP_LOG_WARNING("fail to attach reader. [res=%d]", res);

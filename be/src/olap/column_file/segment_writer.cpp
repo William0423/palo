@@ -84,13 +84,14 @@ OLAPStatus SegmentWriter::init(uint32_t write_mbytes_per_sec) {
     return OLAP_SUCCESS;
 }
 
-OLAPStatus SegmentWriter::write(RowCursor* row_cursor) {
+OLAPStatus SegmentWriter::write(RowCursor* row_cursor) {    //jungle comment: write  all in memory ,not flush to disk yet
     OLAPStatus res = OLAP_SUCCESS;
 
-    // OLAP_LOG_DEBUG("row_count = %lu, row_in_block = %lu, block = %lu",
-    //                _row_count, _row_in_block, _block_count);
+
     if (_row_in_block == _table->num_rows_per_row_block()) {
-        res = create_row_index_entry();
+        OLAP_LOG_DEBUG("create_row_index_entry , row_count = %lu, row_in_block = %lu, block = %lu",
+                       _row_count, _row_in_block, _block_count);
+        res = create_row_index_entry();   //jungle comment : set new block entry
 
         if (OLAP_SUCCESS != res) {
             OLAP_LOG_WARNING("fail to create row index entry");
@@ -159,7 +160,7 @@ OLAPStatus SegmentWriter::_make_file_header(ColumnDataHeaderMessage* file_header
         //   * column_type
         //   * column_encoding
         //   * column_statistics
-        res = (*it)->finalize(file_header);
+        res = (*it)->finalize(file_header);   //jungle comment : write block entry info(position and statistics) to the _index_stream  which belone to _stream_factory
 
         if (OLAP_UNLIKELY(OLAP_SUCCESS != res)) {
             OLAP_LOG_WARNING("fail to finalize row writer. [res=%d]", res);
@@ -185,10 +186,11 @@ OLAPStatus SegmentWriter::_make_file_header(ColumnDataHeaderMessage* file_header
             continue;
         }
 
-        StreamInfoMessage* stream_info = file_header->add_stream_info();
-        stream_info->set_length(stream->get_stream_length());
+        StreamInfoMessage* stream_info = file_header->add_stream_info();    //jungle comment :set the stream info here
+        stream_info->set_length(stream->get_stream_length());               //jungle comment : _read_all_data_streams  use to determine the  file cursor length and offset
         stream_info->set_column_unique_id(it->first.unique_column_id());
         stream_info->set_kind(it->first.kind());
+        stream_info->length();
 
         if (it->first.kind() == StreamInfoMessage::ROW_INDEX || 
                 it->first.kind() == StreamInfoMessage::BLOOM_FILTER) {
@@ -208,7 +210,7 @@ OLAPStatus SegmentWriter::_make_file_header(ColumnDataHeaderMessage* file_header
 }
 
 // 之前所有的数据都缓存在内存里, 现在创建文件, 写入数据
-OLAPStatus SegmentWriter::finalize(uint32_t* segment_file_size) {
+OLAPStatus SegmentWriter::finalize(uint32_t* segment_file_size) {   //jungle comment: write the data file ,first FileHeader ,than index stream ,than data stream
     OLAPStatus res = OLAP_SUCCESS;
     FileHandler file_handle;
     FileHeader<ColumnDataHeaderMessage> file_header;
@@ -226,7 +228,7 @@ OLAPStatus SegmentWriter::finalize(uint32_t* segment_file_size) {
         }
     }
 
-    res = _make_file_header(file_header.mutable_message());
+    res = _make_file_header(file_header.mutable_message());  //jungle comment :write ColumnDataHeaderMessage ,which include the StreamInfoMessage
     if (OLAP_SUCCESS != res) {
         OLAP_LOG_WARNING("fail to make file header. [res=%d]", res);
         return res;
@@ -247,14 +249,14 @@ OLAPStatus SegmentWriter::finalize(uint32_t* segment_file_size) {
     uint32_t checksum = CRC32_INIT;
 
     // 写入数据
-    for (std::map<StreamName, OutStream*>::const_iterator it = _stream_factory->streams().begin();
+    for (std::map<StreamName, OutStream*>::const_iterator it = _stream_factory->streams().begin(); //jungle comment : include the index_stream (type ROW_INDEX)
             it != _stream_factory->streams().end(); ++it) {
         OutStream* stream = it->second;
 
         // 输出没有被掐掉的流
         if (!stream->is_suppressed()) {
             checksum = stream->crc32(checksum);
-            OLAP_LOG_DEBUG("stream id = %u, type = %d",
+            OLAP_LOG_DEBUG("stream write to file unique_column_id = %u, type = %d",
                     it->first.unique_column_id(),
                     it->first.kind());
 

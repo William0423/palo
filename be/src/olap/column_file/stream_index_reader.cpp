@@ -97,7 +97,7 @@ OLAPStatus StreamIndexReader::init(
     }
 
     _buffer = buffer;
-    _buffer_size = buffer_size;
+    _buffer_size = buffer_size;   //jungle comment:buffer_size equal to sizeof(StreamIndexHeader) + _entry_count * ( sizeof(uint32) * _positions_count + _statistics.size())
     _is_using_cache = is_using_cache;
     _null_supported = null_supported;
     OLAPStatus res = _parse_header(type);
@@ -110,8 +110,8 @@ OLAPStatus StreamIndexReader::init(
     return OLAP_SUCCESS;
 }
 
-const PositionEntryReader& StreamIndexReader::entry(uint64_t entry_id) {
-    _entry.attach(_buffer + _start_offset + _step_size * entry_id);
+const PositionEntryReader& StreamIndexReader::entry(uint64_t entry_id) {   //when write ,create_row_index_entry and add add_index_entry sequencely , so entry_id = block_id
+    _entry.attach(_buffer + _start_offset + _step_size * entry_id);  //jungle commet :_step_size = position num * 4 + sizeof(statistics)
     return _entry;
 }
 
@@ -120,6 +120,7 @@ size_t StreamIndexReader::entry_count() {
 }
 
 OLAPStatus StreamIndexReader::_parse_header(FieldType type) {
+    OLAP_LOG_DEBUG("StreamIndexReader::_parse_header");
     if (_buffer_size < sizeof(StreamIndexHeader)) {
         OLAP_LOG_WARNING("invalid length");
         return OLAP_ERR_OUT_OF_BOUND;
@@ -136,7 +137,7 @@ OLAPStatus StreamIndexReader::_parse_header(FieldType type) {
     }
 
     _start_offset = sizeof(StreamIndexHeader);
-    _step_size = _entry.entry_size();
+    _step_size = _entry.entry_size();    //jungle comment : one entry is one block entry in one column ,one entry contain positions and statistics
     _entry_count = header->block_count;
 
     if (_entry_count * _step_size + _start_offset > _buffer_size) {

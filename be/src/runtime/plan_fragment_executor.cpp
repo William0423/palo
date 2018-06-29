@@ -70,10 +70,10 @@ Status PlanFragmentExecutor::prepare(const TExecPlanFragmentParams& request) {
     const TPlanFragmentExecParams& params = request.params;
     _query_id = params.query_id;
 
-    LOG(INFO) << "Prepare(): query_id=" << print_id(_query_id)
+    LOG(INFO) << "PlanFragmentExecutor::Prepare(): query_id=" << print_id(_query_id)
                << " instance_id=" << print_id(params.fragment_instance_id)
                << " backend_num=" << request.backend_num;
-    // VLOG(2) << "request:\n" << apache::thrift::ThriftDebugString(request);
+     //VLOG(2) << "request:\n" << apache::thrift::ThriftDebugString(request);
 
     _runtime_state.reset(new RuntimeState(
             request, request.query_options, request.query_globals.now_string, _exec_env));
@@ -253,6 +253,7 @@ void PlanFragmentExecutor::print_volume_ids(
 }
 
 Status PlanFragmentExecutor::open() {
+    OLAP_LOG_DEBUG("PlanFragmentExecutor::open");
     LOG(INFO) << "Open(): instance_id=" << _runtime_state->fragment_instance_id();
 
     // we need to start the profile-reporting thread before calling Open(), since it
@@ -284,6 +285,7 @@ Status PlanFragmentExecutor::open() {
 }
 
 Status PlanFragmentExecutor::open_internal() {
+    OLAP_LOG_DEBUG("PlanFragmentExecutor::open_internal");
     {
         SCOPED_TIMER(profile()->total_time_counter());
         RETURN_IF_ERROR(_plan->open(_runtime_state.get()));
@@ -311,12 +313,14 @@ Status PlanFragmentExecutor::open_internal() {
 
             for (int i = 0; i < batch->num_rows(); ++i) {
                 TupleRow* row = batch->get_row(i);
+
                 VLOG_ROW << print_row(row, row_desc());
             }
         }
 
         SCOPED_TIMER(profile()->total_time_counter());
         RETURN_IF_ERROR(_sink->send(runtime_state(), batch));
+
     }
 
     // Close the sink *before* stopping the report thread. Close may
@@ -333,12 +337,13 @@ Status PlanFragmentExecutor::open_internal() {
     {
         SCOPED_TIMER(profile()->total_time_counter());
         Status status = _sink->close(runtime_state(), _status);
+        OLAP_LOG_DEBUG("_sink->close ");
         RETURN_IF_ERROR(status);
     }
     {
         std::stringstream ss;
         profile()->pretty_print(&ss);
-        LOG(INFO) << ss.str();
+        //LOG(INFO) << ss.str();
     }
 
     // Setting to NULL ensures that the d'tor won't double-close the sink.
@@ -387,7 +392,7 @@ void PlanFragmentExecutor::report_profile() {
                       << "profile for instance " << _runtime_state->fragment_instance_id();
             std::stringstream ss;
             profile()->pretty_print(&ss);
-            VLOG_FILE << ss.str();
+            //VLOG_FILE << ss.str();
         }
 
         if (!_report_thread_active) {
@@ -402,6 +407,7 @@ void PlanFragmentExecutor::report_profile() {
 }
 
 void PlanFragmentExecutor::send_report(bool done) {
+    OLAP_LOG_DEBUG("PlanFragmentExecutor::send_report");
     if (_report_status_cb.empty()) {
         return;
     }
@@ -460,7 +466,7 @@ Status PlanFragmentExecutor::get_next_internal(RowBatch** batch) {
     }
 
     while (!_done) {
-        _row_batch->reset();
+        _row_batch->reset(); //jungle comment : _row_batch already send in open_internal,and reset
         SCOPED_TIMER(profile()->total_time_counter());
         RETURN_IF_ERROR(_plan->get_next(_runtime_state.get(), _row_batch.get(), &_done));
 

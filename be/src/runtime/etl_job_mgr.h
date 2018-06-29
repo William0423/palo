@@ -84,7 +84,7 @@ public:
 
     Status erase_job(const TDeleteEtlFilesRequest& req);
 
-    void finalize_job(PlanFragmentExecutor* executor);
+    void finalize_job(PlanFragmentExecutor* executor,int etl_type, long job_id);
 
     virtual void debug(std::stringstream& ss);
 
@@ -92,7 +92,7 @@ private:
     std::string to_http_path(const std::string& file_path);
     std::string to_load_error_http_path(const std::string& file_path);
 
-    void report_to_master(PlanFragmentExecutor* executor);
+    void report_to_master(PlanFragmentExecutor* executor,int etl_type, long job_id);
 
     ExecEnv* _exec_env;
     std::mutex _lock;

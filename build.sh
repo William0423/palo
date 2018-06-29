@@ -141,7 +141,7 @@ if [ ${BUILD_BE} -eq 1 ] ; then
     mkdir -p ${PALO_HOME}/be/build/
     cd ${PALO_HOME}/be/build/
     cmake ../
-    make -j${PARALLEL}
+    make -j2
     make install
     cd ${PALO_HOME}
 fi

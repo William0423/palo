@@ -294,6 +294,8 @@ Status MiniLoadAction::receive_data(const LoadHandle& desc, HttpRequest* req,
 
 Status MiniLoadAction::load(
         HttpRequest* http_req, const std::string& file_path) {
+
+    OLAP_LOG_DEBUG("MiniLoadAction::load, file_path is %s " , file_path.c_str());
     // Prepare request parameters.
     std::map<std::string, std::string> params(
             http_req->query_params().begin(), http_req->query_params().end());

@@ -35,6 +35,8 @@ IntegerColumnReader::~IntegerColumnReader() {
 
 OLAPStatus IntegerColumnReader::init(
         std::map<StreamName, ReadOnlyFileStream*>* streams, bool is_sign) {
+
+    OLAP_LOG_DEBUG("IntegerColumnReader::init");
     if (NULL == streams) {
         OLAP_LOG_WARNING("input streams is NULL");
         return OLAP_ERR_INPUT_PARAMETER_ERROR;
@@ -45,6 +47,8 @@ OLAPStatus IntegerColumnReader::init(
                                       StreamInfoMessage::DATA,
                                       streams);
 
+
+    OLAP_LOG_DEBUG("IntegerColumnReader attach to data_stream, offset :%d , length : %d ,_column_unique_id is: %d " ,data_stream->_file_cursor._offset,data_stream->_file_cursor._length,_column_unique_id);
     if (data_stream == NULL) {
         OLAP_LOG_WARNING("specified stream is NULL");
         return OLAP_ERR_COLUMN_STREAM_NOT_EXIST;
@@ -454,6 +458,9 @@ ColumnReader* ColumnReader::create(uint32_t column_id,
         const UniqueIdToColumnIdMap& included,
         UniqueIdToColumnIdMap& segment_included,
         const UniqueIdEncodingMap& encodings) {
+
+    OLAP_LOG_DEBUG("ColumnReader::create,column_id :%d ", column_id  );
+
     if (column_id >= columns.size()) {
         OLAP_LOG_WARNING("invalid column_id, column_id=%u, columns_size=%lu",
                 column_id, columns.size());
@@ -461,6 +468,7 @@ ColumnReader* ColumnReader::create(uint32_t column_id,
     }
 
     const FieldInfo& field_info = columns[column_id];
+    OLAP_LOG_DEBUG("ColumnReader::create,field_info :%s ", field_info.to_string().c_str()  );
     ColumnReader* reader = NULL;
     uint32_t column_unique_id = field_info.unique_id;
 
@@ -644,6 +652,7 @@ ColumnReader::~ColumnReader() {
 }
 
 OLAPStatus ColumnReader::init(std::map<StreamName, ReadOnlyFileStream*>* streams) {
+    OLAP_LOG_DEBUG("ColumnReader::init");
     if (NULL == streams) {
         OLAP_LOG_WARNING("null parameters given.");
         return OLAP_ERR_INPUT_PARAMETER_ERROR;
@@ -679,7 +688,9 @@ OLAPStatus ColumnReader::init(std::map<StreamName, ReadOnlyFileStream*>* streams
 }
 
 OLAPStatus ColumnReader::seek(PositionProvider* position) {
+
     if (NULL != _present_reader) {
+        OLAP_LOG_DEBUG("_present_reader::seek");
         return _present_reader->seek(position);
     }
 

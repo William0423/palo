@@ -148,7 +148,9 @@ enum TTaskType {
     CHECK_CONSISTENCY
     UPLOAD,
     RESTORE,
-    CLEAR_REMOTE_FILE
+    CLEAR_REMOTE_FILE,
+    STREAMING_ETL,
+    STREAMING_PUSH
 }
 
 enum TStmtType {

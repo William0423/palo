@@ -150,6 +150,7 @@ Status OlapScanner::open() {
 }
 
 Status OlapScanner::get_next(Tuple* tuple, int64_t* raw_rows_read, bool* eof) {
+    OLAP_LOG_DEBUG("********* OlapScanner::get_next");
 	if (!_reader->next_tuple(tuple, raw_rows_read, eof).ok()) {
 		if (MemTracker::limit_exceeded(*_runtime_state->mem_trackers())) {
             LOG(ERROR) << "Memory limit exceeded.";

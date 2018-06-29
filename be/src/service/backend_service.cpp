@@ -24,6 +24,7 @@
 #include <gperftools/heap-profiler.h>
 #include <thrift/protocol/TDebugProtocol.h>
 #include <thrift/concurrency/PosixThreadFactory.h>
+#include <dirent.h>
 #include "service/backend_options.h"
 #include "util/network_util.h"
 #include "util/thrift_util.h"
@@ -44,6 +45,7 @@ using apache::thrift::TProcessor;
 using apache::thrift::transport::TTransportException;
 using apache::thrift::concurrency::ThreadFactory;
 using apache::thrift::concurrency::PosixThreadFactory;
+
 
 BackendService::BackendService(ExecEnv* exec_env) :
         _exec_env(exec_env),
@@ -245,6 +247,63 @@ void BackendService::erase_export_task(TStatus& t_status, const TUniqueId& task_
 //        VLOG_RPC << "delete export task successful with task_id " << task_id;
 //    }
 //    status.to_thrift(&t_status);
+}
+
+void BackendService::get_streaming_etl_file_path(std::vector<std::string> & result ,const std::string & file_path,const int  cnt){
+
+
+    LOG(INFO)<<" call get_streaming_etl_file_path : " << file_path;
+    std::string file_dir = file_path;
+    file_dir = file_dir.append("/");
+    DIR *p_dir;
+    const char* str = file_dir.c_str();
+
+    p_dir = opendir(str);
+    if( p_dir == NULL)
+    {
+        LOG(INFO)<< "can't open :" << file_dir ;
+        return;
+    }
+
+    struct dirent *p_dirent;
+    while ( p_dirent = readdir(p_dir))
+    {
+        std::string tmpFileName = p_dirent->d_name;
+        LOG(INFO)<<"tmpFileName : " << tmpFileName ;
+        if( tmpFileName == "." || tmpFileName == ".." || tmpFileName.find("done")  != std::string::npos)
+        {
+            continue;
+        }
+        else
+        {
+
+            if(result.size() < cnt ){
+                result.push_back(file_dir + tmpFileName);
+                LOG(INFO)<<"file path result : " << result[result.size()-1];
+            }
+
+        }
+    }
+    closedir(p_dir);
+
+
+}
+
+void BackendService::mark_etl_file_done( TStatus& result, const std::vector<std::string> & file_done){
+    LOG(INFO)<<"call mark_etl_file_done " ;
+    for(std::string  file: file_done){
+        if(access(file.c_str(),0) == 0) {
+            if (rename(file.c_str(), (file + ".done").c_str()) == 0) {
+                LOG(INFO)<<"rename file success"<< file;
+                result.status_code = TStatusCode::OK;
+            } else{
+                LOG(INFO)<<"rename file failed"<< file;
+                result.status_code = TStatusCode::RUNTIME_ERROR;
+            }
+        }
+    }
+
+
 }
 
 } // namespace palo

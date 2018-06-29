@@ -171,7 +171,7 @@ OLAPStatus StreamIndexWriter::write_to_buffer(char* buffer, size_t buffer_size) 
     // set offset, write data
     char* write_offset = buffer + sizeof(_header);
 
-    for (size_t i = 0; i < _index_to_write.size(); ++i) {
+    for (size_t i = 0; i < _index_to_write.size(); ++i) {    //jungle comment: _index_to_write.size == block number
         _index_to_write[i].write_to_buffer(write_offset);
         write_offset += entry_size;
     }

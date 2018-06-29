@@ -79,6 +79,8 @@ struct TPushReq {
     8: optional i64 http_file_size
     9: optional list<PaloInternalService.TCondition> delete_conditions
     10: optional bool need_decompress
+    11: optional i64 task_id
+    12: optional i64 job_id
 }
 
 struct TCloneReq {

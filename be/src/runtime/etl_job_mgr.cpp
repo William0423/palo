@@ -69,7 +69,14 @@ Status EtlJobMgr::init() {
 }
 
 Status EtlJobMgr::start_job(const TMiniLoadEtlTaskRequest& req) {
+    OLAP_LOG_DEBUG("EtlJobMgr::start_job ");
     const TUniqueId& id = req.params.params.fragment_instance_id;
+    int etl_type = 0;
+    if(req.params.import_label.find("stream") != std::string::npos){
+        etl_type = 1;
+        LOG(INFO)<< " etl type is stream , job id :" << req.params.load_job_id ;
+    }
+
     std::lock_guard<std::mutex> l(_lock);
     auto it = _running_jobs.find(id);
     if (it != _running_jobs.end()) {
@@ -88,7 +95,7 @@ Status EtlJobMgr::start_job(const TMiniLoadEtlTaskRequest& req) {
 
     RETURN_IF_ERROR(_exec_env->fragment_mgr()->exec_plan_fragment(
             req.params,
-            std::bind<void>(&EtlJobMgr::finalize_job, this, std::placeholders::_1)));
+            std::bind<void>(&EtlJobMgr::finalize_job, this, std::placeholders::_1,etl_type,req.params.load_job_id)));
 
     // redo this job if failed before
     if (_failed_jobs.exists(id)) {
@@ -101,11 +108,17 @@ Status EtlJobMgr::start_job(const TMiniLoadEtlTaskRequest& req) {
     return Status::OK;
 }
 
-void EtlJobMgr::report_to_master(PlanFragmentExecutor* executor) {
+void EtlJobMgr::report_to_master(PlanFragmentExecutor* executor,int etl_type,long job_id) {
+    OLAP_LOG_DEBUG("EtlJobMgr::report_to_master");
     TUpdateMiniEtlTaskStatusRequest request;
     RuntimeState* state = executor->runtime_state();
     request.protocolVersion = FrontendServiceVersion::V1;
     request.etlTaskId = state->fragment_instance_id();
+    request.__set_jobId(job_id);
+    LOG(INFO)<< "request.jobId " << request.jobId;
+    if(etl_type != 0){
+        request.etlTaskType = TTaskType::STREAMING_ETL;
+    }
     Status status = get_job_state(state->fragment_instance_id(), &request.etlTaskStatus);
     if (!status.ok()) {
         return;
@@ -150,7 +163,8 @@ void EtlJobMgr::report_to_master(PlanFragmentExecutor* executor) {
         << print_id(request.etlTaskId);
 }
 
-void EtlJobMgr::finalize_job(PlanFragmentExecutor* executor) {
+void EtlJobMgr::finalize_job(PlanFragmentExecutor* executor ,int etl_type, long job_id) {
+    OLAP_LOG_DEBUG("EtlJobMgr::finalize_job，set file_map");
     EtlJobResult result;
 
     RuntimeState* state = executor->runtime_state();
@@ -174,7 +188,7 @@ void EtlJobMgr::finalize_job(PlanFragmentExecutor* executor) {
     finish_job(state->fragment_instance_id(), executor->status(), result);
 
     // Try to report this finished task to master
-    report_to_master(executor);
+    report_to_master(executor,etl_type,job_id);
 }
 
 
@@ -197,6 +211,7 @@ Status EtlJobMgr::cancel_job(const TUniqueId& id) {
 Status EtlJobMgr::finish_job(const TUniqueId& id,
                              const Status& finish_status,
                              const EtlJobResult& result) {
+    OLAP_LOG_DEBUG("EtlJobMgr::finish_job，set _success_jobs");
     std::lock_guard<std::mutex> l(_lock);
 
     auto it = _running_jobs.find(id);
@@ -224,6 +239,8 @@ Status EtlJobMgr::finish_job(const TUniqueId& id,
 
 Status EtlJobMgr::get_job_state(const TUniqueId& id,
                                 TMiniLoadEtlStatusResult* result) {
+
+    OLAP_LOG_DEBUG("EtlJobMgr::get_job_state，set TMiniLoadEtlStatusResult");
     std::lock_guard<std::mutex> l(_lock);
     auto it = _running_jobs.find(id);
     if (it != _running_jobs.end()) {

@@ -717,7 +717,7 @@ OLAPStatus RunLengthIntegerWriter::flush() {
 
 void RunLengthIntegerWriter::get_position(PositionEntryWriter* index_entry, bool print) const {
     _output->get_position(index_entry);
-    index_entry->add_position(_num_literals);
+    index_entry->add_position(_num_literals);   //jungle comment: the third position;
 
     if (print) {
         _output->print_position_debug_info();

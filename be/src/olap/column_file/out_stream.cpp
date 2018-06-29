@@ -92,11 +92,12 @@ OutStream::~OutStream() {
 }
 
 OLAPStatus OutStream::_create_new_input_buffer() {
+    OLAP_LOG_DEBUG(" OutStream::_create_new_input_buffer ,size : %d" ,_buffer_size + sizeof(StreamHead));
     SAFE_DELETE(_current);
     _current = ByteBuffer::create(_buffer_size + sizeof(StreamHead));
 
     if (NULL != _current) {
-        _current->set_position(sizeof(StreamHead));
+        _current->set_position(sizeof(StreamHead));  //jungle comment: reserve the StreamHead;
         return OLAP_SUCCESS;
     } else {
         return OLAP_ERR_MALLOC_ERROR;
@@ -204,7 +205,7 @@ OLAPStatus OutStream::_spill() {
             return res;
         }
 
-        // 吧 current解压到compress和overflow
+        // 吧 current压缩到compress和overflow
         uint64_t head_pos = _compressed->position();
         _compressed->set_position(head_pos + sizeof(StreamHead));
         bool smaller = false;
@@ -218,14 +219,14 @@ OLAPStatus OutStream::_spill() {
         if (smaller) {
             // 数据都压缩到_output和_overflow里, 重置_current
             // 注意这种情况下，current并没有被释放，因为实际上输出的compress
-            _current->set_position(sizeof(StreamHead));
+            _current->set_position(sizeof(StreamHead));  //jungle comment : reset _current , _current store the current uncompressed data
             _current->set_limit(_current->capacity());
 
             uint32_t output_bytes = _compressed->position() - head_pos - sizeof(StreamHead);
             output_bytes += _overflow->position();
-            _write_head(_compressed, head_pos, StreamHead::COMPRESSED, output_bytes);
+            _write_head(_compressed, head_pos, StreamHead::COMPRESSED, output_bytes); //jungle comment:output_bytes is know now
 
-            if (_compressed->remaining() < sizeof(StreamHead)) {
+            if (_compressed->remaining() < sizeof(StreamHead)) {   //jungle comment : no more space to add a stream
                 _output_compressed();
             }
 
@@ -309,7 +310,7 @@ OLAPStatus OutStream::write(const char* buffer, uint64_t length) {
             remain -= to_put;
         }
 
-        if (_current->remaining() == 0) {
+        if (_current->remaining() == 0) {   //jungle comment:  no space in _current
             res = _spill();
             if (OLAP_SUCCESS != res) {
                 OLAP_LOG_WARNING("fail to spill current buffer.");
@@ -322,17 +323,17 @@ OLAPStatus OutStream::write(const char* buffer, uint64_t length) {
 }
 
 void OutStream::get_position(PositionEntryWriter* index_entry) const {
-    //OLAP_LOG_DEBUG("begin recording position [OutStream], "
-    //               "recorded position count: %d", index_entry->positions_size());
-    //OLAP_LOG_DEBUG("add _spilled_bytes: %lu", _spilled_bytes);
-    index_entry->add_position(_spilled_bytes);
+    OLAP_LOG_DEBUG("begin recording position [OutStream], "
+                   "recorded position count: %d", index_entry->positions_count());
+    OLAP_LOG_DEBUG("add _spilled_bytes: %lu", _spilled_bytes);
+    index_entry->add_position(_spilled_bytes);     //jungle comment : the first position here , is the latest compressed position
 
     if (NULL != _current) {
-        index_entry->add_position(_current->position() - sizeof(StreamHead));
-        //OLAP_LOG_DEBUG("add current: %lu", _current->position() - sizeof(StreamHead));
+        index_entry->add_position(_current->position() - sizeof(StreamHead));   // jungle comment :the data in current buf have not  spilled yet
+        OLAP_LOG_DEBUG("add current: %lu", _current->position() - sizeof(StreamHead));
     } else {
         index_entry->add_position(0);
-        //OLAP_LOG_DEBUG("add current: 0");
+        OLAP_LOG_DEBUG("add current: 0");
     }
 
     //OLAP_LOG_DEBUG("end recording position [OutStream], "

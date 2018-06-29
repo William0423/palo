@@ -304,7 +304,7 @@ private:
         ChunkInfo& info = _chunks[_current_chunk_idx];
         uint8_t* result = info.data + info.allocated_bytes;
         DCHECK_LE(info.allocated_bytes + num_bytes, info.size);
-        info.allocated_bytes += num_bytes;
+        info.allocated_bytes += num_bytes;                 //jungle comment:current allocated position move further
         _total_allocated_bytes += num_bytes;
         DCHECK_LE(_current_chunk_idx, _chunks.size() - 1);
         _peak_allocated_bytes = std::max(_total_allocated_bytes, _peak_allocated_bytes);

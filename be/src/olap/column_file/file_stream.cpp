@@ -52,11 +52,15 @@ ReadOnlyFileStream::ReadOnlyFileStream(
 }
 
 OLAPStatus ReadOnlyFileStream::_assure_data() {
+    OLAP_LOG_DEBUG("ReadOnlyFileStream::_assure_data");
+    //OLAP_LOG_DEBUG("STREAM EOF.[length=%lu used=%lu]",
+    //               _file_cursor.length(), _file_cursor.position());
     // if still has data in uncompressed
-    if (OLAP_LIKELY(_uncompressed != NULL && _uncompressed->remaining() > 0)) {
+    if (OLAP_LIKELY(_uncompressed != NULL && _uncompressed->remaining() > 0)) {  //jungle comment:_uncompressed still have data
+        OLAP_LOG_DEBUG("_uncompressed->remaining : %d" ,_uncompressed->remaining() );
         return OLAP_SUCCESS;
     } else if (_file_cursor.eof()) {
-        OLAP_LOG_DEBUG("STREAM EOF.[length=%lu used=%lu]",
+        OLAP_LOG_DEBUG("_file_cursor.eof.[length=%lu used=%lu]",
                 _file_cursor.length(), _file_cursor.position());
         return OLAP_ERR_COLUMN_STREAM_EOF;
     }
@@ -65,12 +69,13 @@ OLAPStatus ReadOnlyFileStream::_assure_data() {
     size_t file_cursor_used = _file_cursor.position();
     OLAPStatus res = _file_cursor.read(reinterpret_cast<char*>(&header), sizeof(header));
 
+    OLAP_LOG_DEBUG("StreamHead :%d , %d ,%d " , header.type,header.length,header.checksum );
     if (OLAP_UNLIKELY(OLAP_SUCCESS != res)) {
         OLAP_LOG_WARNING("read header fail");
         return res;
     }
 
-    res = _fill_compressed(header.length);
+    res = _fill_compressed(header.length);    //jungle comment:read the data
 
     if (OLAP_UNLIKELY(OLAP_SUCCESS != res)) {
         OLAP_LOG_WARNING("read header fail");
@@ -79,7 +84,7 @@ OLAPStatus ReadOnlyFileStream::_assure_data() {
 
     if (header.type == StreamHead::UNCOMPRESSED) {
         ByteBuffer* tmp = _compressed_helper;
-        _compressed_helper = *_shared_buffer;
+        _compressed_helper = *_shared_buffer;     //jungle comment : column stream share the buf
         *_shared_buffer = tmp;
     } else {
         _compressed_helper->set_position(0);
@@ -94,18 +99,24 @@ OLAPStatus ReadOnlyFileStream::_assure_data() {
     }
 
     _uncompressed = _compressed_helper;
+
+
     _current_compress_position = file_cursor_used;
     return res;
 }
 
 // 设置读取的位置
-OLAPStatus ReadOnlyFileStream::seek(PositionProvider* position) {
+OLAPStatus ReadOnlyFileStream::seek(PositionProvider* position) {    //jungle  comment : one block has one position
+    OLAP_LOG_DEBUG("ReadOnlyFileStream::seek");
     OLAPStatus res = OLAP_SUCCESS;
-    // 先seek到解压前的位置，也就是writer中写入的spilled byte
-    int64_t compressed_position = position->get_next();
+    // 先seek到解压前的位置，也就是writer中写入的spilled byte jungle comment : first position is the relative position(used) of the compress block in the file (_offset + used), which length is in StreamHead,  second is the inner position in the block after decompress
+    int64_t compressed_position = position->get_next();        // jungle comment : first pos and second pos determine the start of the row block
+    OLAP_LOG_DEBUG("0 position index :%d", position->_index);
     int64_t uncompressed_bytes = position->get_next();
+    OLAP_LOG_DEBUG("1 position index :%d", position->_index);
     if (_current_compress_position == compressed_position
         && NULL != _uncompressed) {
+        OLAP_LOG_DEBUG("don't need to _file_cursor.seek , use _uncompressed");
         /*
          * 多数情况下不会出现_uncompressed为NULL的情况，
          * 但varchar类型的数据可能会导致查询中出现_uncompressed == NULL 。
@@ -114,7 +125,8 @@ OLAPStatus ReadOnlyFileStream::seek(PositionProvider* position) {
          * 如果后面的segmentreader中还需要再次遍历A压缩块，会出现空指针。
          */
     } else {
-        _file_cursor.seek(compressed_position);
+        OLAP_LOG_DEBUG("==> _file_cursor.seek to compressed_position: %ld", compressed_position);
+        _file_cursor.seek(compressed_position);      //jungle comment : one column data in this segment start from _offset to _offset + _length
         _uncompressed = NULL;
 
         res = _assure_data();
@@ -130,6 +142,7 @@ OLAPStatus ReadOnlyFileStream::seek(PositionProvider* position) {
     }
 
     res = _uncompressed->set_position(uncompressed_bytes);
+    OLAP_LOG_DEBUG("_uncompressed set to uncompressed_bytes: %ld", uncompressed_bytes);
     if (OLAP_SUCCESS != res) {
         OLAP_LOG_WARNING("fail to set position.[res=%d, position=%lu]",
                 res,
@@ -167,6 +180,7 @@ OLAPStatus ReadOnlyFileStream::skip(uint64_t skip_length) {
 }
 
 OLAPStatus ReadOnlyFileStream::_fill_compressed(size_t length) {
+    OLAP_LOG_DEBUG("ReadOnlyFileStream::_fill_compressed,length %d",length);
     if (length > _compress_buffer_size) {
         OLAP_LOG_WARNING("overflow when fill compressed.");
         return OLAP_ERR_OUT_OF_BOUND;

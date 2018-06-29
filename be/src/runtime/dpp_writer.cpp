@@ -113,6 +113,7 @@ void DppWriter::increase_buf(int len) {
 }
 
 Status DppWriter::append_one_row(TupleRow* row) {
+    OLAP_LOG_DEBUG("DppWriter::append_one_row");
     int num_columns = _output_expr_ctxs.size();
     int off = 0;
     int pos = _pos - _buf;
@@ -140,9 +141,12 @@ Status DppWriter::append_one_row(TupleRow* row) {
         case TYPE_SMALLINT:
             append_to_buf(item, 2);
             break;
-        case TYPE_INT:
+        case TYPE_INT:{
+            int a = *reinterpret_cast<int*>(item);
+            OLAP_LOG_DEBUG("TYPE_INT : %d ",a);
             append_to_buf(item, 4);
             break;
+        }
         case TYPE_BIGINT:
             append_to_buf(item, 8);
             break;
@@ -226,6 +230,7 @@ Status DppWriter::append_one_row(TupleRow* row) {
 }
 
 Status DppWriter::add_batch(RowBatch* batch) {
+    OLAP_LOG_DEBUG("DppWriter::add_batch ,write to the file  ");
     int num_rows = batch->num_rows();
     if (num_rows <= 0) {
         return Status::OK;
@@ -233,7 +238,7 @@ Status DppWriter::add_batch(RowBatch* batch) {
 
     Status status;
     for (int i = 0; i < num_rows; ++i) {
-        reset_buf();
+        reset_buf();                                      //jungle comment:here reset
         TupleRow* row = batch->get_row(i);
         status = append_one_row(row);
         if (!status.ok()) {
@@ -243,7 +248,7 @@ Status DppWriter::add_batch(RowBatch* batch) {
             return status;
         }
         int len = _pos - _buf;
-        OLAPStatus olap_status = _fp->write(_buf, len);
+        OLAPStatus olap_status = _fp->write(_buf, len);     //jungle comment : write to file now
         if (olap_status != OLAP_SUCCESS) {
             return Status("write to file failed.");
         }

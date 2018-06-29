@@ -117,6 +117,7 @@ Status QSorter::add_batch(RowBatch* batch) {
 
 // Reverse result in priority_queue
 Status QSorter::input_done() {
+    OLAP_LOG_DEBUG("QSorter::input_done");
     std::sort(_sorted_rows.begin(), _sorted_rows.end(),
               TupleRowLessThan(_lhs_expr_ctxs, _rhs_expr_ctxs));
     _next_iter = _sorted_rows.begin();

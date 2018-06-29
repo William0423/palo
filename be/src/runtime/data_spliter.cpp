@@ -99,6 +99,7 @@ Status DataSpliter::prepare(RuntimeState* state) {
 }
 
 Status DataSpliter::open(RuntimeState* state) {
+    OLAP_LOG_DEBUG("2 DataSpliter::open");
     RETURN_IF_ERROR(Expr::open(_partition_expr_ctxs, state));
 
     for (auto& iter : _rollup_map) {
@@ -198,6 +199,9 @@ Status DataSpliter::process_distribute(
 
 Status DataSpliter::send_row(
         RuntimeState* state, const TabletDesc& desc, TupleRow* row, DppSink* dpp_sink) {
+
+
+    OLAP_LOG_DEBUG("DataSpliter::send_row " );
     RowBatch* batch = nullptr;
     auto batch_iter = _batch_map.find(desc);
     if (batch_iter == _batch_map.end()) {
@@ -245,7 +249,7 @@ Status DataSpliter::process_one_row(RuntimeState* state, TupleRow* row) {
     desc.partition_id = part->id();
 
     // process distribute
-    RETURN_IF_ERROR(process_distribute(state, row, part, &desc.bucket_id));
+    RETURN_IF_ERROR(process_distribute(state, row, part, &desc.bucket_id)); //jungle comment : gen desc.partition_id and desc.bucket_id and determine the
 
     // construct dpp_sink map
     _sink_map[desc] = _dpp_sink_vec[part_index];
@@ -257,6 +261,7 @@ Status DataSpliter::process_one_row(RuntimeState* state, TupleRow* row) {
 }
 
 Status DataSpliter::send(RuntimeState* state, RowBatch* batch) {
+    OLAP_LOG_DEBUG("2 DataSpliter::send");
     SCOPED_TIMER(_split_timer);
     int num_rows = batch->num_rows();
     for (int i = 0; i < num_rows; ++i) {
@@ -266,6 +271,7 @@ Status DataSpliter::send(RuntimeState* state, RowBatch* batch) {
 }
 
 Status DataSpliter::close(RuntimeState* state, Status close_status) {
+    OLAP_LOG_DEBUG("3 DataSpliter::close");   //jungle comment: notice this close start when get_next_internal in PlanFragmentExecutor::open_internal all finish
     bool is_ok = true;
     Status err_status;
     if (_closed) {

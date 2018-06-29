@@ -150,6 +150,9 @@ public:
 
     void erase_export_task(TStatus& t_status, const TUniqueId& task_id) override;
 
+    void get_streaming_etl_file_path(std::vector<std::string> & result ,const std::string & file_path,const int file_num) override;
+    void mark_etl_file_done( TStatus& result, const std::vector<std::string> & file_done) override;
+
 private:
     Status start_plan_fragment_execution(const TExecPlanFragmentParams& exec_params);
 

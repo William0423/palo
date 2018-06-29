@@ -89,7 +89,7 @@ inline bool PlainTextLineReader::update_eof() {
     if (done()) {
         _eof = true;
     } else if (_decompressor == nullptr 
-                && (_min_length >= 0 && _total_read_bytes >= _min_length)) {
+                && (_min_length >= 0 && _total_read_bytes >= _min_length)) {   //jungle comment :_min_length = BrokerScanNode:TBrokerRangeDesc:rangeBytes
         _eof = true;
     }
     return _eof;
@@ -328,7 +328,7 @@ Status PlainTextLineReader::read_line(const uint8_t** ptr, size_t* size, bool* e
         } else {
             // we found a complete line
             // ready to return
-            offset = pos - cur_ptr;
+            offset = pos - cur_ptr;    //jungle  comment :pos is the line delimiter pos
             found_line_delimiter = 1;
             break;
         }

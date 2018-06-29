@@ -146,12 +146,12 @@ private:
                              length,
                              _used + _offset);
 
-                // OLAP_LOG_DEBUG("FILE read from %lu to %lu [%lu - %lu], length %lu",
-                //                _used + _offset,
-                //                _used + _offset + length,
-                //                _offset,
-                //                _offset + _length,
-                //                length);
+                 OLAP_LOG_DEBUG("FILE read from %lu to %lu [%lu - %lu], length %lu",
+                                _used + _offset,
+                                _used + _offset + length,
+                                _offset,
+                                _offset + _length,
+                                length);
                 if (OLAP_SUCCESS != res) {
                     OLAP_LOG_WARNING("fail to read from file. [res=%d]", res);
                     return res;
@@ -191,15 +191,15 @@ private:
         }
     private:
         FileHandler* _file_handler;
-        size_t _offset; // start from where
-        size_t _length; // length limit
+    public:    size_t _offset; // start from where
+    public:    size_t _length; // length limit
         size_t _used;
     };
 
     OLAPStatus _assure_data();
     OLAPStatus _fill_compressed(size_t length);
 
-    FileCursor _file_cursor;
+    public:FileCursor _file_cursor;
     ByteBuffer* _compressed_helper;
     ByteBuffer* _uncompressed;
     ByteBuffer** _shared_buffer;
@@ -248,6 +248,7 @@ inline OLAPStatus ReadOnlyFileStream::read(char* buffer, uint64_t* buf_size) {
 }
 
 inline OLAPStatus ReadOnlyFileStream::read_all(char* buffer, uint64_t* buffer_size) {
+    OLAP_LOG_DEBUG("ReadOnlyFileStream::read_all ");
     OLAPStatus res;
     uint64_t read_length = 0;
     uint64_t buffer_remain = *buffer_size;

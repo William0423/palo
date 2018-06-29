@@ -69,7 +69,7 @@ public:
 
 private:
     const PositionEntryReader* _entry;
-    int _index;
+public:int _index;
 };
 
 class StreamIndexReader {

@@ -114,6 +114,8 @@ OLAPStatus OLAPEngine::_load_tables(const string& tablet_root_path) {
                         one_tablet_path + '/' + schema_hash) != OLAP_SUCCESS) {
                     OLAP_LOG_WARNING("fail to load one table, but continue. [path='%s']",
                                      (one_tablet_path + '/' + schema_hash).c_str());
+                }else {
+                    LOG(INFO) << "olap engine load tablet , tablet_id:" << tablet_id << ",tablet_schema_hash:" << tablet_schema_hash << ",one_tablet_path:"<< one_tablet_path << ",schema_hash:" << schema_hash ;
                 }
             }
         }
@@ -124,6 +126,7 @@ OLAPStatus OLAPEngine::_load_tables(const string& tablet_root_path) {
 
 OLAPStatus OLAPEngine::load_one_tablet(
         TTabletId tablet_id, SchemaHash schema_hash, const string& schema_hash_path) {
+    OLAP_LOG_DEBUG("OLAPEngine::load_one_tablet ");
     stringstream header_name_stream;
     header_name_stream << schema_hash_path << "/" << tablet_id << ".hdr";
     string header_path = header_name_stream.str();
@@ -403,7 +406,7 @@ OLAPStatus OLAPEngine::add_table(TTabletId tablet_id, SchemaHash schema_hash, OL
     }
 
     if (table_item.get() == NULL) {
-        _tablet_map[tablet_id].table_arr.push_back(smart_table);
+        _tablet_map[tablet_id].table_arr.push_back(smart_table);      //jungle comment:why need table_arr here ,different schema_hash ?
         _tablet_map[tablet_id].table_arr.sort(_sort_table_by_create_time);
         _tablet_map_lock.unlock();
 
@@ -637,7 +640,7 @@ OLAPTable* OLAPEngine::create_table(
         }
 
         olap_table = OLAPTable::create_from_header_file(
-                request.tablet_id, request.tablet_schema.schema_hash, header_path);
+                request.tablet_id, request.tablet_schema.schema_hash, header_path);  //jungle comment:file of header_path is already serialized in _create_new_table_header_file
         if (olap_table == NULL) {
             OLAP_LOG_WARNING("fail to load olap table from header. [header_path=%s]",
                              header_path.c_str());
@@ -803,7 +806,7 @@ OLAPStatus OLAPEngine::report_tablet_info(TTabletInfo* tablet_info) {
         tablet_info->version = -1;
         tablet_info->version_hash = 0;
     } else {
-        tablet_info->version = last_file_version->end_version();
+        tablet_info->version = last_file_version->end_version();  //jungle comment:use the latest file  version in fe
         tablet_info->version_hash = last_file_version->version_hash();
     }
     olap_table->release_header_lock();
@@ -1232,9 +1235,9 @@ OLAPStatus OLAPEngine::_create_new_table_header_file(
                       << "/" << request.tablet_id
                       << "/" << request.tablet_schema.schema_hash;
     string header_dir = header_dir_stream.str();
-
+    //jungle comment : eg data/data/0/10017/1639769700
     stringstream header_file_stream;
-    header_file_stream << request.tablet_id << ".hdr";
+    header_file_stream << request.tablet_id << ".hdr";     //jungle comment:create hdr file here
     string header_file = header_file_stream.str();
 
     res = _check_existed_or_else_create_dir(header_dir);
@@ -1244,9 +1247,10 @@ OLAPStatus OLAPEngine::_create_new_table_header_file(
     }
 
     // Generate and Initialize OLAPHeader
-    string header_path_tmp = header_dir + "/" + header_file;
+    string header_path_tmp = header_dir + "/" + header_file;  // eg:data/data/0/10017/1639769700/10017.hdr
     OLAPHeader header(header_path_tmp);
-    
+
+    OLAP_LOG_DEBUG("header file name %s", header_path_tmp);
     // set basic information
     header.set_num_short_key_fields(request.tablet_schema.short_key_column_count);
     header.set_compress_kind(COMPRESS_LZ4);

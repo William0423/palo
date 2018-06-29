@@ -304,6 +304,7 @@ void RowBatch::reset() {
     _has_in_flight_row = false;
     // TODO: Change this to Clear() and investigate the repercussions.
     _tuple_data_pool->free_all();
+    OLAP_LOG_DEBUG("_tuple_data_pool->free_all()");
     for (int i = 0; i < _io_buffers.size(); ++i) {
         _io_buffers[i]->return_buffer();
     }

@@ -87,9 +87,11 @@ Status OlapRewriteNode::get_next(RuntimeState* state, RowBatch* row_batch, bool*
     // start (or continue) consuming row batches from child
     while (true) {
         if (_child_row_idx == _child_row_batch->num_rows()) {
+            OLAP_LOG_DEBUG("_child_row_idx is %d " , _child_row_idx);
             // fetch next batch
             RETURN_IF_CANCELLED(state);
-            row_batch->tuple_data_pool()->acquire_data(_child_row_batch->tuple_data_pool(), false);
+            //jungle modify;
+            //row_batch->tuple_data_pool()->acquire_data(_child_row_batch->tuple_data_pool(), false); //jungle comment: need to  copy here ?
             _child_row_batch->reset();
             RETURN_IF_ERROR(child(0)->get_next(state, _child_row_batch.get(), &_child_eos));
             _child_row_idx = 0;
@@ -117,7 +119,7 @@ bool OlapRewriteNode::copy_one_row(TupleRow* src_row, Tuple* tuple,
     memset(tuple, 0, _output_tuple_desc->num_null_bytes());
     // check if valid
     for (int i = 0; i < _columns.size(); ++i) {
-        void* src_value = _columns[i]->get_value(src_row);
+        void* src_value = _columns[i]->get_value(src_row);    //jungle comment : go through the expr node tree and get val , _columns is inited in create_tree in PlanFragmentExecutor::prepare
         SlotDescriptor* slot_desc = _output_tuple_desc->slots()[i];
         // support null for insert into statment
         if (!slot_desc->is_nullable()) {

@@ -279,10 +279,10 @@ OLAPStatus ColumnWriter::create_row_index_entry() {
     OLAPStatus res = OLAP_SUCCESS;
     segment_statistics()->merge(&_block_statistics);
     _index_entry.set_statistic(&_block_statistics);
-    _index.add_index_entry(_index_entry);
+    _index.add_index_entry(_index_entry);   //copy the new one
     _index_entry.reset_write_offset();
     _block_statistics.reset();
-    record_position();
+    record_position();      //jungle comment : call subclass function ,eg:IntegerColumnWriterWrapper
 
     if (is_bf_column()) {
         _bf_index.add_bloom_filter(_bf);
@@ -356,7 +356,7 @@ OLAPStatus ColumnWriter::finalize(ColumnDataHeaderMessage* header) {
     char* index_buf = NULL;
     // char* index_statistic_buf = NULL;
     // 写index的pb
-    size_t pb_size = _index.output_size();
+    size_t pb_size = _index.output_size();   //jungle comment :position info and static info
     index_buf = new(std::nothrow) char[pb_size];
     ColumnMessage* column = NULL;
     

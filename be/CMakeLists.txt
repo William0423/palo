@@ -29,9 +29,13 @@ set(OUTPUT_DIR "${BASE_DIR}/output")
 option(MAKE_TEST "ON for make unit test or OFF for not" OFF)
 
 # Set compiler
-set(CMAKE_CXX_COMPILER $ENV{CXX})
-set(CMAKE_C_COMPILER $ENV{CC})
-
+set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_INSTALL_PREFIX "/Users/admin/work/cpp/palo/be/install")
+#set(CMAKE_CXX_COMPILER $ENV{CXX})
+#set(CMAKE_C_COMPILER $ENV{CC})
+set(CMAKE_CXX_COMPILER "/usr/local/Cellar/gcc/7.3.0_1/bin/g++-7")
+set(CMAKE_C_COMPILER "/usr/local/Cellar/gcc/7.3.0_1/bin/gcc-7")
+message(${CMAKE_CXX_COMPILER})
 # Check gcc
 if (CMAKE_COMPILER_IS_GNUCC)
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
@@ -269,8 +273,8 @@ message(STATUS "LLVM compile flags: ${LLVM_CFLAGS}")
 # Check the release version of the system to set the correct flags.
 # You may have to modify the ${CLANG_BASE_FLAGS} by you own.
 execute_process(COMMAND lsb_release -si OUTPUT_VARIABLE LINUX_VERSION)
-string(TOLOWER ${LINUX_VERSION} LINUX_VERSION_LOWER)
-message(STATUS "${LINUX_VERSION_LOWER}")
+#string(TOLOWER ${LINUX_VERSION} LINUX_VERSION_LOWER)
+#message(STATUS "${LINUX_VERSION_LOWER}")
 
 if(DEFINED ENV{CLANG_BASE_FLAGS})
     set(CLANG_BASE_FLAGS
@@ -288,7 +292,12 @@ elseif(${LINUX_VERSION_LOWER} MATCHES "fedora")
         "-I/usr/include/c++/7/"
         "-I/usr/include/c++/7/x86_64-redhat-linux/")
 else()
-    message(FATAL_ERROR "Currently not support system ${LINUX_VERSION}")
+    # message(FATAL_ERROR "Currently not support system ${LINUX_VERSION}")
+    #set(CLANG_BASE_FLAGS
+    # "-I/Library/Developer/CommandLineTools/usr/include/c++/v1")
+    set(CLANG_BASE_FLAGS
+        "-I/usr/local/Cellar/gcc/7.3.0_1/include/c++/7.3.0/"
+        "-I/usr/local/Cellar/gcc/7.3.0_1/include/c++/7.3.0/x86_64-apple-darwin15.6.0/")
 endif()
 
 message(STATUS "CLANG_BASE_FLAGS: ${CLANG_BASE_FLAGS}")

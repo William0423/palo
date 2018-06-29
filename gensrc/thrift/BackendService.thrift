@@ -110,4 +110,8 @@ service BackendService {
     PaloInternalService.TExportStatusResult get_export_status(1:Types.TUniqueId task_id);
 
     Status.TStatus erase_export_task(1:Types.TUniqueId task_id);
+
+    list<string> get_streaming_etl_file_path(1:string file_path,2:i32 file_num);
+
+    Status.TStatus mark_etl_file_done(1:list<string> file_done );
 }

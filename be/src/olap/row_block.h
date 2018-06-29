@@ -312,7 +312,7 @@ inline OLAPStatus RowBlock::get_row_to_write(uint32_t row_index, RowCursor* curs
                                   row_index * _grid_items[i].width, true);
                 }
             } else if (COLUMN_ORIENTED_FILE == _data_file_type) {
-                    res = cursor->attach_by_index(i, _buf + _grid_items[i].offset +
+                    res = cursor->attach_by_index(i, _buf + _grid_items[i].offset +   //jungle comment:offset is the start  of this column, row_index * _grid_items[i].width is the offset of this column
                                   row_index * _grid_items[i].width, true);
             }
         }

@@ -141,7 +141,7 @@ public:
     }
 private:
     ExecEnv* _exec_env;  // not owned
-    ExecNode* _plan;  // lives in _runtime_state->obj_pool()
+    ExecNode* _plan;  // lives in _runtime_state->obj_pool() //jungle comment: root of the plan node in the fragment
     TUniqueId _query_id;
     // MemTracker* _mem_tracker;
     boost::scoped_ptr<MemTracker> _mem_tracker;

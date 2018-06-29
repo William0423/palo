@@ -20,6 +20,7 @@
 #include <sstream>
 
 #include <boost/filesystem.hpp>
+#include <glog/logging.h>
 
 #include "olap/olap_engine.h"
 #include "olap/olap_table.h"
@@ -47,7 +48,7 @@ OLAPStatus PushHandler::process(
         const TPushReq& request,
         PushType push_type,
         vector<TTabletInfo>* tablet_info_vec) {
-    OLAP_LOG_INFO("begin to push data. [table='%s' version=%ld]",
+    OLAP_LOG_INFO("PushHandler::process begin to push data. [table='%s' version=%ld]",
                    olap_table->full_name().c_str(), request.version);
 
     OLAPStatus res = OLAP_SUCCESS;
@@ -224,7 +225,7 @@ OLAPStatus PushHandler::process(
     //    which may take a long time
     res = _convert(table_infoes[0].olap_table,
                    table_infoes[1].olap_table,
-                   &(table_infoes[0].added_indices),
+                   &(table_infoes[0].added_indices),   //jungle comment:new index of request.version will be created and add to table _data_source
                    &(table_infoes[1].added_indices),
                    alter_table_type);
     if (res != OLAP_SUCCESS) {
@@ -330,7 +331,7 @@ OLAPStatus PushHandler::_convert(
     uint32_t  num_rows = 0;
 
     do {
-        OLAP_LOG_DEBUG("start to convert delta file.");
+        OLAP_LOG_DEBUG("PushHandler::_convert start to convert delta file.");
 
         std::vector<FieldInfo> tablet_schema = curr_olap_table->tablet_schema();
 
@@ -341,6 +342,7 @@ OLAPStatus PushHandler::_convert(
         //    in case of empty push and delete data, this will be skipped.
         if (_request.__isset.http_file_path) {
             // open raw file
+            OLAP_LOG_DEBUG("## open raw file ,row by row, path: %s" , _request.http_file_path.c_str());
             if (OLAP_SUCCESS != (res = raw_file.init(_request.http_file_path.c_str()))) {
                 OLAP_LOG_WARNING("failed to read raw file. [res=%d file='%s']",
                                  res, _request.http_file_path.c_str());
@@ -373,14 +375,14 @@ OLAPStatus PushHandler::_convert(
         }
 
         // 2. New OLAPIndex of curr_olap_table for current push
-        OLAP_LOG_DEBUG("init OLAPIndex.");
+        OLAP_LOG_DEBUG("PushHandler::_convert ,init OLAPIndex,version is :%d - %d" , _request.version, _request.version);
 
         if (NULL == (delta_index = new(std::nothrow) OLAPIndex(
                 curr_olap_table.get(),
                 Version(_request.version, _request.version),
                 _request.version_hash,
                 (_request.push_type == TPushType::LOAD_DELETE),
-                0, 0))) {
+                0, 0))) {    //jungle comment: segment start from 0;
             OLAP_LOG_WARNING("fail to malloc OLAPIndex. [table='%s' size=%ld]",
                              curr_olap_table->full_name().c_str(), sizeof(OLAPIndex));
             res = OLAP_ERR_MALLOC_ERROR;
@@ -431,8 +433,10 @@ OLAPStatus PushHandler::_convert(
                                      res, num_rows);
                     break;
                 } else {
+                    OLAP_LOG_DEBUG("in convert ,reader->next : %s", row.to_string().c_str());
                     writer->next(row);
                     num_rows++;
+
                 }
             }
 
@@ -445,7 +449,7 @@ OLAPStatus PushHandler::_convert(
             }
         }
 
-        if (OLAP_SUCCESS != (res = writer->finalize())) {
+        if (OLAP_SUCCESS != (res = writer->finalize())) {     //jungle comment: data and index write to file
             OLAP_LOG_WARNING("fail to finalize writer. [res=%d]", res);
             break;
         }
@@ -699,6 +703,7 @@ OLAPStatus PushHandler::_clear_alter_table_info(
 }
 
 OLAPStatus BinaryFile::init(const char* path) {
+    OLAP_LOG_DEBUG("BinaryFile::init , open file : %s" ,path);
     // open file
     if (OLAP_SUCCESS != open(path, "rb")) {
         OLAP_LOG_WARNING("fail to open file. [file='%s']", path);
@@ -770,6 +775,7 @@ OLAPStatus BinaryReader::finalize() {
 }
 
 OLAPStatus BinaryReader::next(RowCursor* row) {
+    OLAP_LOG_WARNING("BinaryReader::next");
     OLAPStatus res = OLAP_SUCCESS;
 
     if (!_ready || NULL == row) {
@@ -833,6 +839,11 @@ OLAPStatus BinaryReader::next(RowCursor* row) {
             return res;
         }
 
+        if(i ==0 ){
+            OLAP_LOG_DEBUG("schema[0].name : %s ,value : %d " , schema[0].name.c_str()  , *reinterpret_cast<int*>(_row_buf + offset) ) ;
+
+        }
+
         if (schema[i].type == OLAP_FIELD_TYPE_VARCHAR || schema[i].type == OLAP_FIELD_TYPE_HLL) {
             row->read_field(_row_buf + offset - sizeof(VarCharField::LengthValueType), i, sizeof(VarCharField::LengthValueType) + field_size);
         } else {
@@ -840,7 +851,9 @@ OLAPStatus BinaryReader::next(RowCursor* row) {
         }
         offset += field_size;
     }
+
     _curr += offset;
+    OLAP_LOG_DEBUG("BinaryReader::next ,_curr length:%d",_curr);
 
     // Calculate checksum for validate when push finished.
     _adler_checksum = olap_adler32(_adler_checksum, _row_buf, offset);
@@ -900,6 +913,7 @@ OLAPStatus LzoBinaryReader::finalize() {
 }
 
 OLAPStatus LzoBinaryReader::next(RowCursor* row) {
+    OLAP_LOG_WARNING("LzoBinaryReader::next");
     OLAPStatus res = OLAP_SUCCESS;
 
     if (!_ready || NULL == row) {

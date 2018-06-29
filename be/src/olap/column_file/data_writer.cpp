@@ -16,6 +16,8 @@
 #include "olap/column_file/data_writer.h"
 
 #include <math.h>
+#include <glog/vlog_is_on.h>
+#include <glog/logging.h>
 
 #include "olap/column_file/segment_writer.h"
 #include "olap/olap_index.h"
@@ -94,7 +96,7 @@ OLAPStatus ColumnDataWriter::init() {
     return res;
 }
 
-OLAPStatus ColumnDataWriter::attached_by(RowCursor* row_cursor) {
+OLAPStatus ColumnDataWriter::attached_by(RowCursor* row_cursor) {   //jungle comment: attached by the row_cursor ,when reader write to the row_cursor, actually write to the rowblock buf
     if (_row_index >= _table->num_rows_per_row_block()) {
         if (OLAP_SUCCESS != _flush_row_block(false)) {
             OLAP_LOG_WARNING("failed to flush data while attaching row cursor.");
@@ -144,7 +146,7 @@ OLAPStatus ColumnDataWriter::_add_segment() {
 
     file_name = _table->construct_data_file_path(_index->version(),
                 _index->version_hash(),
-                _segment);
+                _segment);     //jungle comment: _segment will increase
     _segment_writer = new(std::nothrow) SegmentWriter(file_name, _table,
             OLAP_DEFAULT_COLUMN_STREAM_BUFFER_SIZE);
 
@@ -181,7 +183,7 @@ OLAPStatus ColumnDataWriter::_finalize_segment() {
         return OLAP_ERR_WRITER_DATA_WRITE_ERROR;
     }
 
-    if (OLAP_SUCCESS != _index->finalize_segment(data_segment_size, _num_rows)) {
+    if (OLAP_SUCCESS != _index->finalize_segment(data_segment_size, _num_rows)) {   //jungle comment  : fix header and  pb header in the  file ,short key already write to file
         OLAP_LOG_WARNING("fail to finish segment from olap_index.");
         return OLAP_ERR_WRITER_INDEX_WRITE_ERROR;
     }
@@ -193,8 +195,9 @@ OLAPStatus ColumnDataWriter::_finalize_segment() {
 OLAPStatus ColumnDataWriter::_flush_row_block(RowBlock* row_block, bool is_finalized) {
     OLAPStatus res;
 
+    OLAP_LOG_DEBUG("ColumnDataWriter::_flush_row_block ,row_block->row_block_info().row_num :%d", row_block->row_block_info().row_num);
     // 目标是将自己的block按条写入目标block中。
-    for (uint32_t i = 0; i < row_block->row_block_info().row_num; i++) {
+    for (uint32_t i = 0; i < row_block->row_block_info().row_num; i++) {   //jungle comment : create_row_index_entry when finsh loop
         res = row_block->get_row_to_read(i, &_cursor);
         if (OLAP_SUCCESS != res) {
             OLAP_LOG_WARNING("fail to get row from row block. [res=%d]", res);
@@ -202,6 +205,9 @@ OLAPStatus ColumnDataWriter::_flush_row_block(RowBlock* row_block, bool is_final
         }
 
         res = _segment_writer->write(&_cursor);
+
+        OLAP_LOG_DEBUG("_segment_writer->write : %s", _cursor.to_string().c_str() );
+
         if (OLAP_SUCCESS != res) {
             OLAP_LOG_WARNING("fail to write row to segment. [res=%d]", res);
             return OLAP_ERR_WRITER_DATA_WRITE_ERROR;
@@ -216,7 +222,7 @@ OLAPStatus ColumnDataWriter::_flush_row_block(RowBlock* row_block, bool is_final
     */
 
     // 在OLAPIndex中记录的不是数据文件的偏移,而是block的编号
-    if (OLAP_SUCCESS != _index->add_row_block(*row_block, _block_id++)) {
+    if (OLAP_SUCCESS != _index->add_row_block(*row_block, _block_id++)) {   //jungle comment : current block number(0,1,2...) in this segment
         OLAP_LOG_WARNING("fail to update index.");
         return OLAP_ERR_WRITER_INDEX_WRITE_ERROR;
     }
@@ -257,7 +263,7 @@ OLAPStatus ColumnDataWriter::_flush_row_block(bool is_finalized) {
 
     // 与OLAPDataWriter不同,这里不是真的写RowBlock,所以并不需要finalize RowBlock
     // 但考虑到兼容Row Block的使用方式,还是调用了finalize
-    res = _row_block->finalize(_row_index);
+    res = _row_block->finalize(_row_index);        // jungle comment:need to resort ?
     if (OLAP_SUCCESS != res) {
         OLAP_LOG_WARNING("fail to finalize row block. [num_rows=%u res=%d]",
                 _row_index, res);

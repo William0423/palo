@@ -92,7 +92,7 @@ Status EngineMetaReader::get_hints(
         for (int j = 0; j < ranges[i].size(); j += 2) {
             OlapScanRange range;
             range.begin_scan_range.clear();
-            range.begin_scan_range = ranges[i][j];
+            range.begin_scan_range = ranges[i][j];       //jungle comment:  type is vector<String>, which is a shortKey item
             range.end_scan_range.clear();
             range.end_scan_range = ranges[i][j + 1];
 

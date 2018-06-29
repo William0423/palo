@@ -22,6 +22,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <glog/logging.h>
 
 #include "olap/field.h"
 #include "olap/file_helper.h"
@@ -77,6 +78,7 @@ OLAPHeader::~OLAPHeader() {
 }
 
 OLAPStatus OLAPHeader::load() {
+    OLAP_LOG_DEBUG("OLAPHeader::load ");
     FileHeader<OLAPHeaderMessage> file_header;
     FileHandler file_handler;
 
@@ -119,13 +121,13 @@ OLAPStatus OLAPHeader::save(const string& file_path) {
     FileHandler file_handler;
 
     if (file_handler.open_with_mode(file_path.c_str(),
-            O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR) != OLAP_SUCCESS) {
+            O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR) != OLAP_SUCCESS) {   //jungle comment : trunc old file
         OLAP_LOG_WARNING("fail to open header file. [file='%s']", file_path.c_str());
         return OLAP_ERR_IO_ERROR;
     }
 
     try {
-        file_header.mutable_message()->CopyFrom(*this);
+        file_header.mutable_message()->CopyFrom(*this);  //jungle comment : copy the _proto file
     } catch (...) {
         OLAP_LOG_WARNING("fail to copy protocol buffer object. [path='%s']", file_path.c_str());
         return OLAP_ERR_OTHER_ERROR;
@@ -391,7 +393,7 @@ OLAPStatus OLAPHeader::select_versions_to_span(const Version& target_version,
                                 << (*span_versions)[span_versions->size() - 1].second << ' ';
     }
 
-    OLAP_LOG_TRACE("calculated shortest path. [version='%d-%d' path='%s']",
+    OLAP_LOG_DEBUG("calculated shortest path. [version='%d-%d' path='%s']",
                    target_version.first,
                    target_version.second,
                    shortest_path_for_debug.str().c_str());
@@ -430,7 +432,7 @@ const FileVersionMessage* OLAPHeader::get_latest_version() const {
         } else if (file_version(i).end_version() > max_version->end_version()) {
             max_version = &file_version(i);
         } else if (file_version(i).end_version() == max_version->end_version()
-                       && file_version(i).start_version() == file_version(i).end_version()) {
+                       && file_version(i).start_version() == file_version(i).end_version()) { //jungle comment:the latest delta version
             max_version = &file_version(i);
         }
     }
@@ -441,7 +443,7 @@ const FileVersionMessage* OLAPHeader::get_latest_version() const {
 const uint32_t OLAPHeader::get_expansion_nice_estimate() const{
     uint32_t nice = 0;
     bool base_version_exists = false;
-    const int32_t point = cumulative_layer_point();
+    const int32_t point = cumulative_layer_point();   //jungle comment:lastest cumulate point
     for (int i = file_version_size() - 1; i >= 0; --i) {
         if (file_version(i).start_version() >= point) {
             nice++;
@@ -501,7 +503,7 @@ static OLAPStatus construct_version_graph(
         vertex_values.push_back(versions_in_header.Get(i).end_version() + 1);
         OLAP_LOG_DEBUG("added two vertex_values. [version='%d-%d']",
                        versions_in_header.Get(i).start_version(),
-                       versions_in_header.Get(i).end_version() + 1);
+                       versions_in_header.Get(i).end_version() + 1);  //jungle comment : why +1 ?
     }
 
     sort(vertex_values.begin(), vertex_values.end());

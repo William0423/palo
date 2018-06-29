@@ -151,7 +151,7 @@ Status BrokerScanner::init_expr_ctxes() {
             return Status(ss.str());
         }
         ExprContext* ctx = nullptr;
-        RETURN_IF_ERROR(Expr::create_expr_tree(_state->obj_pool(), it->second, &ctx));
+        RETURN_IF_ERROR(Expr::create_expr_tree(_state->obj_pool(), it->second, &ctx)); //jungle comment :build from TExpr
         RETURN_IF_ERROR(ctx->prepare(_state, *_row_desc.get(), _mem_tracker.get()));
         RETURN_IF_ERROR(ctx->open(_state));
         _dest_expr_ctx.emplace_back(ctx);
@@ -187,7 +187,7 @@ Status BrokerScanner::get_next(Tuple* tuple, MemPool* tuple_pool, bool* eof) {
         }
         const uint8_t* ptr = nullptr;
         size_t size = 0;
-        RETURN_IF_ERROR(_cur_line_reader->read_line(
+        RETURN_IF_ERROR(_cur_line_reader->read_line(     //jungle comment: ptr is the start of one line
                 &ptr, &size, &_cur_line_reader_eof));
         if (_skip_next_line) {
             _skip_next_line = false;
@@ -214,8 +214,15 @@ Status BrokerScanner::get_next(Tuple* tuple, MemPool* tuple_pool, bool* eof) {
 }
 
 Status BrokerScanner::open_next_reader() {
+
+    OLAP_LOG_DEBUG("BrokerScanner::open_next_reader ,next_range: %d , _ranges.size() : %d" ,_next_range ,_ranges.size());
+
+
     if (_next_range >= _ranges.size()) {
-        _scanner_eof = true;
+        for(auto & it : _ranges ){
+            VLOG_ROW << "TBrokerRangeDesc: " << apache::thrift::ThriftDebugString(it);
+        }
+        _scanner_eof = true;    //jungle comment:top level  PlanFragmentExecutor::open_internal all data send by sink done
         return Status::OK;
     }
 
@@ -307,7 +314,7 @@ Status BrokerScanner::open_line_reader() {
     }
 
     const TBrokerRangeDesc& range = _ranges[_next_range];
-    int64_t size = range.size;
+    int64_t size = range.size; //jungle comment:see  brokerScanNode.java processFileGroup
     if (range.start_offset != 0) {
         if (range.format_type != TFileFormatType::FORMAT_CSV_PLAIN) {
             std::stringstream ss;
@@ -572,7 +579,7 @@ bool BrokerScanner::line_to_src_tuple(const Slice& line) {
         }
         _src_tuple->set_not_null(slot_desc->null_indicator_offset());
         void* slot = _src_tuple->get_slot(slot_desc->tuple_offset());
-        StringValue* str_slot = reinterpret_cast<StringValue*>(slot);
+        StringValue* str_slot = reinterpret_cast<StringValue*>(slot);   //jungle comment: all slot in _src_tuple are String slot
         str_slot->ptr = (char*)value.data();
         str_slot->len = value.size();
     }
@@ -581,13 +588,14 @@ bool BrokerScanner::line_to_src_tuple(const Slice& line) {
 }
 
 bool BrokerScanner::fill_dest_tuple(const Slice& line, Tuple* dest_tuple, MemPool* mem_pool) {
+    OLAP_LOG_DEBUG("BrokerScanner::fill_dest_tuple");
     int ctx_idx = 0;
     for (auto slot_desc : _dest_tuple_desc->slots()) {
         if (!slot_desc->is_materialized()) {
             continue;
         }
         ExprContext* ctx = _dest_expr_ctx[ctx_idx++];
-        void* value = ctx->get_value(_src_tuple_row);
+        void* value = ctx->get_value(_src_tuple_row);    //jungle comment: slot type in _src_tuple is StringValue ,int type need to cast from string
         if (value == nullptr) {
             if (slot_desc->is_nullable()) {
                 dest_tuple->set_null(slot_desc->null_indicator_offset());
@@ -603,6 +611,7 @@ bool BrokerScanner::fill_dest_tuple(const Slice& line, Tuple* dest_tuple, MemPoo
         }
         dest_tuple->set_not_null(slot_desc->null_indicator_offset());
         void* slot = dest_tuple->get_slot(slot_desc->tuple_offset());
+        //OLAP_LOG_DEBUG("dest_tuple slot name : %s ,type :%d",slot_desc->col_name().c_str(),slot_desc->type().type);
         RawValue::write(value, slot, slot_desc->type(), mem_pool);
     }
     return true;

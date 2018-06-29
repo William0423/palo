@@ -109,9 +109,10 @@ public:
         }
         return false;
     }
-
-private:
     void coordinator_callback(const Status& status, RuntimeProfile* profile, bool done);
+    void streaming_batch_exec_callback(const Status &status, RuntimeProfile *profile, bool done);
+private:
+
 
     // Id of this query
     TUniqueId _query_id;
@@ -135,6 +136,8 @@ private:
     int _timeout_second;
 
     std::unique_ptr<std::thread> _exec_thread;
+
+
 };
 
 FragmentExecState::FragmentExecState(
@@ -148,11 +151,13 @@ FragmentExecState::FragmentExecState(
             _backend_num(backend_num),
             _exec_env(exec_env),
             _coord_addr(coord_addr),
-            _executor(exec_env, boost::bind<void>(
-                    boost::mem_fn(&FragmentExecState::coordinator_callback), this, _1, _2, _3)),
+            _executor(exec_env,
+             boost::bind<void>(boost::mem_fn(&FragmentExecState::coordinator_callback), this, _1, _2, _3)),
             _set_rsc_info(false),
             _timeout_second(-1) {
-    _start_time = DateTimeValue::local_time();
+
+
+
 }
 
 FragmentExecState::~FragmentExecState() {
@@ -225,6 +230,12 @@ std::string FragmentExecState::to_load_error_http_path(const std::string& file_n
     return url.str();
 }
 
+void FragmentExecState::streaming_batch_exec_callback(
+            const Status& status,
+            RuntimeProfile* profile,
+            bool done) {
+
+}
 // There can only be one of these callbacks in-flight at any moment, because
 // it is only invoked from the executor's reporting thread.
 // Also, the reported status will always reflect the most recent execution status,
@@ -233,6 +244,7 @@ void FragmentExecState::coordinator_callback(
         const Status& status,
         RuntimeProfile* profile,
         bool done) {
+    OLAP_LOG_DEBUG("FragmentExecState::coordinator_callback");
     DCHECK(status.ok() || done);  // if !status.ok() => done
     Status exec_status = update_status(status);
 
@@ -259,8 +271,10 @@ void FragmentExecState::coordinator_callback(
     RuntimeState* runtime_state = _executor.runtime_state();
     if (!runtime_state->output_files().empty()) {
         params.__isset.delta_urls = true;
-        for (auto& it : runtime_state->output_files()) {
+        for (auto& it : runtime_state->output_files()) {         //jungle comment: set the output_file  here
+            OLAP_LOG_DEBUG("set the params.delta_urls:%s ",to_http_path(it).c_str());
             params.delta_urls.push_back(to_http_path(it));
+
         }
     }
     if (runtime_state->num_rows_load_success() > 0 ||
@@ -292,8 +306,8 @@ void FragmentExecState::coordinator_callback(
     TReportExecStatusResult res;
     Status rpc_status;
 
-    VLOG_ROW << "debug: reportExecStatus params is "
-            << apache::thrift::ThriftDebugString(params).c_str();
+    //VLOG_ROW << "debug: reportExecStatus params is "
+    //        << apache::thrift::ThriftDebugString(params).c_str();
     try {
         try {
             coord->reportExecStatus(res, params);
@@ -356,6 +370,7 @@ static void empty_function(PlanFragmentExecutor* exec) {
 void FragmentMgr::exec_actual(
         std::shared_ptr<FragmentExecState> exec_state,
         FinishCallback cb) {
+    OLAP_LOG_DEBUG("FragmentMgr::exec_actual");
     exec_state->execute();
 
     {
@@ -370,6 +385,7 @@ void FragmentMgr::exec_actual(
         }
     }
     // Callback after remove from this id
+    OLAP_LOG_DEBUG("start to do call back");
     cb(exec_state->executor());
     // NOTE: 'exec_state' is desconstructed here without lock
 }

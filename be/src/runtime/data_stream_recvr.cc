@@ -398,7 +398,7 @@ Status DataStreamRecvr::get_next(RowBatch* output_batch, bool* eos) {
     return _merger->get_next(output_batch, eos);
 }
 
-void DataStreamRecvr::add_batch(
+void DataStreamRecvr::add_batch(        //jungle comment:call in  DataStreamMgr::add_data
         const TRowBatch& thrift_batch, int sender_id,
         bool* is_buf_overflow, std::pair<InetAddr, CommBufPtr> response) {
     int use_sender_id = _is_merging ? sender_id : 0;

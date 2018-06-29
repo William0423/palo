@@ -92,7 +92,10 @@ struct ReaderParams {
         for (int i = 0, size = conditions.size(); i < size; ++i) {
             ss << " conditions=" << apache::thrift::ThriftDebugString(conditions[i]);
         }
-        
+
+        for (int i=0; i< conjunct_ctxs->size(); ++i) {
+            ss << "conjunct_ctxs=" <<  (*conjunct_ctxs)[i]->root()->debug_string();
+        }
         return ss.str();
     }
 };

@@ -1100,7 +1100,7 @@ OLAPStatus OLAPRootPath::get_root_path_shard(const std::string& root_path, uint6
     }
 
     set<string> tablets;
-    res = dir_walk(shard_path, &tablets, NULL);
+    res = dir_walk(shard_path, &tablets, NULL);  //jungle comment:add all tablets path to tablets
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to dir walk root path. [res=%d root_path='%s']",
                          res, root_path.c_str());

@@ -159,7 +159,7 @@ Status BrokerScanNode::get_next(RuntimeState* state, RowBatch* row_batch, bool* 
                _num_running_scanners > 0 &&
                _batch_queue.empty()) {
             SCOPED_TIMER(_wait_scanner_timer);
-            _queue_reader_cond.wait_for(l, std::chrono::seconds(1));
+            _queue_reader_cond.wait_for(l, std::chrono::seconds(1));    //jungle comment: if _batch_queue.empty() ,wait
         }
         if (!_process_status.ok()) {
             // Some scanner process failed.
@@ -180,7 +180,7 @@ Status BrokerScanNode::get_next(RuntimeState* state, RowBatch* row_batch, bool* 
     // All scanner has been finished, and all cached batch has been read
     if (scanner_batch == nullptr) {
         _scan_finished.store(true);
-        *eos = true;
+        *eos = true;                  //jungle comment:  here _num_running_scanners must be 0 now
         return Status::OK;
     }
 
@@ -247,6 +247,7 @@ Status BrokerScanNode::close(RuntimeState* state) {
 
 // This function is called after plan node has been prepared.
 Status BrokerScanNode::set_scan_ranges(const std::vector<TScanRangeParams>& scan_ranges) {
+    OLAP_LOG_DEBUG("BrokerScanNode::set_scan_ranges");
     _scan_ranges = scan_ranges;
 
     // Now we initialize partition information
@@ -257,6 +258,9 @@ Status BrokerScanNode::set_scan_ranges(const std::vector<TScanRangeParams>& scan
                 std::sort(params.partition_ids.begin(), params.partition_ids.end());
             }
         }
+    }
+    for(auto & it : _scan_ranges){
+       VLOG(3) << "TScanRangeParams:" << apache::thrift::ThriftDebugString(it);
     }
 
     return Status::OK;
@@ -284,7 +288,7 @@ Status BrokerScanNode::scanner_scan(
     while (!scanner_eof) {
         // Fill one row batch
         std::shared_ptr<RowBatch> row_batch(
-            new RowBatch(row_desc(), _runtime_state->batch_size(), mem_tracker()));
+            new RowBatch(row_desc(), _runtime_state->batch_size(), mem_tracker()));  //jungle comment:bottom node create the RowBatch
 
         // create new tuple buffer for row_batch
         MemPool* tuple_pool = row_batch->tuple_data_pool();
@@ -294,7 +298,7 @@ Status BrokerScanNode::scanner_scan(
             return Status("Allocate memory for row batch failed.");
         }
 
-        Tuple* tuple = reinterpret_cast<Tuple*>(tuple_buffer);
+        Tuple* tuple = reinterpret_cast<Tuple*>(tuple_buffer); //jungle comment : Tuple*  store the real data in tuple_pool, TupleRow* store the Tuple*
         while (!scanner_eof) {
             RETURN_IF_CANCELLED(_runtime_state);
             // If we have finished all works
@@ -386,7 +390,7 @@ void BrokerScanNode::scanner_worker(int start_idx, int length) {
     if (!status.ok()) {
         LOG(WARNING) << "Clone conjuncts failed.";
     }
-    std::vector<ExprContext*> partition_expr_ctxs;;
+    std::vector<ExprContext*> partition_expr_ctxs;
     if (status.ok()) {
         status = Expr::clone_if_not_exists(
             _partition_expr_ctxs, _runtime_state, &partition_expr_ctxs);

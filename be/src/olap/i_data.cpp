@@ -27,10 +27,12 @@ IData* IData::create(OLAPIndex* index) {
     switch (file_type) {
     case OLAP_DATA_FILE:
         data = new(std::nothrow) OLAPData(index);
+        OLAP_LOG_DEBUG("create OLAP_DATA_FILE");
         break;
 
     case COLUMN_ORIENTED_FILE:
         data = new(std::nothrow) column_file::ColumnData(index);
+        OLAP_LOG_DEBUG("create COLUMN_ORIENTED_FILE");
         break;
 
     default:

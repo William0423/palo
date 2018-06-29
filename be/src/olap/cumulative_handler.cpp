@@ -197,7 +197,7 @@ OLAPStatus CumulativeHandler::_check_whether_satisfy_policy() {
     }
     
     if (delta_versions.size() < config::ce_policy_delta_files_number) {
-        OLAP_LOG_TRACE("do not satisfy cumulative policy. "
+        OLAP_LOG_DEBUG("do not satisfy cumulative policy. "
                        "[existed_delta_file_number=%d ce_policy_delta_file_number=%d]",
                        delta_versions.size(),
                        config::ce_policy_delta_files_number);
@@ -391,6 +391,7 @@ bool CumulativeHandler::_find_previous_version(const Version current_version,
 }
 
 OLAPStatus CumulativeHandler::_do_cumulative_expansion() {
+    OLAP_LOG_WARNING("CumulativeHandler::_do_cumulative_expansion");
     OLAPStatus res = OLAP_SUCCESS;
     Merger merger(_table, _new_cumulative_index, READER_CUMULATIVE_EXPANSION);
 
@@ -437,7 +438,7 @@ OLAPStatus CumulativeHandler::_do_cumulative_expansion() {
 
     // 3. add new cumulative file into table
     vector<OLAPIndex*> unused_indices;
-    _obtain_header_wrlock();
+    _obtain_header_wrlock();       //jungle comment : update _header and _data_source info need write lock ,
     res = _update_header(&unused_indices);
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("failed to update header for new cumulative."

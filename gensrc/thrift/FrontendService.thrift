@@ -392,6 +392,8 @@ struct TUpdateMiniEtlTaskStatusRequest {
     1: required FrontendServiceVersion protocolVersion
     2: required Types.TUniqueId etlTaskId
     3: required AgentService.TMiniLoadEtlStatusResult etlTaskStatus
+    4: required Types.TTaskType etlTaskType
+    5: optional i64 jobId
 }
 
 struct TMasterOpRequest {

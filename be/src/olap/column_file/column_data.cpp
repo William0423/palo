@@ -54,7 +54,7 @@ void ColumnData::set_conjuncts(std::vector<ExprContext*>* query_conjuncts,
 
 const RowCursor* ColumnData::get_first_row() {
     OLAPStatus res;
-
+    OLAP_LOG_DEBUG("ColumnData::get_first_row");
     if (olap_index()->num_segments() == 0) {
         set_eof(true);
         return NULL;
@@ -95,7 +95,8 @@ const RowCursor* ColumnData::get_next_row() {
 }
 
 const RowCursor* ColumnData::_get_next_row(bool without_filter) {
-    const RowCursor* cursor = _segment_reader->get_next_row(without_filter);
+    OLAP_LOG_DEBUG("### ColumnData::_get_next_row");
+    const RowCursor* cursor = _segment_reader->get_next_row(without_filter);  //jungle comment: read current segment
 
     // fast path
     // 查找end_key时，只是根据block的索引(即第一行的key)比较，
@@ -124,7 +125,7 @@ const RowCursor* ColumnData::_get_next_row(bool without_filter) {
                     (_current_segment + 1 < _olap_index->num_segments()))) {
                 OLAPStatus res;
                 RowBlockPosition block_pos;
-                block_pos.segment = _current_segment + 1;
+                block_pos.segment = _current_segment + 1;   //jungle comment : next segment
                 block_pos.data_offset = 0u;
 
                 res = _seek_to_block(block_pos, without_filter);
@@ -180,6 +181,7 @@ OLAPStatus ColumnData::_find_prev_row_block(RowBlockPosition* block_pos) {
 }
 
 OLAPStatus ColumnData::_seek_to_block(const RowBlockPosition& block_pos, bool without_filter) {
+    OLAP_LOG_DEBUG("ColumnData::_seek_to_block");
     OLAPStatus res;
     RuntimeProfile::Counter* read_data_timer = NULL;
     if (_profile != NULL) {
@@ -194,7 +196,7 @@ OLAPStatus ColumnData::_seek_to_block(const RowBlockPosition& block_pos, bool wi
         }
         SAFE_DELETE(_segment_reader);
         std::string file_name;
-        file_name = _table->construct_data_file_path(olap_index()->version(),
+        file_name = _table->construct_data_file_path(olap_index()->version(),   //jungle comment: find the dat file
                     olap_index()->version_hash(),
                     block_pos.segment);
         _segment_reader = new(std::nothrow) SegmentReader(
@@ -352,7 +354,7 @@ OLAPStatus ColumnData::_find_position_by_full_key(
 const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, bool is_end_key) {
     OLAPStatus res = OLAP_SUCCESS;
     RowBlockPosition position;
-    
+    OLAP_LOG_DEBUG("@ ColumnData::find_row,key:%s",key.to_string().c_str());
     _eof = false;
     FieldType type = _table->get_field_type_by_index(key.field_count() - 1);
     if (key.field_count() > _table->num_short_key_fields() || OLAP_FIELD_TYPE_VARCHAR == type) {
@@ -398,13 +400,19 @@ const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, 
         // row_cursor >= key
         // 此处比较2个block的行数，是存在一种极限情况：若未找到满足的block，
         // Index模块会返回倒数第二个block，此时key可能是最后一个block的最后一行
-        while (NULL != (row_cursor = _get_next_row(without_filter)) && !eof()
-                && row_cursor->cmp(key) < 0) {}
+        OLAP_LOG_DEBUG("!find_last_key and _get_next_row");
+        while (NULL != (row_cursor = _get_next_row(without_filter)) && !eof() //jungle comment : here or in MergeSet::_pop_from_heap
+                && row_cursor->cmp(key) < 0) {
+            OLAP_LOG_DEBUG("_get_next_row loop ... ,row_cursor : %s , key :%s " , row_cursor->to_string().c_str(), key.to_string().c_str());
+        }
     } else {
         // 找last key。返回大于这个key的第一个。也就是
         // row_cursor > key
+        OLAP_LOG_DEBUG("find_last_key and _get_next_row");
         while (NULL != (row_cursor = _get_next_row(without_filter)) && !eof()
-                && row_cursor->cmp(key) <= 0) {}
+                && row_cursor->cmp(key) <= 0) {
+            OLAP_LOG_DEBUG("_get_next_row loop ... ,row_cursor : %s , key :%s " , row_cursor->to_string().c_str(), key.to_string().c_str());
+        }
     }
 
     return row_cursor;
@@ -432,6 +440,7 @@ const RowCursor* ColumnData::seek_and_get_current_row(const RowBlockPosition& po
 }
 
 OLAPStatus ColumnData::set_end_key(const RowCursor* end_key, bool find_last_end_key) {
+    OLAP_LOG_DEBUG("ColumnData::set_end_key");
     OLAPStatus res;
 
     if (NULL == end_key) {

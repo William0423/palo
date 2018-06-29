@@ -47,6 +47,8 @@ struct TFinishTaskRequest {
     8: optional i64 request_version
     9: optional i64 request_version_hash
     10: optional string snapshot_path
+    11: optional i64 task_id
+    12: optional i64 job_id
 }
 
 struct TTablet {

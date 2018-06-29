@@ -60,7 +60,7 @@ private:
     int _num_null_slots;
     int _num_null_bytes;
     const std::vector<ExprContext*>& _output_expr_ctxs;
-    FileHandler* _fp;
+public: FileHandler* _fp;
 
     char* _buf;
     char* _end;

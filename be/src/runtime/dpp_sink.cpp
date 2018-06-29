@@ -290,6 +290,7 @@ void Translator::format_output_path(RuntimeState* state) {
 }
 
 Status Translator::create_writer(RuntimeState* state) {
+    OLAP_LOG_DEBUG("Translator::create_writer");
     // 1. create output expr
     std::vector<ExprContext*> ctxs;
     RETURN_IF_ERROR(Expr::clone_if_not_exists(_rollup_schema.keys(), state, &ctxs));
@@ -309,6 +310,8 @@ Status Translator::create_writer(RuntimeState* state) {
         ss << "open file failed; [file=" << _output_path << "]";
         return Status("open file failed.");
     }
+
+    OLAP_LOG_DEBUG("Translator::openfile :%s" , _output_path.c_str() );
 
     // 3. Create writer
     _writer = _obj_pool->add(new DppWriter(1, _output_row_expr_ctxs, fh));
@@ -540,6 +543,7 @@ Status Translator::create_profile(RuntimeState* state) {
 }
 
 Status Translator::prepare(RuntimeState* state) {
+    OLAP_LOG_DEBUG("Translator::prepare");
     // create output path
     format_output_path(state);
     // create profile first
@@ -752,7 +756,7 @@ Status Translator::process_one_row(TupleRow* row) {
     TupleRow* last_row = _batch_to_write->get_row(row_idx);
     std::string keys_type = _rollup_schema.keys_type();
     if ("AGG_KEYS" == keys_type || "UNIQUE_KEYS" == keys_type) {
-        if (eq_tuple_row(last_row, row)) {
+        if (eq_tuple_row(last_row, row)) {        //jungle comment :if equal ,than  merge and return ,don't add to batch
             // Just merge to last row and return
             update_row(last_row, row);
             return Status::OK;
@@ -772,12 +776,13 @@ Status Translator::process_one_row(TupleRow* row) {
     }
 
     // deep copy the new row
-    copy_row(row);
+    copy_row(row);         //jungle comment :here copy the row
 
     return Status::OK;
 }
 
 Status Translator::process(RuntimeState* state) {
+    OLAP_LOG_DEBUG("Translator::process");
     // 1. sort all the data in sorter.
     {
         SCOPED_TIMER(_sort_timer);
@@ -816,7 +821,10 @@ Status Translator::process(RuntimeState* state) {
 
     {
         SCOPED_TIMER(_writer_timer);
-        RETURN_IF_ERROR(_writer->close());
+
+        RETURN_IF_ERROR(_writer->close());    //jungle comment : write to file
+
+        OLAP_LOG_DEBUG("writer->close() , file name :%s" ,_writer->_fp->file_name().c_str());
     }
 
     // Output last row
@@ -845,6 +853,7 @@ Status DppSink::get_or_create_translator(
         RuntimeState* state,
         const TabletDesc& tablet_desc,
         std::vector<Translator*>** trans_vec) {
+    OLAP_LOG_DEBUG("DppSink::get_or_create_translator");
     auto iter = _translator_map.find(tablet_desc);
     if (iter != _translator_map.end()) {
         *trans_vec = &iter->second;
@@ -858,7 +867,7 @@ Status DppSink::get_or_create_translator(
         // Translator* translator = state->obj_pool()->add(
         Translator* translator = obj_pool->add(
             new Translator(tablet_desc, _row_desc, it.first, *it.second, obj_pool));
-        RETURN_IF_ERROR(translator->prepare(state));
+        RETURN_IF_ERROR(translator->prepare(state));     //jungle comment: translator prepare here
         _profile->add_child(translator->profile(), true, nullptr);
         (*trans_vec)->push_back(translator);
     }
@@ -871,6 +880,7 @@ Status DppSink::add_batch(
         RuntimeState* state,
         const TabletDesc& desc,
         RowBatch* batch) {
+    OLAP_LOG_DEBUG("DppSink::add_batch ");
     SCOPED_TIMER(_profile->total_time_counter());
     std::vector<Translator*>* trans_vec = nullptr;
     RETURN_IF_ERROR(get_or_create_translator(obj_pool, state, desc, &trans_vec));
@@ -883,6 +893,7 @@ Status DppSink::add_batch(
 }
 
 void DppSink::process(RuntimeState* state, Translator* trans, CountDownLatch* latch) {
+    OLAP_LOG_DEBUG("DppSink::process ");
     // add dpp into cgroups
     CgroupsMgr::apply_system_cgroup();
     Status status = trans->process(state);
@@ -893,6 +904,8 @@ void DppSink::process(RuntimeState* state, Translator* trans, CountDownLatch* la
 }
 
 Status DppSink::finish(RuntimeState* state) {
+
+    OLAP_LOG_DEBUG("DppSink::finish ");
     SCOPED_TIMER(_profile->total_time_counter());
 
     CountDownLatch latch(_translator_count);
@@ -903,11 +916,16 @@ Status DppSink::finish(RuntimeState* state) {
         }
     }
 
-    latch.await();
+    latch.await();  //jungle comment : wait all translator done
 
     // Set output files in runtime state
-    collect_output(&state->output_files());
 
+
+    collect_output(&state->output_files());   //jungle comment: set the runtime _output_files here
+
+    for(auto & iter:state->output_files()){
+        OLAP_LOG_DEBUG("DppSink::output_files : %s " , iter.c_str());
+    }
     for (auto& iter : _translator_map) {
         for (auto& trans : iter.second) {
             trans->close(state);

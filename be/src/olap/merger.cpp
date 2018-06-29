@@ -17,6 +17,8 @@
 
 #include <memory>
 #include <vector>
+#include <glog/log_severity.h>
+#include <glog/vlog_is_on.h>
 
 #include "olap/i_data.h"
 #include "olap/olap_define.h"
@@ -162,6 +164,7 @@ OLAPStatus Merger::_merge(
     reader_params.reader_type = _reader_type;
     reader_params.olap_data_arr = olap_data_arr;
 
+    OLAP_LOG_WARNING("Merger::_merge");
     if (_reader_type == READER_BASE_EXPANSION) {
         reader_params.version = _index->version();
     }
@@ -219,6 +222,7 @@ OLAPStatus Merger::_merge(
 
         // Read one row into row_cursor
         OLAPStatus res = reader.next_row_with_aggregation(&row_cursor, &raw_rows_read, &eof);
+        OLAP_LOG_DEBUG("reader.next_row_with_aggregation : %s" ,row_cursor.to_string().c_str());
 
         if (OLAP_SUCCESS == res && eof) {
             OLAP_LOG_DEBUG("reader read to the end.");

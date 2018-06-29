@@ -71,6 +71,7 @@ OLAPStatus FileHandler::open(const string& file_name, int flag) {
 }
 
 OLAPStatus FileHandler::open_with_cache(const string& file_name, int flag) {
+    OLAP_LOG_DEBUG("FileHandler::open_with_cache");
     if (_fd != -1 && _file_name == file_name) {
         return OLAP_SUCCESS;
     }
@@ -98,8 +99,8 @@ OLAPStatus FileHandler::open_with_cache(const string& file_name, int flag) {
         _cache_handle = _fd_cache->insert(
                             key, file_desc, 1,
                             &_delete_cache_file_descriptor);
-        OLAP_LOG_DEBUG("success to open file. [file_name='%s' flag=%d fd=%d]",
-                        file_name.c_str(), flag, _fd);
+        OLAP_LOG_DEBUG("success to open file. [file_name='%s' flag=%d fd=%d] , insert into _fd_cache,key is :%s",
+                        file_name.c_str(), flag, _fd,key.to_string().c_str());
     }
     _is_using_cache = true;
     _file_name = file_name;
@@ -320,7 +321,7 @@ OLAPStatus FileHandlerWithBuf::read(void* buf, size_t size) {
         return OLAP_ERR_NOT_INITED;
     }
 
-    size_t rd_size = ::fread(buf, 1, size, _fp);
+    size_t rd_size = ::fread(buf, 1, size, _fp);    //jungle comment: file pointer will move when use fread
 
     if (rd_size == size) {
         return OLAP_SUCCESS;

@@ -19,6 +19,8 @@
 #include <cassert>
 #include <cmath>
 #include <fstream>
+#include <glog/log_severity.h>
+#include <glog/logging.h>
 
 #include "olap/olap_data.h"
 #include "olap/olap_table.h"
@@ -241,6 +243,8 @@ OLAPStatus OLAPIndex::set_column_statistics_from_string(
 }
 
 OLAPStatus OLAPIndex::load() {
+
+    OLAP_LOG_WARNING("OLAPIndex::load");
     OLAPStatus res = OLAP_ERR_INDEX_LOAD_ERROR;
     boost::lock_guard<boost::mutex> guard(_index_load_lock);
 
@@ -263,6 +267,7 @@ OLAPStatus OLAPIndex::load() {
     for (uint32_t seg_id = 0; seg_id < _num_segments; ++seg_id) {
         if (COLUMN_ORIENTED_FILE == _table->data_file_type()) {
             string seg_path = _table->construct_data_file_path(_version, _version_hash, seg_id);
+            OLAP_LOG_DEBUG("start to load data  segment. [seg_path='%s'] ,seg id : %d", seg_path.c_str(),seg_id);
             if (OLAP_SUCCESS != (res = load_pb(seg_path.c_str(), seg_id))) {
                 OLAP_LOG_WARNING("faile to load pb structures. [seg_path='%s']", seg_path.c_str());
                 _check_io_error(res);
@@ -272,6 +277,7 @@ OLAPStatus OLAPIndex::load() {
 
         // get full path for one segment
         string path = _table->construct_index_file_path(_version, _version_hash, seg_id);
+        OLAP_LOG_DEBUG("start to load index  segment. [path='%s'] ,seg id :%d", path.c_str(),seg_id);
         if ((res = _index.load_segment(path.c_str(), &_current_num_rows_per_row_block))
                 != OLAP_SUCCESS) {
             OLAP_LOG_WARNING("fail to load segment. [path='%s']", path.c_str());
@@ -286,6 +292,7 @@ OLAPStatus OLAPIndex::load() {
 }
 
 OLAPStatus OLAPIndex::load_pb(const char* file, uint32_t seg_id) {
+    OLAP_LOG_DEBUG("OLAPIndex::load_pb");
     OLAPStatus res = OLAP_SUCCESS;
 
     FileHeader<column_file::ColumnDataHeaderMessage> seg_file_header;
@@ -303,7 +310,7 @@ OLAPStatus OLAPIndex::load_pb(const char* file, uint32_t seg_id) {
         return res;
     }
 
-    _seg_pb_map[seg_id] = seg_file_header;
+    _seg_pb_map[seg_id] = seg_file_header; //jungle comment : init the ColumnDataHeaderMessage map ,ColumnDataHeaderMessage is in .dat file
     seg_file_handler.close();
     return OLAP_SUCCESS;
 }
@@ -457,7 +464,7 @@ OLAPStatus OLAPIndex::advance_row_block(int64_t num_row_blocks, RowBlockPosition
     POS_PARAM_VALIDATE(position);
 
     OLAPIndexOffset off = _index.get_offset(*position);
-    iterator_offset_t absolute_offset = _index.get_absolute_offset(off) + num_row_blocks;
+    iterator_offset_t absolute_offset = _index.get_absolute_offset(off) + num_row_blocks; //jungle comment: one block correspond to one index
     if (absolute_offset >= _index.count()) {
         return OLAP_ERR_INDEX_EOF;
     }
@@ -508,7 +515,7 @@ OLAPStatus OLAPIndex::add_segment() {
     }
 
     // 跳过FileHeader
-    if (_current_file_handler.seek(_file_header.size(), SEEK_SET) == -1) {
+    if (_current_file_handler.seek(_file_header.size(), SEEK_SET) == -1) {   //jungle comment : skip FileHeader and write _short_key_buf
         OLAP_LOG_WARNING("lseek header file error. [err=%m]");
         res = OLAP_ERR_IO_ERROR;
         _check_io_error(res);
@@ -581,7 +588,7 @@ OLAPStatus OLAPIndex::finalize_segment(uint32_t data_segment_size, int64_t num_r
     // 准备FileHeader
     OLAPStatus res = OLAP_SUCCESS;
 
-    int file_length = _current_file_handler.tell();
+    int file_length = _current_file_handler.tell();   //jungle comment:short_key and rowBlock id already write to _current_file_handler
     if (file_length == -1) {
         OLAP_LOG_WARNING("get file_length error. [err=%m]");
         _check_io_error(res);
@@ -590,8 +597,8 @@ OLAPStatus OLAPIndex::finalize_segment(uint32_t data_segment_size, int64_t num_r
 
     _file_header.set_file_length(file_length);
     _file_header.set_checksum(_checksum);
-    _file_header.mutable_extra()->data_length = data_segment_size;
-    _file_header.mutable_extra()->num_rows = num_rows;
+    _file_header.mutable_extra()->data_length = data_segment_size;  //jungle comment: one segment file (.dat) byte length
+    _file_header.mutable_extra()->num_rows = num_rows;  //jungle comment: one segment file (.dat) row number
 
     // 写入更新之后的FileHeader
     if ((res = _file_header.serialize(&_current_file_handler)) != OLAP_SUCCESS) {
@@ -644,6 +651,7 @@ MemIndex::~MemIndex() {
 }
 
 OLAPStatus MemIndex::load_segment(const char* file, size_t *current_num_rows_per_row_block) {
+    OLAP_LOG_DEBUG("MemIndex::load_segment");
     OLAPStatus res = OLAP_SUCCESS;
 
     SegmentMetaInfo meta;
@@ -731,7 +739,7 @@ OLAPStatus MemIndex::load_segment(const char* file, size_t *current_num_rows_per
     } else {
         _index_size += meta.file_header.file_length();
     }
-    _data_size += meta.file_header.extra().data_length;
+    _data_size += meta.file_header.extra().data_length; //jungle comment:all segment data_length added to _data_size
     _num_rows += meta.file_header.extra().num_rows;
 
     // checksum validation
@@ -835,7 +843,7 @@ const OLAPIndexOffset MemIndex::find(const RowCursor& k,   //jungle comment : th
         }
 
         // set segment id
-        offset.segment = off;
+        offset.segment = off;    //jungle comment : find the segment
         IndexComparator index_comparator(this, helper_cursor);
         // second step, binary search index item in given segment
         BinarySearchIterator index_beg(0);
@@ -964,6 +972,7 @@ OLAPStatus MemIndex::get_row_block_position(
                                    (pos.offset + 1) * entry_length() + short_key_length());
         rbp->block_size = next_offset - rbp->data_offset;
     }
+    OLAP_LOG_DEBUG("MemIndex::get_row_block_position: %s" , rbp->to_string().c_str());
 
     return OLAP_SUCCESS;
 }

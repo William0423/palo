@@ -223,6 +223,7 @@ AgentStatus FileDownloader::_install_opt(
                 }
             }
         } else if (output_type == OutputType::FILE) {
+            OLAP_LOG_WARNING("FileDownloader::_install_opt ,output_type == OutputType::FILE");
             // Set callback function
             curl_ret = curl_easy_setopt(
                     curl,
@@ -238,7 +239,7 @@ AgentStatus FileDownloader::_install_opt(
             // Set callback function args
             if (status == PALO_SUCCESS) {
                 curl_ret = curl_easy_setopt(curl, CURLOPT_WRITEDATA,
-                                            static_cast<void*>(file_handler));
+                                            static_cast<void*>(file_handler));    //jungle comment:write to the file_handler
 
                 if (curl_ret != CURLE_OK) {
                     status = PALO_FILE_DOWNLOAD_INSTALL_OPT_FAILED;
@@ -337,6 +338,7 @@ AgentStatus FileDownloader::download_file() {
     CURLcode curl_ret = CURLE_OK;
     curl = curl_easy_init();
 
+    OLAP_LOG_DEBUG("FileDownloader::download_file");
     if (curl == NULL) {
         status = PALO_FILE_DOWNLOAD_CURL_INIT_FAILED;
         OLAP_LOG_WARNING("internal error to get NULL curl");
@@ -368,7 +370,8 @@ AgentStatus FileDownloader::download_file() {
 
     if (status == PALO_SUCCESS) {
         curl_ret = curl_easy_perform(curl);
-
+        _downloader_param.local_file_path.c_str();
+        OLAP_LOG_WARNING("## download from %s to %s",_downloader_param.remote_file_path.c_str(),_downloader_param.local_file_path.c_str());
         if (curl_ret != CURLE_OK) {
             status = PALO_FILE_DOWNLOAD_FAILED;
             OLAP_LOG_WARNING(

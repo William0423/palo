@@ -24,6 +24,7 @@
 #include <set>
 
 #include <boost/filesystem.hpp>
+#include <glog/logging.h>
 
 #include "olap/field.h"
 #include "olap/i_data.h"
@@ -49,6 +50,7 @@ namespace palo {
 
 OLAPTable* OLAPTable::create_from_header_file(
         TTabletId tablet_id, TSchemaHash schema_hash, const string& header_file) {
+    OLAP_LOG_DEBUG("OLAPTable::create_from_header_file");
     OLAPHeader* olap_header = NULL;
     OLAPTable* olap_table = NULL;
 
@@ -637,7 +639,7 @@ OLAPStatus OLAPTable::replace_data_sources(const vector<Version>* old_versions,
                     (*it)->num_rows(), &(*it)->get_column_statistics());
         } else {
             res = _header->add_version(
-                    (*it)->version(), (*it)->version_hash(), (*it)->num_segments(), 
+                    (*it)->version(), (*it)->version_hash(), (*it)->num_segments(),    //jungle comment : multiple segment(.dat) of the same version
                     (*it)->max_timestamp(), (*it)->index_size(), (*it)->data_size(),
                     (*it)->num_rows());
         }
@@ -846,11 +848,11 @@ OLAPStatus OLAPTable::split_range(
 
     cur_start_key.attach(entry.data, entry.length);
     last_start_key.copy(cur_start_key);
-    // start_key是last start_key, 但返回的实际上是查询层给出的key
+    // start_key是last start_key, 但返回的实际上是查询层给出的key  //jungle comment: find entry by start_Key, so last_start_key equal to start_Key
     ranges->push_back(start_key.to_string_vector());
 
     while (end_pos > step_pos) {
-        res = base_index->advance_row_block(expected_rows, &step_pos);
+        res = base_index->advance_row_block(expected_rows, &step_pos);  //jungle comment : expected_rows is the step of block number
         if (res == OLAP_ERR_INDEX_EOF || !(end_pos > step_pos)) {
             break;
         } else if (res != OLAP_SUCCESS) {

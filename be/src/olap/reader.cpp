@@ -82,7 +82,8 @@ const RowCursor* Reader::MergeSet::curr(bool* delete_flag) {
 }
 
 bool Reader::MergeSet::next(const RowCursor** element, bool* delete_flag) {
-    if (!_pop_from_heap()) {
+    OLAP_LOG_DEBUG("MergeSet::next");
+    if (!_pop_from_heap()) {    //jungle comment: call top of heap columnData get_next_row() and reset it's current _cursor and maybe reorder
         return false;
     }
 
@@ -91,6 +92,7 @@ bool Reader::MergeSet::next(const RowCursor** element, bool* delete_flag) {
 }
 
 bool Reader::MergeSet::_pop_from_heap() {  //jungle comment :  reorder the heap
+    OLAP_LOG_DEBUG("MergeSet::_pop_from_heap");
     MergeElement merge_element = _heap->top();
     const RowCursor* row = merge_element->get_next_row();
 
@@ -111,7 +113,7 @@ bool Reader::MergeSet::_pop_from_heap() {  //jungle comment :  reorder the heap
     }
 
     _heap->pop();
-    return attach(merge_element, row);
+    return attach(merge_element, row);   //jungle comment :columnData compare the current row and reorder the heap, heap is inited when _attach_data_to_merge_set
 }
 
 bool Reader::MergeSet::clear() {
@@ -144,7 +146,7 @@ bool Reader::MergeSet::RowCursorComparator::operator()(
 
 OLAPStatus Reader::init(const ReaderParams& read_params) {
     OLAPStatus res = OLAP_SUCCESS;
-
+    OLAP_LOG_DEBUG("Reader::init");
     res = _init_params(read_params);
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init reader when init params.[res=%d]", res);
@@ -178,9 +180,9 @@ OLAPStatus Reader::next_row_with_aggregation(
     OLAPStatus res = OLAP_SUCCESS;
     bool cur_delete_flag = false;
     *eof = false;
-
+    OLAP_LOG_DEBUG("Reader::next_row_with_aggregation");
     do {
-        if (NULL == _next_key) {
+        if (NULL == _next_key) {   //jungle comment : reader init will set _next_key , thas the first row of the columnData in the heap
             ++_current_key_index;
             res = _attach_data_to_merge_set(false, eof);
             if (OLAP_SUCCESS != res) {
@@ -225,7 +227,7 @@ OLAPStatus Reader::next_row_with_aggregation(
             }
     
             // break while can NOT doing aggregation
-            if (!row_cursor->equal(*_next_key)) {
+            if (!row_cursor->equal(*_next_key)) {     //jungle comment : compare the key ?
                row_cursor->finalize_one_merge(); 
                break;
             }
@@ -387,6 +389,8 @@ OLAPStatus Reader::_init_return_columns(const ReaderParams& read_params) {
 }
 
 OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
+
+    OLAP_LOG_DEBUG("Reader::_attach_data_to_merge_set");
     OLAPStatus res = OLAP_SUCCESS;
     *eof = false;
 

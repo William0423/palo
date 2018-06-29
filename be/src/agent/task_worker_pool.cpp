@@ -277,6 +277,7 @@ void TaskWorkerPool::_spawn_callback_worker_thread(CALLBACK_FUNCTION callback_fu
 }
 
 void TaskWorkerPool::_finish_task(const TFinishTaskRequest& finish_task_request) {
+    LOG(INFO)<< "_finish_task , job_id :" << finish_task_request.job_id;
     // Return result to fe
     TMasterResult result;
     int32_t try_time = 0;
@@ -756,8 +757,13 @@ void* TaskWorkerPool::_push_worker_thread_callback(void* arg_this) {
 
         TFinishTaskRequest finish_task_request;
         finish_task_request.__set_backend(worker_pool_this->_backend);
-        finish_task_request.__set_task_type(agent_task_req.task_type);
+        finish_task_request.__set_task_type(agent_task_req.task_type); //jungle comment:set the task type
+        LOG(INFO)<< "task_type is : " << agent_task_req.task_type;
         finish_task_request.__set_signature(agent_task_req.signature);
+        finish_task_request.__set_task_id(push_req.task_id);
+        finish_task_request.__set_job_id(push_req.job_id);
+
+
         if (push_req.push_type == TPushType::DELETE) {
             finish_task_request.__set_request_version(push_req.version);
             finish_task_request.__set_request_version_hash(push_req.version_hash);

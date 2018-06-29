@@ -372,12 +372,15 @@ public:
         if (true == _value_present) {
             res = cursor->set_null(_column_id);
         } else {
+            OLAP_LOG_DEBUG("IntegerColumnReaderWrapper attach ,_column_id:%d , _value:%d " ,_column_id , _value);
             res = cursor->attach_by_index(_column_id, reinterpret_cast<char*>(&_value), false);
         }
         return res;
     }
 
     virtual OLAPStatus seek(PositionProvider* positions) {
+
+        OLAP_LOG_DEBUG("IntegerColumnReaderWrapper seek ,position index %d :" ,positions->_index );
         OLAPStatus res;
         if (NULL == _present_reader) {
             res = _reader.seek(positions);
@@ -410,6 +413,7 @@ public:
                 int64_t value = 0;
                 res = _reader.next(&value);
                 _value = value;
+                OLAP_LOG_DEBUG("IntegerColumnReaderWrapper next ,value %d :" ,_value );
             } else {
                 _value = 0;
             }

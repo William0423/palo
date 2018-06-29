@@ -22,6 +22,7 @@ set(EXECUTABLE_OUTPUT_PATH "${BUILD_DIR}/src/service")
 add_library(Service
     backend_options.cpp
     backend_service.cpp
+        receiver_dispatcher.h
 )
 
 add_executable(palo_be

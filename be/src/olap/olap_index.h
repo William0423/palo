@@ -78,7 +78,7 @@ struct OLAPIndexOffset {
     }
 
     iterator_offset_t segment; //jungle comment : the file segment
-    iterator_offset_t offset;  //jungle comment : the index of the index item ,length equals to short_key_length() plus sizeof(data_file_offset_t)
+    iterator_offset_t offset;  //jungle comment : the index of the index item (0,1,2...),length equals to short_key_length() plus sizeof(data_file_offset_t)
 };
 
 // 唯一标识一个RowBlock在Data文件和Index文件中的位置
@@ -139,8 +139,8 @@ struct RowBlockPosition {
 
     uint32_t segment;
     uint32_t block_size;
-    uint32_t data_offset;   // offset in data file
-    uint32_t index_offset;  // offset in index file
+    uint32_t data_offset;   // offset in data file   jungle comment : in number unit
+    uint32_t index_offset;  // offset in index file  jungle comment : in byte unit
 };
 
 // In memory presentation of index meta information

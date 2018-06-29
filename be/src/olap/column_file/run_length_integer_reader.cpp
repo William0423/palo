@@ -41,7 +41,7 @@ OLAPStatus RunLengthIntegerReader::_read_values() {
     } else {
         int enc = (first_byte >> 6) & 0x03;
 
-        //OLAP_LOG_DEBUG("decoding with %d", enc);
+        OLAP_LOG_DEBUG("decoding with %d", enc);
         if (RunLengthIntegerWriter::SHORT_REPEAT == enc) {
             res = _read_short_repeat_values(first_byte);
         } else if (RunLengthIntegerWriter::DIRECT == enc) {
@@ -78,6 +78,7 @@ OLAPStatus RunLengthIntegerReader::_read_delta_values(uint8_t first_byte) {
 
     len |= byte;
 
+    OLAP_LOG_DEBUG("RunLengthIntegerReader::_read_delta_values len : %d" , len);
     // read the first value stored as vint
     int64_t first_val = 0;
 
@@ -381,14 +382,16 @@ OLAPStatus RunLengthIntegerReader::_read_short_repeat_values(uint8_t first_byte)
 OLAPStatus RunLengthIntegerReader::seek(PositionProvider* position) {
     OLAPStatus res = OLAP_SUCCESS;
 
+    OLAP_LOG_DEBUG("RunLengthIntegerReader::seek");
     if (OLAP_SUCCESS != (res = _input->seek(position))) {
         return res;
     }
 
-    int32_t consumed = static_cast<int32_t>(position->get_next());
+    int32_t consumed = static_cast<int32_t>(position->get_next());   //jungle comment : what is consumed ? already in uncompressed buf
+    OLAP_LOG_DEBUG("2 position index :%d ,consumed :%d ", position->_index,consumed);
 
     if (consumed != 0) {
-        // a loop is required for cases where we break the run into two parts
+        // a loop is required for cases where we break the run into two parts   //jungle comment : skip the consumed  , _num_literals use to produce, _used to comsume
         while (consumed > 0) {
             _num_literals = 0;
 

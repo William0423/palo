@@ -36,9 +36,11 @@ public:
     }
     // 获取下一条数据, 如果没有更多的数据了, 返回OLAP_ERR_DATA_EOF
     inline OLAPStatus next(int64_t* value) {
+        OLAP_LOG_DEBUG("RunLengthIntegerReader::next");
+
         OLAPStatus res = OLAP_SUCCESS;
 
-        if (OLAP_UNLIKELY(_used == _num_literals)) {
+        if (OLAP_UNLIKELY(_used == _num_literals)) {   //jungle comment : _used can't be large than _num_literals
             _num_literals = 0;
             _used = 0;
 
@@ -49,6 +51,7 @@ public:
         }
 
         *value = _literals[_used++];
+        OLAP_LOG_DEBUG("after RunLengthIntegerReader::next  ,value is :%ld" , *value );
         return res;
     }
     OLAPStatus seek(PositionProvider* position);
