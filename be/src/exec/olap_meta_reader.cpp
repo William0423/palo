@@ -55,7 +55,7 @@ Status EngineMetaReader::get_hints(
     std::vector<OlapScanRange>& scan_key_range,
     std::vector<OlapScanRange>* sub_scan_range, 
     RuntimeProfile* profile) {
-    TShowHintsRequest show_hints_request;
+    TShowHintsRequest show_hints_request;   //jungle comment : notice the difference between _scan_range and the scan_key_range
     show_hints_request.__set_tablet_id(_scan_range->scan_range().tablet_id);
     show_hints_request.__set_schema_hash(
         strtoul(_scan_range->scan_range().schema_hash.c_str(), NULL, 10));

@@ -49,6 +49,8 @@ public:
     virtual DateTimeVal get_datetime_val(ExprContext* context, TupleRow*);
     virtual StringVal get_string_val(ExprContext* context, TupleRow* row);
 
+    std::string debug_string() const override ;
+
 protected:
     friend class Expr;
     Literal(const TExprNode& node);

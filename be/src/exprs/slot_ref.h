@@ -46,13 +46,15 @@ public:
 
     virtual Status prepare(
         RuntimeState* state, const RowDescriptor& row_desc, ExprContext* ctx);
+
+
     static void* get_value(Expr* expr, TupleRow* row);
     void* get_slot(TupleRow* row);
     Tuple* get_tuple(TupleRow* row);
     bool is_null_bit_set(TupleRow* row);
     static bool vector_compute_fn(Expr* expr, VectorizedRowBatch* batch);
     static bool is_nullable(Expr* expr);
-    virtual std::string debug_string() const;
+    //virtual std::string debug_string() const;
     virtual bool is_constant() const {
         return false;
     }
@@ -81,6 +83,12 @@ public:
     virtual palo_udf::DateTimeVal get_datetime_val(ExprContext* context, TupleRow*);
     virtual palo_udf::DecimalVal get_decimal_val(ExprContext* context, TupleRow*);
     // virtual palo_udf::ArrayVal GetArrayVal(ExprContext* context, TupleRow*);
+
+    std::string debug_string() const override {
+
+        std::string ret =   "(slotId:" + std::to_string(_slot_id) + ")";
+        return  ret;
+    }
 
 private:
     int _tuple_idx;  // within row

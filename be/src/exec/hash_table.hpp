@@ -26,7 +26,7 @@
 namespace palo {
 
 inline HashTable::Iterator HashTable::find(TupleRow* probe_row) {
-    bool has_nulls = eval_probe_row(probe_row);
+    bool has_nulls = eval_probe_row(probe_row); //jungle comment : cache result in _expr_values_buffer
 
     if (!_stores_nulls && has_nulls) {
         return end();
@@ -36,7 +36,7 @@ inline HashTable::Iterator HashTable::find(TupleRow* probe_row) {
     int64_t bucket_idx = hash & (_num_buckets - 1);
 
     Bucket* bucket = &_buckets[bucket_idx];
-    int64_t node_idx = bucket->_node_idx;
+    int64_t node_idx = bucket->_node_idx;  //jungle comment node_idx index to tupleRow already in hashMap
 
     while (node_idx != -1) {
         Node* node = get_node(node_idx);

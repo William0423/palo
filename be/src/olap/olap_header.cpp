@@ -163,7 +163,7 @@ OLAPStatus OLAPHeader::add_version(
     for (int i = 0; i < file_version_size(); ++i) {
         if (file_version(i).start_version() == version.first
                 && file_version(i).end_version() == version.second) {
-            OLAP_LOG_WARNING("the version is existed. [version='%d,%d']",
+            OLAP_LOG_WARNING("error,the version is existed. [version='%d,%d']",
                              version.first,
                              version.second);
             return OLAP_ERR_HEADER_ADD_VERSION;
@@ -182,6 +182,7 @@ OLAPStatus OLAPHeader::add_version(
         new_version->set_data_size(data_size);
         new_version->set_num_rows(num_rows);
         new_version->set_creation_time(time(NULL));
+        
         if (NULL != column_statistics) {
             for (size_t i = 0; i < column_statistics->size(); ++i) {
                 ColumnPruning *column_pruning = 

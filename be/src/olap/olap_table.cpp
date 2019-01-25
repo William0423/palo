@@ -594,7 +594,7 @@ OLAPStatus OLAPTable::replace_data_sources(const vector<Version>* old_versions,
             }
 
             if (!to_be_deleted) {
-                OLAP_LOG_WARNING("olap index for version exists. [version='%d-%d' table='%s']",
+                OLAP_LOG_WARNING("error , olap index for version exists. [version='%d-%d' table='%s']",
                                  (*it)->version().first,
                                  (*it)->version().second,
                                  full_name().c_str());
@@ -621,7 +621,7 @@ OLAPStatus OLAPTable::replace_data_sources(const vector<Version>* old_versions,
             return res;
         }
 
-        OLAP_LOG_TRACE("delete version from olap header.[version='%d-%d' table='%s']",
+        OLAP_LOG_WARNING("delete version from olap header.[version='%d-%d' table='%s']",
                        it->first,
                        it->second,
                        full_name().c_str());
@@ -652,9 +652,11 @@ OLAPStatus OLAPTable::replace_data_sources(const vector<Version>* old_versions,
             return res;
         }
 
-        OLAP_LOG_TRACE("add version to olap header.[version='%d-%d' table='%s']",
+        OLAP_LOG_DEBUG("add version to olap header.[version='%d-%d' version hash='%d' num_row='%d' table='%s' ]",
                        (*it)->version().first,
                        (*it)->version().second,
+                       (*it)->version_hash(),
+                       (*it)->num_rows(),
                        full_name().c_str());
     }
 
@@ -1160,6 +1162,7 @@ size_t OLAPTable::get_row_size() const {
 int64_t OLAPTable::get_data_size() const {
     int64_t total_size = 0;
     for (const FileVersionMessage& version : _header->file_version()) {
+
         total_size += version.data_size();
     }
 
@@ -1167,10 +1170,14 @@ int64_t OLAPTable::get_data_size() const {
 }
 
 int64_t OLAPTable::get_num_rows() const {
+
+    LOG(INFO)<< "get_num_rows for " << this->tablet_id();
     int64_t num_rows = 0;
     for (const FileVersionMessage& version : _header->file_version()) {
+        LOG(INFO)<< "end version : "<<version.end_version() << ",version hash :" << version.version_hash()<< " ,num_rows :" <<  version.num_rows();
         num_rows += version.num_rows();
     }
+    LOG(INFO)<< "total num_rows:" << num_rows ;
 
     return num_rows;
 }

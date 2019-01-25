@@ -59,6 +59,8 @@ public:
         return result;
     }
 
+    static  std::string debug_print_slot(const void * slot ,const TypeDescriptor& type);
+    static  std::string debug_print_slot(const SlotDescriptor* slot_desc, Tuple* tuple);
     void init(int size) {
         bzero(this, size);
     }

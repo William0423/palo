@@ -117,7 +117,8 @@ Status QSorter::add_batch(RowBatch* batch) {
 
 // Reverse result in priority_queue
 Status QSorter::input_done() {
-    OLAP_LOG_DEBUG("QSorter::input_done");
+    LOG(INFO) << "qsorter::input_done ,local mem_tracker label:"<< _tuple_pool->local_mem_tracker()->label() << ",local consumption:" <<_tuple_pool->local_mem_tracker()->consumption();
+    LOG(INFO) << "qsorter::input_done ,global mem_tracker label:"<< _tuple_pool->mem_tracker()->label() << ",global consumption:" <<_tuple_pool->mem_tracker()->consumption();
     std::sort(_sorted_rows.begin(), _sorted_rows.end(),
               TupleRowLessThan(_lhs_expr_ctxs, _rhs_expr_ctxs));
     _next_iter = _sorted_rows.begin();
@@ -139,6 +140,7 @@ Status QSorter::get_next(RowBatch* batch, bool* eos) {
 }
 
 Status QSorter::close(RuntimeState* state) {
+    LOG(INFO) << "qsorter::close ,mem_tracker label:"<< _tuple_pool->local_mem_tracker()->label() << ",consumption:" <<_tuple_pool->local_mem_tracker()->consumption();
     _tuple_pool.reset();
     Expr::close(_lhs_expr_ctxs, state);
     Expr::close(_rhs_expr_ctxs, state);

@@ -122,7 +122,9 @@ RuntimeState::~RuntimeState() {
         _instance_mem_tracker->unregister_from_parent();
     }
 
+    //LOG(INFO) << "_instance_mem_tracker reset " ;
     _instance_mem_tracker.reset();
+    //LOG(INFO) << "_query_mem_tracker reset " ;
     _query_mem_tracker.reset();
 }
 
@@ -176,7 +178,7 @@ Status RuntimeState::init_mem_trackers(const TUniqueId& query_id) {
     _query_mem_tracker.reset(
             new MemTracker(bytes_limit, runtime_profile()->name(), _exec_env->process_mem_tracker()));
     _instance_mem_tracker.reset(
-            new MemTracker(-1, runtime_profile()->name(), _query_mem_tracker.get()));
+            new MemTracker(-1, runtime_profile()->name(), _query_mem_tracker.get())); //jungle comment : no _instance_mem_tracker
 
     /*
     // TODO: this is a stopgap until we implement ExprContext

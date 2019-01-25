@@ -45,6 +45,7 @@ IData* IData::create(OLAPIndex* index) {
 
 bool IData::delta_pruning_filter() {
     if (empty()) {
+        OLAP_LOG_DEBUG("delta_pruning_filter empty");
         return true;
     }
             

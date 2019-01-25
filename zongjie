@@ -1,0 +1,211 @@
+
+物理执行计划的生成和执行
+索引结构
+
+olap_data.cpp 311: find_row -> 
+
+  olap_index.cpp 937:get_row_block_position
+  OLAPIndexOffset 和 RowBlockPosition 的关系
+  OLAPIndexOffset 记录了rowblock 在索引文件中的唯一位置,通过segment和 offset，offset 是index entry 在这个segment 中的编号（第几个），一个index entry 包含了这个rowblock 第一行数据的主键和第一行数据在磁盘data文件中的offset ，长度分别为 short_key_length() 和 sizeof(data_file_offset_t) 
+  RowBlockPosition  唯一标识一个RowBlock在Data文件和Index文件中的位置, 索引文件和对应data文件在同一个segment 中吗,同一个磁盘文件？
+  MemIndex get_offset:   将RowBlockPosition 转换为OLAPIndexOffset ，get_row_block_position ：将OLAPIndexOffset 转换为RowBlockPosition
+  MemIndex load_segment: 加载索引文件 
+问题：MemIndex::find 用了两层二分查找，是不是同一个segment  下的所有rowblock 都是按主键排序，_meta的 segment 之间也是从小到大排序，是在文件merge 时候排序的吗 
+  {[1,2,3 ][3,4,4 ] } {[5,6] } {[7,8][8,9] }
+
+broker 存储管理
+  RowBlock 中的_buf 数据是列存储格式，RowCursor 通过 attach_by_index 找到行的每一个字段
+  RowBlockBroker 代理了RowBlock ，通过 change_to 迭代，change_to调用了_get_row_block, 通过RowBlockPosition找到从文件读取，内存中生成 RowBlock
+问题：
+  construct_data_file_path 中的 version 和segment 构成文件名，version 的作用是什么， 在merge 中是什么样的角色
+  对reader 来说， 使用MergeSet 管理还没有merge的文件吗
+
+data 文件和table 映射关系
+
+
+列存格式
+
+tabet 是一个partition 信息，tabet 包含若干版本的index文件和 data文件,index 文件存储每个rowblock 的第一个shortkey 和该rowblock 在segment 文件中的相对偏移，rowblock 之内和之间的
+每一行数据都会按照short_key排序，在导入etl和merge阶段排序，rowblock 第一行纪录作为entry ,他的position被纪录在dat文件的index stream中，如果segment被压缩，position1 是压缩后这一列在segment中的相对偏移，position2 是current buf 未压缩部分的偏移，index stream 在数据文件中，在pb header之后，pb header 中包含了每一列数据在segmnet中的长度，通过长度能拿到绝对偏移，steamHeader 和真正列存数据都在data stream中，streamHeader 是每一个压缩块的元信息 包含了压缩块的长度, 每一类型列存数据有自定义的序列化反序列化方法
+
+
+merge 的过程 delta columate base
+
+
+
+llvm 代码生成
+ _vector_compute_fn 在哪里生成
+ arithmetic_expr.cpp:79:
+ ExprContext* context, TupleRow* row 
+ expr.cpp:844:
+ prototype.add_argument 参数对应
+
+
+cgroup 资源隔离
+
+
+ColumnDataWriter::_flush_row_block 中会创建新的segment (dat) 和对应的index文件,dat 文件pb头纪录了stream length，index 纪录了shortkey和对应的rowblock 在dat 文件中的编号
+ColumnDataWriter 和OLAPIndex 中的 segmentid 都会增加
+
+/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.idx
+/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.dat
+/opt/palo/output/be/data/data/0/10017/1639769700/10017.hdr
+10017 tableid 
+1639769700 is schema_hash 
+OLAPHeaderFileName_version.first_version.second_versionHash_segmentIndex.suffix
+header 信息在table OLAPHeader 中， version信息在OLAPIndex中，segmnet信息在ColumnDataWriter::_flush_row_block 增加
+
+
+OLAPEngine _tablet_map[tablet_id].table_arr 结构存储了SmartOLAPTable  ,为什么一个tablet_id 对于多个OLAPTable ? 与 schema_hash 有关 ?
+一个OLAPTable 有唯一的 tabletId , 代表一个表的partition, _header 是唯一的 OLAPHeader ,OLAPHeader 中_file_name 是 hdr 文件绝对路径,OLAPHeader管理version graphe, 也包含了表的 
+ColumnMessage
+
+一个OLAPTable 中的_data_sources 包含了不同version_id的OLAPIndex 信息，columnData 根据 OLAPIndex 构造,都是内存中的数据结构对象,一个OLAPIndex 有唯一的version ,一个OLAPIndex 包含若干segment生命周期，从创建到写入磁盘 ,一个segment 有唯一dat 文件和对应的idx文件 , ColumnDataWriter 包含segmentWriter ，columnData 包含segmentReader ,它们同时只处理一个segment，对应磁盘一个 dat 文件,reader and  writer 会处理多个segment，当前处理的id为cur_segment_id , segment id 和 rowblock 位置信息 在seek_to row时候需要 ,ColumnData::get_next_row 封装了读取某个OLAPIndex 下的某个segment 下某个rowblock 的某条row,每个segment 有dat文件和 idx文件
+
+OLAPTable 是对tablet 的抽象，_header 信息中的file_version () 包含了所有version (base,cumulative,delta)，和OLAPIndex 一一对应，fe 的元数据不会纪录tablet的所有 version信息，
+只记录latest file 文件的end version 和 versionHash 做为tablet 的信息记录到fe的Replica中，see updateReplicaInfo in fe ,fe  中的tablet 信息在创建表的时候就确定了，tablet个数
+和distribute个数相同, 一个tablet 包含多个Replica ，每个Replica 有自己的backendId,see createTablets in fe, push 结束之后fe 元数据更新包括两部分:1 Replica 信息，包含了be 
+新delta 文件的endversion 信息， 2，partition and  materializedIndex 信息，这部分信息只在fe，be 不感知, see unprotectQuorumLoadJob in fe ,对push来说， Replica 内存信息的
+更新有两处，一个是unprotectQuorumLoadJob ，另一个是MasterImpl 里的updateReplicaInfo ，partition and  materializedIndex 信息的更新也有两处，一个是unprotectQuorumLoadJob 
+，另一个是Load.java 中的processQuorumFinished, fe 的submitPushTasks 中，LoadJob 参数包含的信息决定了要插入数据的partition和replica,如果用户没有指定partition，由
+olapTable.getPartitions指定，see  Load.java:createSource , partition ，tablet，replica 信息在fe创建表时候就决定了
+
+SegmentReader 有_shared_buffer ，会被各个column的ReadOnlyFileStream 使用segmentReader 串行读取每个列，segmentReader 非线程安全，打开的file 也只属于一个线程，
+同时读取同一个表怎么办，打开多个file，各自使用segmentReader 读取？
+
+
+OLAPTable::register_data_source 说明了OLAPTable ，OLAPIndex，OLAPHeader 关系
+
+
+通常OLAPIndex->load()是把所拥有的segment 的索引信息和 数据 文件pb 信息加载到内存, 索引信息包含了rowblock shortkey和位置信息，pb 文件包含了每列column stream 信息 ,会在OLAPTable
+load() 时候调用，load 会在 OLAPEngine::get_table 触发
+
+
+reader init中 _attach_data_to_merge_set ,会将columnData 添加到mergeSet,初始化_next_key  , merge  next 中首先获取当前堆顶data next_row,attach 到 _cursor , 堆排序的比较规则是current_row ,就是_cursor
+ 
+
+version 说明：
+// Base Version: (start_version == 0 && end_version > start_version) || [0, 0]
+// Cumulative Version: (start_version >= 1 && end_version > start_version)
+// Delta Version: start_version == end_version
+
+
+pread = lseek + read ,不改变文件offset
+创建文件制定O_CREAT | O_EXCL ， 文件不存在时避免多线程同时创建
+
+BackendService::create_rpc_service 用来接收DataStreamSender 信息 ，接受到DataStreamRecvr ,ExechageNode 会使用
+
+优化：拉取数据时候不在本地解压，反序列化，节省带宽和计算资源
+问题：
+  reader 线程模型 ? next_row_with_aggregation 在merger 和 OlapScanNode调用
+  scan 的同时merge 有没有问题? 
+  OLAPTable header 信息需要多线程安全访问 Reader::_acquire_data_sources ,需要 header read lock , CumulativeHandler::_do_cumulative_expansion 需要 header write lock 
+  OLAPEngine 是单例的，管理了OLAPTable * 对象， tabetId和 schemeHash 唯一指定了一个OLAPTable 对象,OLAPTable 包含多个OLAPIndex，一个OLAPIndex 对应一个version的 base 或acc
+  或者 delta 版本文件， OLAPTable  在_data_sources 中管理了OLAPIndex 对象，tabetId和 schemeHash ,   version ,versionHash 唯一指定了一个OLAPIndex 对象，OLAPIndex 包含多个
+  segment ，segmentid 在 .dat 和 .idx 文件的末尾, OLAPTable::acquire_data_sources ,会创建 columnData , 
+  并且增加所属的OLAPIndex 的引用计数，columnData 通过segmentReader 读取文件，读取完当前segment 就新创建一个 segmentReader 来读取下一个segment文件，不同的OLAPScan线程和Merge
+  线程会创建自己的columnData 对象，所以是线程安全的
+
+  OLAPEngine 内存模型?
+  OLAPTable load() 会将自己所有version 的Index 创建出来 ,Index 将所有segment idx和 dat 的pb 头文件load 到内存
+  OLAPTable::acquire_data_sources,会创建 columnData ,在自己的所属线程中( scan线程 或者merge线程)，columnData 创建segmentReader ,segmentReader 中 
+  std::map<StreamName, ReadOnlyFileStream*> _streams 
+  key 是columnName，value 是这一列的column stream ,用来抽象文件某一列的数据流,std::map<ColumnId, StreamIndexReader*> _indices 保存了每一列类型为ROW_INDEX类型的stream，
+  StreamIndexReader 保存这一列数据的所有rowblock 在segment 文件中的相对偏移，绝对偏移通过SegmentReader::_file_header 中的stream_length 计算得到 ,每一列ReadOnlyFileStream
+  创建自己的_compressed_helper ，在ReadOnlyFileStream::_assure_data 中被重复使用，_shared_buffer 在 SegmentReader中被创建 , SegmentReader 的_column_readers 会读取 
+  _compressed_helper 中的数据，根据自己的类型进行反序列化，外部(eg:MergeSet::_pop_from_heap)通过ColumnData::get_next_row->SegmentReader::get_next_row 获取row
+   
+   
+  scheme change 相关影响
+  数据insert 时的etl 和 loading ，数据在be的分布 
+  PlanFragmentExecutor::open_internal ,不断通过get_next_internal 读取RowBatch ,发送给sink,从broker 读取文件的截止由 BrokerScanner::open_next_reader::_next_range 确定
+  DataSpliter::close  是在get_next_internal 都完成之后，此时sorter 的数据都在内存中，
+  DppSink::finish 中设置etl 之后的文件路径,FragmentExecState::coordinator_callback 将路径写到TReportExecStatusParams 返回给fe
+  loading 时候fe 将etl之后的文件http路径传给be 下载,通过pusher 下载，写到delta 文件
+
+
+  数据聚合
+  按照列分区
+  version 在读取时候怎么指定
+  be 之间的通信，be 和 fe之间的通信
+  AgentServer 
+  OLAPServer
+
+  fe 存储的元信息有哪些,元数据监控,创建表，导入数据，合并delta，元数据的变化，scan 时候需要拿到元数据,知道去哪些be节点扫描，导入的时候需要拿到元数据，知道导入哪些节点
+
+  创建表之后，数据导入be，loading阶段数据分发的控制,要保证be 相对平衡的数据量 , partition ，tablet，replica 信息在fe创建表时候就决定了，每个replica 有对应的backendId,
+  see createOlapTable 
+
+  exchange data stream receive server 的生命周期是怎么样的，怎么将收到sink 的数据发送到指定fragment的 exchange node 上 ,see create_recvr in DataStreamMgr
+
+  fragment 的 dpp sink，sorter 内存不够,分批排序
+
+  shuffle join ，scan node 的fragment  被分配到数据所在节点 ,join node 所在的fragment 被分配到哪些机器上去
+
+  PlanNode 中表达式参数的构造 ,例如TBrokerScanRangeParams中的expr_of_dest_slot
+ 
+  select 过程fe 查询了哪些元数据，be 如何根据fe的fragment scan
+
+  be 增加数据导入与拉取插件,流式导入，insert select ...方式 , 拉取实现next方式 
+ 
+  fe 元数据查询插件，创建表，导入数据，合并delta 前后元数据变化
+  be 元数据查询插件，tablet  信息（version，scheme change 信息，segment)
+  be 执行状态查询以及内存监控插件，  fragment 执行状态，导入数据状态，merge 状态, scheme change 状态  
+  Exechange Node 接受数据，内存不足的时候可以写到磁盘上
+ 
+  数据拉取问题，pull server 维护所有pull session ，维护next 语意, spark  container 的每一个client 都可以连接pull server 
+
+  流式导入问题，接收数据方式，broker server 接受数据流或者读取本地文件，先去收集fe 信息，获得表scheme,replica 位置信息, 完成简单过滤，分割之后,排序分发给
+  replica 对应的be loading server  ,loading server 完成数据接收,形成固定大小的delta 入库，  更新fe元数据
+  收集的fe 信息包括表 column 信息，partition ，distribute 表达式用于分割成不同的tablet，short_key信息，用于排序，agg 表达式等等，这些信息从 OlapRewriteNode，
+  data_spliter 获得，封装成delta block 发送给对应的be pusher 处理
+
+
+ 
+  fe getTabletLoadInfos  etl 之后的文件如何load ，fe中的partition ，index， bucket 和后端 tablet 的关系
+  be to_http_path  same partition ,index and bucket file_name  is same ,but host is different 
+  fe actualExecute wait all curCoordinator  updateDeltas
+  fe pullLoadEtlTask.java getFilePathMap fileMap get from all be 
+
+  scalar_fn_call::evaluate_children  will call void* ExprContext::get_value(Expr* e, TupleRow* row)   Expr is build in Expr::create_expr
+ 
+  六月最后一周:批量导入数据测试，正常导入，正常查询，元数据正常记录，scheme change 需要保证正常导入
+  七月第一周:大数据拉取测试以及外部集成方案
+  七月第二周:大数据拉取方案落地以及测试
+
+  七月第三周:分布式拉取数据和按需拉取,拉取数据内存控制 limit 10 内存由条件变量控制
+  1 scan_olap_node   有多少scan_range 需要扫描，多少个线程同时扫描，多少scanner 已经扫描完了,
+  每个scaner 需要scan 的版本号从多少到多少，多少segment，多少rowbatch 当前扫描了多少，生产消费队列的情况，内存使用的情况
+  plan_fragment  所有exec_node 的执行时间 get_value 和 scan 时间对比
+  注意线程安全问题
+  2 join_node 需要拉取到所有数据才开始join吗，join 的进度，_probe_timer ,_build_timer, 内存使用情况 , 内存不足写到磁盘
+  3 agg_node 执行 _build_timer , _get_results_timer 
+  4 ExprContext::get_value 所花时间  
+  5 exec_node 自己的执行时间和行数 
+
+
+  七月第四周:olapNodeScan metric ,exec node  执行时间以及记录数统计,内存统计
+  八月第一周:插入数据,拉取数据,元数据入库方案整合测试,task 任务监控和统计
+  八月第二周:插入数据,拉取数据,元数据入库方案整合测试,task 任务监控和统计
+  八月第三周:sql join 测试以及大数据量join 落磁盘方案
+  八月第四周:大数据 join 落磁盘实现
+  九月第一周:schema change 的相关影响
+ 
+  all with token
+  center <---- spark send query and token 
+  center plan then gen param and sql and token wait all shard response <------> shard  
+  center send shard address ---> spark  
+  shard1 <===== spark sql with token 
+  shard2 <===== spark sql with token 
+   
+
+
+InlineViewRef 的baseTblMap 会 保存 view slot ref 到 selectStmt baseTblResultExprs 的映射，当selectStmt 的from clause 为baseTableRef 时候，baseTblResultExprs 和 resultExprs 
+相同 ，都是base table column ,当selectStmt 有agg info 时候，baseTblResultExprs 和 resultExprs 相同，都是agg 之后产生的slotref 
+InlineViewRef 的sMap 会保存view slot ref 到 selectStmt resultExprs 的映射,在selectStmt 的from clause 不是baseTableRef 并且 没有agg info 的时候，resultExprs 和 from clause
+的 sub InlineViewRef 中 registerColumnRef 中的slotref 一样，是sub InlineViewRef 的view column ref
+
+selectStmt 通过analyse selectList ，将InlineViewRef 的 view slot ref 或者是baseTableRef 的 column 保存到 resultExprs
+如果有agg info ，会构造新的 slot ，并且添加辅助conjuct 映射到agg之前的slotref
+
+

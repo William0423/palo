@@ -329,7 +329,7 @@ void OutStream::get_position(PositionEntryWriter* index_entry) const {
     index_entry->add_position(_spilled_bytes);     //jungle comment : the first position here , is the latest compressed position
 
     if (NULL != _current) {
-        index_entry->add_position(_current->position() - sizeof(StreamHead));   // jungle comment :the data in current buf have not  spilled yet
+        index_entry->add_position(_current->position() - sizeof(StreamHead));   // jungle comment :the data in current buf have not  spilled yet ,second position
         OLAP_LOG_DEBUG("add current: %lu", _current->position() - sizeof(StreamHead));
     } else {
         index_entry->add_position(0);

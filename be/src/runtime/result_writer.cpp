@@ -166,7 +166,7 @@ Status ResultWriter::add_one_row(TupleRow* row) {
     return Status::OK;
 }
 
-Status ResultWriter::append_row_batch(RowBatch* batch) {
+Status ResultWriter::append_row_batch(RowBatch* batch) { //jungle comment: write  out to mysql
     if (NULL == batch || 0 == batch->num_rows()) {
         return Status::OK;
     }
@@ -179,7 +179,7 @@ Status ResultWriter::append_row_batch(RowBatch* batch) {
 
     for (int i = 0; status.ok() && i < num_rows; ++i) {
         TupleRow* row = batch->get_row(i);
-        status = add_one_row(row);
+        status = add_one_row(row);   //jungle comment : first reset buf ,thus reuse buf
 
         if (status.ok()) {
             result->result_batch.rows[i].assign(_row_buffer->buf(), _row_buffer->length());

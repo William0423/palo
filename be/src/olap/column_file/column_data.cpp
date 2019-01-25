@@ -31,6 +31,8 @@ ColumnData::ColumnData(OLAPIndex* olap_index) :
         _segment_reader(NULL),
         _filted_rows(0),
         _current_segment(0),
+        _start_scan_row_index(0),
+        _end_scan_row_index(0),
         _row_block(NULL) {
     _table = olap_index->table();
 }
@@ -118,7 +120,7 @@ const RowCursor* ColumnData::_get_next_row(bool without_filter) {
             }
         }
     } else {
-        if (_segment_reader->eof()) {
+        if (_segment_reader->eof()) {        //jungle comment: if current segment read done ,read the next segment
             if (((_end_key != NULL) && 
                     (_current_segment + 1 <= _end_key_block_position.segment)) || 
                     ((_end_key == NULL) && 
@@ -149,12 +151,14 @@ const RowCursor* ColumnData::_get_next_row(bool without_filter) {
                     return _get_next_row(without_filter);
                 }
             } else {
-                set_eof(true);
+                set_eof(true);      //jungle comment: all segment in this column data read done ,will not attach _merge_set.
             }
         } else {
             OLAP_LOG_WARNING("fail to reader segment.");
         }
     }
+
+
 
     return NULL;
 }
@@ -351,7 +355,7 @@ OLAPStatus ColumnData::_find_position_by_full_key(
     return OLAP_SUCCESS;
 }
 
-const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, bool is_end_key) {
+const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, bool is_end_key) {  //jungle comment:key is the start scan key or end scan key
     OLAPStatus res = OLAP_SUCCESS;
     RowBlockPosition position;
     OLAP_LOG_DEBUG("@ ColumnData::find_row,key:%s",key.to_string().c_str());
@@ -363,6 +367,7 @@ const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, 
         res = _find_position_by_short_key(key, find_last_key, &position);
     }
 
+
     if (OLAP_SUCCESS != res) {
         OLAP_LOG_WARNING("Fail to find the key.[res=%d key=%s find_last_key=%d]", 
                 res, key.to_string().c_str(), find_last_key);
@@ -370,11 +375,13 @@ const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, 
     } else if (_eof) {
         OLAP_LOG_DEBUG("EOF when find the key.[res=%d key=%s find_last_key=%d]", 
                 res, key.to_string().c_str(), find_last_key);
+
         return NULL;
     }
 
+
     bool without_filter = is_end_key;
-    res = _seek_to_block(position, without_filter);
+    res = _seek_to_block(position, without_filter); //jungle comment: seek the start of block contains the seek key
     if (OLAP_SUCCESS != res) {
         if (OLAP_ERR_DATA_EOF == res) {
             OLAP_LOG_WARNING("stream EOF. "
@@ -394,6 +401,23 @@ const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, 
         return NULL;
     }
 
+
+
+    uint32_t block_index = position.data_offset;
+    uint32_t segment_index = position.segment;
+    uint64_t row_index = 0;
+    while (segment_index > 0){
+        std::map<uint32_t,uint32_t>::iterator it = olap_index()->segmentid_to_row_count().find(segment_index - 1);
+        if(it != olap_index()->segmentid_to_row_count().end()){
+            row_index += it->second;
+        } else{
+            OLAP_LOG_WARNING("fail to  find segmentId %d in _segmentid_to_row_count" ,segment_index - 1 );
+        }
+        segment_index --;
+    }
+
+    row_index += block_index * olap_index()->current_num_rows_per_row_block();
+
     const RowCursor* row_cursor = NULL;
     if (!find_last_key) {
         // 不找last key。 那么应该返回大于等于这个key的第一个，也就是
@@ -403,6 +427,7 @@ const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, 
         OLAP_LOG_DEBUG("!find_last_key and _get_next_row");
         while (NULL != (row_cursor = _get_next_row(without_filter)) && !eof() //jungle comment : here or in MergeSet::_pop_from_heap
                 && row_cursor->cmp(key) < 0) {
+            row_index ++;
             OLAP_LOG_DEBUG("_get_next_row loop ... ,row_cursor : %s , key :%s " , row_cursor->to_string().c_str(), key.to_string().c_str());
         }
     } else {
@@ -411,8 +436,17 @@ const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, 
         OLAP_LOG_DEBUG("find_last_key and _get_next_row");
         while (NULL != (row_cursor = _get_next_row(without_filter)) && !eof()
                 && row_cursor->cmp(key) <= 0) {
+            row_index ++;
             OLAP_LOG_DEBUG("_get_next_row loop ... ,row_cursor : %s , key :%s " , row_cursor->to_string().c_str(), key.to_string().c_str());
         }
+    }
+
+    //jungle add:
+
+    if(!is_end_key){
+        _start_scan_row_index = row_index;
+    } else{
+        _end_scan_row_index = row_index;
     }
 
     return row_cursor;

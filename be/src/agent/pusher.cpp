@@ -265,7 +265,7 @@ AgentStatus Pusher::process(vector<TTabletInfo>* tablet_infos) {
         time_t push_begin = time(NULL);
         OLAPStatus push_status = _command_executor->push(_push_req, tablet_infos);
         time_t push_finish = time(NULL);
-        OLAP_LOG_INFO("Push finish, cost time: %ld", push_finish - push_begin);
+        //OLAP_LOG_INFO("Push finish, cost time: %ld", push_finish - push_begin);
         if (push_status != OLAPStatus::OLAP_SUCCESS) {
             status = PALO_ERROR;
         }

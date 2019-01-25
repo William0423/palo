@@ -87,16 +87,20 @@ Status AggFnEvaluator::create(
         const TExpr& desc,
         bool is_analytic_fn,
         AggFnEvaluator** result) {
-    *result = pool->add(new AggFnEvaluator(desc.nodes[0], is_analytic_fn));
+    *result = pool->add(new AggFnEvaluator(desc.nodes[0], is_analytic_fn)); // jungle comment :will set agg function and exp in function
+    OLAP_LOG_DEBUG(" create agg evaluator by function  : %s " , desc.nodes[0].fn.name.function_name.c_str());
     int node_idx = 0;
-    for (int i = 0; i < desc.nodes[0].num_children; ++i) {
-        ++node_idx;
-        Expr* expr = NULL;
+    for (int i = 0; i < desc.nodes[0].num_children; ++i) {  //jungle comment : num_children  trees are indepdent, are all in the nodes
+        ++node_idx;    //jungle comment: start from node 1 ,after AGG_EXPR
+        Expr* expr = NULL; // root expr
         ExprContext* ctx = NULL;
+        OLAP_LOG_DEBUG("start to create sub expr in  agg fn");
         RETURN_IF_ERROR(Expr::create_tree_from_thrift(
                 pool, desc.nodes, NULL, &node_idx, &expr, &ctx));
-        (*result)->_input_exprs_ctxs.push_back(ctx);
+        (*result)->_input_exprs_ctxs.push_back(ctx);  //jungle comment : _input_exprs_ctxs is the out put from previous stage fragment
     }
+
+
     return Status::OK;
 }
 
@@ -278,7 +282,7 @@ void AggFnEvaluator::close(RuntimeState* state) {
     }
 }
 
-// Utility to put val into an AnyVal struct
+
 inline void AggFnEvaluator::set_any_val(
         const void* slot,
         const TypeDescriptor& type, AnyVal* dst) {
@@ -700,6 +704,8 @@ void AggFnEvaluator::update_or_merge(FunctionContext* agg_fn_ctx, TupleRow* row,
     } else {
         for (int i = 0; i < input_expr_ctxs().size(); ++i) {
             void* src_slot = input_expr_ctxs()[i]->get_value(row);
+            std::string  slot_str = Tuple::debug_print_slot(src_slot,input_expr_ctxs()[i]->root()->type());
+            OLAP_LOG_DEBUG(" get  input_expr_ctxs value before update_or_merge : %s ",slot_str.c_str()); //jungle comment : the src_slot is the expr  before agg function
             set_any_val(src_slot, input_expr_ctxs()[i]->root()->type(), _staging_input_vals[i]);
         }
     }
@@ -781,6 +787,8 @@ void AggFnEvaluator::update_or_merge(FunctionContext* agg_fn_ctx, TupleRow* row,
             DCHECK(false) << "NYI";
         }
     }
+
+    OLAP_LOG_DEBUG(" update agg slot after update function : %d , col_name :%s ,value: %s ",_intermediate_slot_desc->id(),_intermediate_slot_desc->col_name().c_str(),Tuple::debug_print_slot(_intermediate_slot_desc,dst).c_str());
 
     set_output_slot(_staging_intermediate_val, _intermediate_slot_desc, dst);
 }

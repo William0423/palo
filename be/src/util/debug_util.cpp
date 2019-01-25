@@ -137,7 +137,7 @@ std::string print_tuple(const Tuple* t, const TupleDescriptor& d) {
 
     std::stringstream out;
     out << "(";
-    bool first_value = true;
+    //bool first_value = true;
 
     for (int i = 0; i < d.slots().size(); ++i) {
         SlotDescriptor* slot_d = d.slots()[i];
@@ -145,12 +145,10 @@ std::string print_tuple(const Tuple* t, const TupleDescriptor& d) {
         if (!slot_d->is_materialized()) {
             continue;
         }
+        out << "sid:" ;
+        out << slot_d->id();
+        out << " ";
 
-        if (first_value) {
-            first_value = false;
-        } else {
-            out << " ";
-        }
 
         if (t->is_null(slot_d->null_indicator_offset())) {
             out << "null";
@@ -174,9 +172,9 @@ std::string print_row(TupleRow* row, const RowDescriptor& d) {
     out << "[";
 
     for (int i = 0; i < d.tuple_descriptors().size(); ++i) {
-        if (i != 0) {
-            out << " ";
-        }
+        out << " tid:" ;
+        out << d.tuple_descriptors()[i]->id();
+        out << " ";
         out << print_tuple(row->get_tuple(i), *d.tuple_descriptors()[i]);
     }
 

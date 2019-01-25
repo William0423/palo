@@ -214,7 +214,7 @@ Status DataSpliter::send_row(
     // Add this row to this batch
     int idx = batch->add_row();
     // Just deep copy this row
-    row->deep_copy(batch->get_row(idx), _row_desc.tuple_descriptors(),
+    row->deep_copy(batch->get_row(idx), _row_desc.tuple_descriptors(),  //jungle comment:deep copy in RowBatch
                    batch->tuple_data_pool(), false);
     batch->commit_last_row();
 
@@ -222,6 +222,7 @@ Status DataSpliter::send_row(
     if (batch->is_full()) {
         RETURN_IF_ERROR(dpp_sink->add_batch(_obj_pool.get(), state, desc, batch));
         batch->reset();
+        LOG(INFO) << "after reset ,data spliter batch consumption:"<<batch->tuple_data_pool()->local_mem_tracker()->consumption();
     }
     return Status::OK;
 }
@@ -261,7 +262,7 @@ Status DataSpliter::process_one_row(RuntimeState* state, TupleRow* row) {
 }
 
 Status DataSpliter::send(RuntimeState* state, RowBatch* batch) {
-    OLAP_LOG_DEBUG("2 DataSpliter::send");
+    OLAP_LOG_INFO("2 DataSpliter::send");
     SCOPED_TIMER(_split_timer);
     int num_rows = batch->num_rows();
     for (int i = 0; i < num_rows; ++i) {
@@ -271,7 +272,7 @@ Status DataSpliter::send(RuntimeState* state, RowBatch* batch) {
 }
 
 Status DataSpliter::close(RuntimeState* state, Status close_status) {
-    OLAP_LOG_DEBUG("3 DataSpliter::close");   //jungle comment: notice this close start when get_next_internal in PlanFragmentExecutor::open_internal all finish
+    OLAP_LOG_INFO("3 DataSpliter::close");   //jungle comment: notice this close start when get_next_internal in PlanFragmentExecutor::open_internal all finish
     bool is_ok = true;
     Status err_status;
     if (_closed) {
@@ -290,6 +291,7 @@ Status DataSpliter::close(RuntimeState* state, Status close_status) {
                     is_ok = false;
                     err_status = status;
                 }
+                LOG(INFO) << "111111";
                 iter.second->clear();
             }
         }
@@ -308,6 +310,7 @@ Status DataSpliter::close(RuntimeState* state, Status close_status) {
             err_status = status;
         }
     }
+
     Expr::close(_partition_expr_ctxs, state);
     for (auto& iter : _rollup_map) {
         Status status = iter.second->close(state);
