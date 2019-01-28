@@ -124,6 +124,9 @@ CsvScanNode::CsvScanNode(
 
 CsvScanNode::~CsvScanNode() {
     // do nothing
+
+    LOG(INFO) << "~CsvScanNode" ;
+    //_tuple_pool.reset(nullptr);
 }
 
 Status CsvScanNode::init(const TPlanNode& tnode) {
@@ -248,7 +251,7 @@ Status CsvScanNode::open(RuntimeState* state) {
 }
 
 Status CsvScanNode::get_next(RuntimeState* state, RowBatch* row_batch, bool* eos) {
-    VLOG(1) << "CsvScanNode::GetNext";
+    LOG(INFO) << "CsvScanNode::GetNext";
     if (nullptr == state || nullptr == row_batch || nullptr == eos) {
         return Status("input is nullptr pointer");
     }
@@ -258,6 +261,10 @@ Status CsvScanNode::get_next(RuntimeState* state, RowBatch* row_batch, bool* eos
     }
 
     RETURN_IF_ERROR(exec_debug_action(TExecNodePhase::GETNEXT));
+    if((state)->is_cancelled()){
+        LOG(ERROR) << "state is cancelled ,instance id:" << _runtime_state->fragment_instance_id() ;
+    }
+
     RETURN_IF_CANCELLED(state);
     SCOPED_TIMER(_runtime_profile->total_time_counter());
     SCOPED_TIMER(materialize_tuple_timer());
@@ -288,7 +295,9 @@ Status CsvScanNode::get_next(RuntimeState* state, RowBatch* row_batch, bool* eos
         if (reached_limit() || row_batch->is_full()) {
             // hang on to last allocated chunk in pool, we'll keep writing into it in the
             // next get_next() call
+            LOG(INFO) << ">>>>>>>>>>>>>> before row batch acquire_data,now consumption :" << row_batch->tuple_data_pool()->local_mem_tracker()->consumption();
             row_batch->tuple_data_pool()->acquire_data(_tuple_pool.get(), !reached_limit());
+            LOG(INFO) << ">>>>>>>>>>>>>> after row batch acquire_data,now consumption :" << row_batch->tuple_data_pool()->local_mem_tracker()->consumption();
             *eos = reached_limit();
             return Status::OK;
         }

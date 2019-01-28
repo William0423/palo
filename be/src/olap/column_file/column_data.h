@@ -74,6 +74,28 @@ public:
     virtual uint64_t get_filted_rows();
 
     void add_filted_rows(uint64_t filted_rows);
+    const RowCursor* get_end_key() {
+        return _end_key;
+    }
+    void set_start_row_index(uint64_t start_index){
+        _start_scan_row_index = start_index;
+    }
+    uint64_t get_start_row_index(){
+        return _start_scan_row_index;
+    }
+    void set_end_row_index(uint64_t end_index){
+        _end_scan_row_index = end_index;
+    }
+    uint64_t get_end_row_index(){
+        return _end_scan_row_index;
+    }
+    const SegmentReader * get_segment_reader(){
+        return _segment_reader;
+    }
+    uint32_t get_current_segment(){
+        return _current_segment;
+    }
+
 
 private:
     DISALLOW_COPY_AND_ASSIGN(ColumnData);
@@ -105,6 +127,8 @@ private:
     // 下面两个成员只用于block接口
     RowBlock* _row_block;                 // 用于get_first_row_block缓存数据
     RowBlockPosition _row_block_pos;      // 与_row_block对应的pos
+    uint64_t _start_scan_row_index ;
+    uint64_t _end_scan_row_index ;
 };
 
 class ColumnDataComparator {

@@ -49,6 +49,8 @@ MemPool::MemPool(MemTracker* mem_tracker, int chunk_size) :
         _peak_allocated_bytes(0),
         _total_reserved_bytes(0),
         _mem_tracker(mem_tracker) {
+
+    _local_mem_tracker.reset(new MemTracker(-1, mem_tracker->label()));
     DCHECK_GE(_chunk_size, 0);
     DCHECK(mem_tracker != NULL);
 }
@@ -76,7 +78,10 @@ MemPool::~MemPool() {
     }
     _chunks.clear();
 
+
     _mem_tracker->release(total_bytes_released);
+    _local_mem_tracker->release(total_bytes_released);
+    //LOG(INFO)<< "~MemPool , _local_mem_tracker " << _local_mem_tracker->label() << ", release "<<total_bytes_released << ", now consumption:" << _local_mem_tracker->consumption()  ;
     // DCHECK(_chunks.empty()) << "Must call FreeAll() or AcquireData() for this pool";
 
     if (PaloMetrics::mem_pool_total_bytes() != NULL) {
@@ -100,6 +105,10 @@ void MemPool::free_all() {
     _total_reserved_bytes = 0;
 
     _mem_tracker->release(total_bytes_released);
+    _local_mem_tracker->release(total_bytes_released);
+
+    //LOG(INFO) <<" _mem_tracker release :" << total_bytes_released <<  " bytes";
+    //LOG(INFO) << "_mem_tracker consumption is " <<_mem_tracker->consumption() << ",label is :"<< _mem_tracker->label();
     if (PaloMetrics::mem_pool_total_bytes() != NULL) {
         PaloMetrics::mem_pool_total_bytes()->increment(-total_bytes_released);
     }
@@ -145,16 +154,20 @@ bool MemPool::find_chunk(int64_t min_size, bool check_limits) {
                 // end of _chunks.
                 DCHECK_EQ(_current_chunk_idx, static_cast<int>(_chunks.size()));
                 _current_chunk_idx = static_cast<int>(_chunks.size()) - 1;
+                LOG(INFO)<< "try_consume failed" ;
                 return false;
             }
+            _local_mem_tracker->try_consume(chunk_size);
         } else {
             _mem_tracker->consume(chunk_size);
+            _local_mem_tracker->consume(chunk_size);
         }
 
         // Allocate a new chunk. Return early if malloc fails.
         uint8_t* buf = reinterpret_cast<uint8_t*>(malloc(chunk_size));
         if (UNLIKELY(buf == NULL)) {
             _mem_tracker->release(chunk_size);
+            _local_mem_tracker->release(chunk_size);
             DCHECK_EQ(_current_chunk_idx, static_cast<int>(_chunks.size()));
             _current_chunk_idx = static_cast<int>(_chunks.size()) - 1;
             return false;
@@ -211,7 +224,10 @@ void MemPool::acquire_data(MemPool* src, bool keep_current) {
     _total_reserved_bytes += total_transfered_bytes;
 
     src->_mem_tracker->release(total_transfered_bytes);
+    src->_local_mem_tracker->release(total_transfered_bytes);
+    //LOG(INFO)<< "_mem_tracker->consume "<< total_transfered_bytes << " bytes";
     _mem_tracker->consume(total_transfered_bytes);
+    _local_mem_tracker->consume(total_transfered_bytes);
 
     // insert new chunks after _current_chunk_idx
     std::vector<ChunkInfo>::iterator insert_chunk = _chunks.begin() + _current_chunk_idx + 1;

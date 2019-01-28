@@ -307,6 +307,8 @@ Status Expr::create_tree_from_thrift(
         DCHECK(ctx != NULL);
         *root_expr = expr;
         *ctx = pool->add(new ExprContext(expr));
+
+       // OLAP_LOG_DEBUG("thrift param build expr tree :%s", expr->debug_string().c_str() );
     }
     for (int i = 0; i < num_children; i++) {
         *node_idx += 1;
@@ -382,7 +384,6 @@ Status Expr::create_expr(ObjectPool* pool, const TExprNode& texpr_node, Expr** e
         //  *expr = pool->add(new AggregateExpr(texpr_node));
         //  return Status::OK;
         //}
-
     case TExprNodeType::CASE_EXPR: {
         if (!texpr_node.__isset.case_expr) {
             return Status("Case expression not set in thrift node");

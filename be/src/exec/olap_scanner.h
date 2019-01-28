@@ -31,6 +31,7 @@
 #include "runtime/descriptors.h"
 #include "runtime/tuple.h"
 #include "runtime/vectorized_row_batch.h"
+#include "olap/olap_reader.h"
 
 namespace palo {
 
@@ -39,16 +40,16 @@ class OLAPReader;
 class RuntimeProfile;
 
 /**
- * @brief   µ÷ÓÃengine_reader¶ÁÈ¡olapÊý¾Ý
- *          Ö§³Ö¶ÁÈ¡¶à¸öscan_range
- *          ²¢ÇÒ×Ô¶¯ÔÚ¸±±¾¼äÇÐ»»
+ * @brief   ï¿½ï¿½ï¿½ï¿½engine_readerï¿½ï¿½È¡olapï¿½ï¿½ï¿½ï¿½
+ *          Ö§ï¿½Ö¶ï¿½È¡ï¿½ï¿½ï¿½scan_range
+ *          ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½
  */
 class OlapScanner {
 public:
     /**
-     * @brief   ³õÊ¼»¯º¯Êý.
+     * @brief   ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
      *
-     * @param   scan_range      É¨Ãè·¶Î§
+     * @param   scan_range      É¨ï¿½è·¶Î§
      */
     OlapScanner(
         RuntimeState* runtime_state,
@@ -93,11 +94,21 @@ public:
     bool is_open();
     void set_opened();
 
+
+    uint64_t scan_row_total_count(){
+        return _reader->scan_row_total_count();
+    }
+
+    uint64_t scan_row_current_index() {
+        return _reader->scan_row_current_index();
+
+    }
+
 private:
     RuntimeState* _runtime_state;
     const TupleDescriptor& _tuple_desc;      /**< tuple descripter */
 
-    const boost::shared_ptr<PaloScanRange> _scan_range;     /**< ÇëÇóµÄ²ÎÊýÐÅÏ¢ */
+    const boost::shared_ptr<PaloScanRange> _scan_range;     /**< ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ */
     const std::vector<OlapScanRange> _key_ranges;
     const std::vector<TCondition> _olap_filter;
     RuntimeProfile* _profile;

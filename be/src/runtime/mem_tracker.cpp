@@ -180,6 +180,7 @@ MemTracker* MemTracker::CreateQueryMemTracker(const TUniqueId& id,
 }
 
 MemTracker::~MemTracker() {
+    //LOG(INFO) << "_consumption->current_value is " << _consumption->current_value() << ",label is :"<< _label;
     DCHECK_EQ(_consumption->current_value(), 0) << _label << "\n"
         << get_stack_trace() << "\n"
         << LogUsage("");

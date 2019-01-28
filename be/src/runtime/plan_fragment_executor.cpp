@@ -253,7 +253,7 @@ void PlanFragmentExecutor::print_volume_ids(
 }
 
 Status PlanFragmentExecutor::open() {
-    OLAP_LOG_DEBUG("PlanFragmentExecutor::open");
+    OLAP_LOG_INFO("PlanFragmentExecutor::open");
     LOG(INFO) << "Open(): instance_id=" << _runtime_state->fragment_instance_id();
 
     // we need to start the profile-reporting thread before calling Open(), since it
@@ -273,6 +273,7 @@ Status PlanFragmentExecutor::open() {
 
     Status status = open_internal();    //jungle comment:if the fragment has sink ,then exec the plan and send to sink
 
+    LOG(INFO) << "open_internal status is " << status.code() << " , msg: " << status.get_error_msg();
     if (!status.ok() && !status.is_cancelled() && _runtime_state->log_has_space()) {
         // Log error message in addition to returning in Status. Queries that do not
         // fetch results (e.g. insert) may not receive the message directly and can
@@ -285,7 +286,7 @@ Status PlanFragmentExecutor::open() {
 }
 
 Status PlanFragmentExecutor::open_internal() {
-    OLAP_LOG_DEBUG("PlanFragmentExecutor::open_internal");
+    OLAP_LOG_INFO("PlanFragmentExecutor::open_internal");
     {
         SCOPED_TIMER(profile()->total_time_counter());
         RETURN_IF_ERROR(_plan->open(_runtime_state.get()));
@@ -299,9 +300,15 @@ Status PlanFragmentExecutor::open_internal() {
     // If there is a sink, do all the work of driving it here, so that
     // when this returns the query has actually finished
     RowBatch* batch = NULL;
-
+    MonotonicStopWatch tt ;
+    tt.start();
     while (true) {
+        MonotonicStopWatch t ;
+        t.start();
         RETURN_IF_ERROR(get_next_internal(&batch));
+        t.stop();
+
+        LOG(INFO) << "get_next_internal , cost :" << t.elapsed_time() / (1000L * 1000L );
 
         if (batch == NULL) {
             break;
@@ -319,9 +326,19 @@ Status PlanFragmentExecutor::open_internal() {
         }
 
         SCOPED_TIMER(profile()->total_time_counter());
+
+        MonotonicStopWatch t1 ;
+        t1.start();
+        LOG(INFO) << ">>>>>>>>>>>>>> before sink send  row batch get_next,now consumption :" << _row_batch->tuple_data_pool()->local_mem_tracker()->consumption();
         RETURN_IF_ERROR(_sink->send(runtime_state(), batch));
+        LOG(INFO) << ">>>>>>>>>>>>>> after sink send  row batch get_next,now consumption :" << _row_batch->tuple_data_pool()->local_mem_tracker()->consumption();
+        t1.stop();
+        LOG(INFO) << "sink send , cost :" << t1.elapsed_time()/(1000L * 1000L );
 
     }
+
+    tt.stop();
+    LOG(INFO) << "============ get_next_internal finish , cost total :" << tt.elapsed_time()/(1000L * 1000L) ;
 
     // Close the sink *before* stopping the report thread. Close may
     // need to add some important information to the last report that
@@ -336,14 +353,20 @@ Status PlanFragmentExecutor::open_internal() {
     // audit the sinks to check that this is ok, or change that behaviour.
     {
         SCOPED_TIMER(profile()->total_time_counter());
+        MonotonicStopWatch t ;
+        t.start();
+        LOG(INFO) << ">>>>>>>>>>>>>> before  sink send  close ,local consumption :" << _row_batch->tuple_data_pool()->local_mem_tracker()->consumption();
+        LOG(INFO) << ">>>>>>>>>>>>>> before  sink send  close ,global consumption :" << _row_batch->tuple_data_pool()->mem_tracker()->consumption();
         Status status = _sink->close(runtime_state(), _status);
-        OLAP_LOG_DEBUG("_sink->close ");
+        t.stop();
+
+        LOG(INFO) << "=============== sink close , cost :" << t.elapsed_time() / (1000L * 1000L );
         RETURN_IF_ERROR(status);
     }
     {
         std::stringstream ss;
         profile()->pretty_print(&ss);
-        //LOG(INFO) << ss.str();
+        LOG(INFO) << ss.str();
     }
 
     // Setting to NULL ensures that the d'tor won't double-close the sink.
@@ -392,7 +415,7 @@ void PlanFragmentExecutor::report_profile() {
                       << "profile for instance " << _runtime_state->fragment_instance_id();
             std::stringstream ss;
             profile()->pretty_print(&ss);
-            //VLOG_FILE << ss.str();
+            VLOG_FILE << ss.str();
         }
 
         if (!_report_thread_active) {
@@ -443,7 +466,7 @@ void PlanFragmentExecutor::stop_report_thread() {
 }
 
 Status PlanFragmentExecutor::get_next(RowBatch** batch) {
-    VLOG_FILE << "GetNext(): instance_id=" << _runtime_state->fragment_instance_id();
+    LOG(INFO) << "GetNext(): instance_id=" << _runtime_state->fragment_instance_id();
     Status status = get_next_internal(batch);
     update_status(status);
 
@@ -460,15 +483,21 @@ Status PlanFragmentExecutor::get_next(RowBatch** batch) {
 }
 
 Status PlanFragmentExecutor::get_next_internal(RowBatch** batch) {
+    LOG(INFO) << "get_next_internal" ;
     if (_done) {
         *batch = NULL;
         return Status::OK;
     }
-
+    LOG(INFO) << "plan debug string " << _plan->debug_string();
     while (!_done) {
-        _row_batch->reset(); //jungle comment : _row_batch already send in open_internal,and reset
+        //LOG(INFO) << ">>>>>>>>>>>>>> before row batch reset,now consumption :" << _row_batch->tuple_data_pool()->local_mem_tracker()->consumption();
+        _row_batch->reset(); //jungle comment : _row_batch already send when _sink->send(),and  now reset
+        //LOG(INFO) << ">>>>>>>>>>>>>> after row batch reset,now consumption :" << _row_batch->tuple_data_pool()->local_mem_tracker()->consumption();
         SCOPED_TIMER(profile()->total_time_counter());
-        RETURN_IF_ERROR(_plan->get_next(_runtime_state.get(), _row_batch.get(), &_done));
+        Status status = _plan->get_next(_runtime_state.get(), _row_batch.get(), &_done);
+        //LOG(INFO) << ">>>>>>>>>>>>>> after row batch get_next,now consumption :" << _row_batch->tuple_data_pool()->local_mem_tracker()->consumption();
+        //LOG(INFO ) << "get_next status :" << status.code() << " , msg " << status.get_error_msg();
+        RETURN_IF_ERROR(status);
 
         if (_row_batch->num_rows() > 0) {
             COUNTER_UPDATE(_rows_produced_counter, _row_batch->num_rows());
@@ -527,11 +556,14 @@ void PlanFragmentExecutor::release_thread_token() {
 }
 
 void PlanFragmentExecutor::close() {
+    LOG(INFO) << "PlanFragmentExecutor::close";
     if (_closed) {
         return;
     }
 
+    //LOG(INFO) << "before _row_batch::reset:" << _row_batch->tuple_data_pool()->local_mem_tracker()->consumption();
     _row_batch.reset(NULL);
+    //LOG(INFO) << "after _row_batch::reset" << _row_batch->tuple_data_pool()->mem_tracker()->consumption();
 
     // Prepare may not have been called, which sets _runtime_state
     if (_runtime_state.get() != NULL) {
@@ -544,6 +576,7 @@ void PlanFragmentExecutor::close() {
         _exec_env->thread_mgr()->unregister_pool(_runtime_state->resource_pool());
     }
 
+    //LOG(INFO) << "_mem_tracker release consumption" << _mem_tracker->consumption();
     _mem_tracker->release(_mem_tracker->consumption());
     _closed = true;
 }

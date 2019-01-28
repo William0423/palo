@@ -164,8 +164,9 @@ OLAPStatus CommandExecutor::push(
     OLAPStatus res = OLAP_SUCCESS;
     OLAP_LOG_INFO("begin to process push. [tablet_id=%ld version=%ld] , file path :%s",
                   request.tablet_id, request.version ,request.http_file_path.c_str());
-
-    time_t start = time(NULL);
+    MonotonicStopWatch t ;
+    t.start();
+    //time_t start = time(NULL);
     if (PaloMetrics::palo_push_count() != NULL) {
         PaloMetrics::palo_push_count()->increment(1);
     }
@@ -191,7 +192,9 @@ OLAPStatus CommandExecutor::push(
     PushHandler push_handler;
     res = push_handler.process(olap_table, request, type, tablet_info_vec);
 
-    time_t cost = time(NULL) - start;
+    t.stop();
+    long cost = t.elapsed_time() / (1000L * 1000L);
+    //time_t cost = time(NULL) - start;
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to process push. cost: %ld [res=%d table=%s]",
                          cost, res, olap_table->full_name().c_str());

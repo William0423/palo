@@ -32,6 +32,7 @@ public:
     static Expr* from_thrift(const TExprNode& node);
 protected:
     Status codegen_cast_fn(RuntimeState* state, llvm::Function** fn);
+
 };
 
 #define CAST_EXPR_DEFINE(CLASS) \
@@ -51,7 +52,10 @@ protected:
         virtual LargeIntVal get_large_int_val(ExprContext* context, TupleRow*); \
         virtual FloatVal get_float_val(ExprContext* context, TupleRow*); \
         virtual DoubleVal get_double_val(ExprContext* context, TupleRow*); \
-    };
+        std::string debug_string() const override {  \
+        return "(castExpr)"; \
+        }  \
+    }; \
 
 CAST_EXPR_DEFINE(CastBooleanExpr);
 CAST_EXPR_DEFINE(CastTinyIntExpr);

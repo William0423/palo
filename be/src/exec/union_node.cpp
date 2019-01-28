@@ -260,6 +260,7 @@ Status UnionNode::get_next_materialized(RuntimeState* state, RowBatch* row_batch
 }
 
 Status UnionNode::get_next_const(RuntimeState* state, RowBatch* row_batch) {
+    LOG(INFO) << "get_next_const" ;
     DCHECK_EQ(state->per_fragment_instance_idx(), 0);
     DCHECK_LT(_const_expr_list_idx, _const_expr_lists.size());
     // Create new tuple buffer for row_batch.

@@ -112,6 +112,8 @@ public:
             _next_key(NULL),
             _next_delete_flag(false),
             _scan_rows(0),
+            _scan_row_total_count(0),
+            _scan_row_current_index(0),
             _filted_rows(0),
             _merged_rows(0) {}
 
@@ -126,6 +128,18 @@ public:
 
     // Reader next row with aggregation.
     OLAPStatus next_row_with_aggregation(RowCursor *row_cursor, int64_t* raw_rows_read, bool *eof);
+
+    float scan_rate() {
+        _scan_row_total_count == 0 ? 0 : _scan_row_current_index  / _scan_row_total_count;
+    }
+
+    uint64_t scan_row_total_count(){
+        return _scan_row_total_count;
+    }
+
+    uint64_t scan_row_current_index(){
+        return _scan_row_current_index;
+    }
 
     uint64_t merged_rows() const {
         return _merged_rows;
@@ -263,6 +277,10 @@ private:
     DeleteHandler _delete_handler;
 
     MergeSet _merge_set;
+
+    uint64_t  _scan_row_total_count ;
+
+    uint64_t  _scan_row_current_index;
 
     const RowCursor* _next_key;
     bool _next_delete_flag;

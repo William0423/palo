@@ -563,6 +563,7 @@ Status Translator::prepare(RuntimeState* state) {
     if (_batch_to_write.get() == nullptr) {
         return Status("No memory to allocate RowBatch.");
     }
+    LOG(INFO) << "_batch_to_write init :" << _batch_to_write->tuple_data_pool()->local_mem_tracker()->consumption();
 
     // 5. prepare value updater
     RETURN_IF_ERROR(create_value_updaters());
@@ -772,7 +773,9 @@ Status Translator::process_one_row(TupleRow* row) {
         // output this batch
         RETURN_IF_ERROR(_writer->add_batch(_batch_to_write.get()));
         // reset batch to free memory
+        //LOG(INFO) << "before _batch_to_write reset :" <<_batch_to_write->tuple_data_pool()->local_mem_tracker()->consumption();
         _batch_to_write->reset();
+        //LOG(INFO) << "after _batch_to_write reset :" <<_batch_to_write->tuple_data_pool()->local_mem_tracker()->consumption();
     }
 
     // deep copy the new row
@@ -782,9 +785,10 @@ Status Translator::process_one_row(TupleRow* row) {
 }
 
 Status Translator::process(RuntimeState* state) {
-    OLAP_LOG_DEBUG("Translator::process");
+    OLAP_LOG_INFO("Translator::process");
     // 1. sort all the data in sorter.
     {
+        LOG(INFO) << " process _batch_to_write consumption :" <<_batch_to_write->tuple_data_pool()->local_mem_tracker()->consumption();
         SCOPED_TIMER(_sort_timer);
         RETURN_IF_ERROR(_sorter->input_done());
     }
@@ -832,12 +836,15 @@ Status Translator::process(RuntimeState* state) {
 }
 
 Status Translator::close(RuntimeState* state) {
+
     if (_sorter != nullptr) {
         _sorter->close(state);
     }
+
     Expr::close(_last_row_expr_ctxs, state);
     Expr::close(_cur_row_expr_ctxs, state);
     Expr::close(_output_row_expr_ctxs, state);
+    LOG(INFO) << "Translator::close ,_batch_to_write:" << _batch_to_write->tuple_data_pool()->local_mem_tracker()->consumption();
     _batch_to_write.reset();
     _hll_merge.close();
     return Status::OK;
@@ -893,7 +900,7 @@ Status DppSink::add_batch(
 }
 
 void DppSink::process(RuntimeState* state, Translator* trans, CountDownLatch* latch) {
-    OLAP_LOG_DEBUG("DppSink::process ");
+    OLAP_LOG_INFO("DppSink::process ");
     // add dpp into cgroups
     CgroupsMgr::apply_system_cgroup();
     Status status = trans->process(state);
@@ -924,14 +931,17 @@ Status DppSink::finish(RuntimeState* state) {
     collect_output(&state->output_files());   //jungle comment: set the runtime _output_files here
 
     for(auto & iter:state->output_files()){
-        OLAP_LOG_DEBUG("DppSink::output_files : %s " , iter.c_str());
+        OLAP_LOG_INFO("DppSink::output_files : %s " , iter.c_str());
     }
+
+    LOG(INFO) << "222222";
     for (auto& iter : _translator_map) {
         for (auto& trans : iter.second) {
             trans->close(state);
         }
     }
 
+    LOG(INFO) << "333333";
     return state->query_status();
 }
 

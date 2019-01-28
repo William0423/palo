@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Project"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Olap">
+				<Option output="/src/olap/libOlap.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../lib/clang/8.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 Olap"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Olap/fast">
+				<Option output="/src/olap/libOlap.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../lib/clang/8.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 Olap/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/admin/work/cpp/palo/be/src/olap/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/base_expansion_handler.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/base_expansion_handler.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/bit_field_reader.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/bit_field_reader.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/bit_field_writer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/bit_field_writer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/bloom_filter.hpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/bloom_filter_reader.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/bloom_filter_reader.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/bloom_filter_writer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/bloom_filter_writer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/byte_buffer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/byte_buffer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/column_data.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/column_data.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/column_reader.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/column_reader.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/column_writer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/column_writer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/compress.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/compress.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/data_writer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/data_writer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/file_stream.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/file_stream.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/in_stream.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/in_stream.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/out_stream.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/out_stream.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/run_length_byte_reader.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/run_length_byte_reader.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/run_length_byte_writer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/run_length_byte_writer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/run_length_integer_reader.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/run_length_integer_reader.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/run_length_integer_writer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/run_length_integer_writer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/segment_reader.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/segment_reader.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/segment_writer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/segment_writer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/serialize.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/serialize.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/stream_index_common.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/stream_index_common.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/stream_index_reader.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/stream_index_reader.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/stream_index_writer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/stream_index_writer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/stream_name.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/column_file/stream_name.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/command_executor.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/command_executor.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/cumulative_handler.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/cumulative_handler.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/delete_handler.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/delete_handler.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/field.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/field.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/file_helper.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/file_helper.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/i_data.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/i_data.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/lru_cache.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/lru_cache.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/merger.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/merger.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_cond.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_cond.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_data.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_data.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_engine.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_engine.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_header.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_header.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_index.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_index.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_main.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_main.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_reader.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_reader.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_rootpath.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_rootpath.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_server.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_server.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_snapshot.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_snapshot.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_table.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/olap_table.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/push_handler.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/push_handler.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/reader.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/reader.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/row_block.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/row_block.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/row_cursor.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/row_cursor.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/schema_change.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/schema_change.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/utils.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/utils.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/writer.cpp">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/writer.h">
+			<Option target="Olap"/>
+		</Unit>
+		<Unit filename="/Users/admin/work/cpp/palo/be/src/olap/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

@@ -179,7 +179,7 @@ public:
     OLAPStatus init(size_t short_key_len, size_t short_key_num, RowFields* fields);
 
     // 加载一个segment到内存 ,index segment
-    OLAPStatus load_segment(const char* file, size_t *current_num_rows_per_row_block);
+    OLAPStatus load_segment(const char* file, size_t *current_num_rows_per_row_block,size_t * segment_row_count);
 
     // Return the IndexOffset of the first element, physically, it's (0, 0)
     const OLAPIndexOffset begin() const {
@@ -592,6 +592,10 @@ public:
     size_t current_num_rows_per_row_block() const {
         return _current_num_rows_per_row_block;
     }
+    std::map<uint32_t,uint32_t > segmentid_to_row_count(){
+        return _segmentid_to_row_count;
+    }
+
 
     OLAPStatus get_row_block_position(const OLAPIndexOffset& pos, RowBlockPosition* rbp) const {
         return _index.get_row_block_position(pos, rbp);
@@ -667,6 +671,7 @@ private:
     std::vector<bool> _has_null_flags;
     std::unordered_map<uint32_t, FileHeader<column_file::ColumnDataHeaderMessage> > _seg_pb_map;
 
+    std::map<uint32_t,uint32_t> _segmentid_to_row_count ;
     DISALLOW_COPY_AND_ASSIGN(OLAPIndex);
 };
 

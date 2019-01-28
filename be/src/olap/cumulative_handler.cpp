@@ -391,7 +391,7 @@ bool CumulativeHandler::_find_previous_version(const Version current_version,
 }
 
 OLAPStatus CumulativeHandler::_do_cumulative_expansion() {
-    OLAP_LOG_WARNING("CumulativeHandler::_do_cumulative_expansion");
+    OLAP_LOG_INFO("CumulativeHandler::_do_cumulative_expansion");
     OLAPStatus res = OLAP_SUCCESS;
     Merger merger(_table, _new_cumulative_index, READER_CUMULATIVE_EXPANSION);
 

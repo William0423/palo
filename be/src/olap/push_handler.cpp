@@ -267,6 +267,7 @@ EXIT:
     _release_header_lock();
 
     // Get tablet infos for output
+    LOG(INFO)<< "is push locked :" << is_push_locked << "  for tablet:" << olap_table->tablet_id();
     if (res == OLAP_SUCCESS || res == OLAP_ERR_PUSH_VERSION_ALREADY_EXIST) {
         if (tablet_info_vec != NULL) {
             _get_tablet_infos(table_infoes, tablet_info_vec);
@@ -415,10 +416,13 @@ OLAPStatus PushHandler::_convert(
         }
 
         // 5. Read data from raw file and write into OLAPIndex of curr_olap_table
+
         if (_request.__isset.http_file_path) {
             // Convert from raw to delta
-            OLAP_LOG_DEBUG("start to convert row file to delta.");
+            OLAP_LOG_INFO("start to convert row file to delta.");
 
+            MonotonicStopWatch t1 ;
+            t1.start();
             while (!reader->eof()) {
                 if (OLAP_SUCCESS != (res = writer->attached_by(&row))) {
                     OLAP_LOG_WARNING(
@@ -442,19 +446,25 @@ OLAPStatus PushHandler::_convert(
 
             reader->finalize();
 
+            t1.stop();
+            LOG(INFO) << "convert row file time:" << t1.elapsed_time()/(1000L * 1000L);
             if (false == reader->validate_checksum()) {
                 OLAP_LOG_WARNING("pushed delta file has wrong checksum.");
                 res = OLAP_ERR_PUSH_BUILD_DELTA_ERROR;
                 break;
             }
         }
+        MonotonicStopWatch t2;
+        t2.start();
 
         if (OLAP_SUCCESS != (res = writer->finalize())) {     //jungle comment: data and index write to file
             OLAP_LOG_WARNING("fail to finalize writer. [res=%d]", res);
             break;
         }
+        t2.stop();
+        LOG(INFO)<< "write finalize cost " << t2.elapsed_time()/(1000L * 1000L);
 
-        OLAP_LOG_DEBUG("load the index.");
+        OLAP_LOG_INFO("data and index are wroted to file,now load the index.");
 
         if (OLAP_SUCCESS != (res = delta_index->load())) {
             OLAP_LOG_WARNING("fail to load index. [res=%d table='%s' version=%ld]",
@@ -482,7 +492,7 @@ OLAPStatus PushHandler::_convert(
 
     SAFE_DELETE(reader);
     SAFE_DELETE(writer);
-    OLAP_LOG_NOTICE_PUSH("processed_rows", "%d", num_rows);
+    OLAP_LOG_INFO("processed_rows", "%d", num_rows);
     OLAP_LOG_TRACE("convert delta file end. [table='%s' res=%d]",
                    curr_olap_table->full_name().c_str(), res);
 
@@ -594,7 +604,7 @@ OLAPStatus PushHandler::_get_versions_reverted(
         for (Versions::const_iterator v = all_versions.begin(); v != all_versions.end(); ++v) {
             if (v->second == _request.version) {
                 unused_versions->push_back(*v);
-                OLAP_LOG_DEBUG("Add unused version. [table='%s' version=%d-%d]",
+                OLAP_LOG_WARNING("Add unused version. [table='%s' version=%d-%d]",
                                olap_table->full_name().c_str(), v->first, v->second);
             }
         }
@@ -616,6 +626,7 @@ OLAPStatus PushHandler::_update_header(
         Indices* new_indices,
         Indices* unused_indices) {
     OLAPStatus res = OLAP_SUCCESS;
+    OLAP_LOG_DEBUG("PushHandler _update_header for  tablet  : %d ",olap_table->tablet_id());
 
     res = olap_table->replace_data_sources(
             unused_versions,
@@ -775,7 +786,7 @@ OLAPStatus BinaryReader::finalize() {
 }
 
 OLAPStatus BinaryReader::next(RowCursor* row) {
-    OLAP_LOG_WARNING("BinaryReader::next");
+    OLAP_LOG_DEBUG("BinaryReader::next");
     OLAPStatus res = OLAP_SUCCESS;
 
     if (!_ready || NULL == row) {

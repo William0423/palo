@@ -1,0 +1,1096 @@
+I0521 06:03:59.895851 107258 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:03:59.895980 107258 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0521 06:04:01.673710 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:04.000183 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=48]
+I0521 06:04:06.673832 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:09.000171 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=48]
+I0521 06:04:09.896111 107258 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0521 06:04:09.896124 107258 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:09.896250 107258 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0521 06:04:11.673987 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:14.000177 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=48]
+I0521 06:04:16.674149 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:19.000174 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=48]
+I0521 06:04:19.896386 107258 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0521 06:04:19.896404 107258 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:19.896543 107258 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0521 06:04:21.674283 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:24.000181 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=48]
+I0521 06:04:26.674418 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:29.000180 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=48]
+I0521 06:04:29.896680 107258 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0521 06:04:29.896852 107258 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:29.896989 107258 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0521 06:04:31.674561 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:34.000146 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=48]
+I0521 06:04:34.839100 107308 mini_load.cpp:470] accept one request HttpRequest: 
+method:1
+uri:/api/bb/table2/_load
+raw_path:/api/bb/table2/_load
+headers: 
+key=Accept, value=*/*
+key=Authorization, value=Basic cm9vdDo=
+key=Content-Length, value=143
+key=Expect, value=100-continue
+key=Host, value=172.17.0.2:8040
+key=User-Agent, value=curl/7.47.0
+params: 
+key=db, value=bb
+key=label, value=table2_20170714
+key=table, value=table2
+I0521 06:04:34.839118 107308 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:34.839501 107308 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/mini_download/bb/table2_20170714/table2..20180521060434.839469' flag=577 mode=432 fd=51]
+I0521 06:04:34.840662 107308 mini_load.cpp:218] Save file to path /opt/palo/output/be/data/mini_download/bb/table2_20170714/table2..20180521060434.839469 success.
+I0521 06:04:34.841207 107308 mini_load.cpp:298] MiniLoadAction::load, file_path is /opt/palo/output/be/data/mini_download/bb/table2_20170714/table2..20180521060434.839469 
+I0521 06:04:34.841217 107308 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:36.381932 107332 backend_service.h:104] submit_etl_task. request  is TMiniLoadEtlTaskRequest {
+  01: protocol_version (i32) = 0,
+  02: params (struct) = TExecPlanFragmentParams {
+    01: protocol_version (i32) = 0,
+    02: fragment (struct) = TPlanFragment {
+      02: plan (struct) = TPlan {
+        01: nodes (list) = list<struct>[1] {
+          [0] = TPlanNode {
+            01: node_id (i32) = 0,
+            02: node_type (i32) = 2,
+            03: num_children (i32) = 0,
+            04: limit (i64) = -1,
+            05: row_tuples (list) = list<i32>[1] {
+              [0] = 0,
+            },
+            06: nullable_tuples (list) = list<bool>[1] {
+              [0] = false,
+            },
+            08: compact_data (bool) = false,
+            19: csv_scan_node (struct) = TCsvScanNode {
+              01: tuple_id (i32) = 0,
+              02: file_paths (list) = list<string>[1] {
+                [0] = "/opt/palo/output/be/data/mini_download/bb/table2_20170714/table2..20180521060434.839469",
+              },
+              03: column_separator (string) = "\t",
+              04: line_delimiter (string) = "\n",
+              05: column_type_mapping (map) = map<string,struct>[4] {
+                "age" -> TColumnType {
+                  01: type (i32) = 6,
+                },
+                "citycode" -> TColumnType {
+                  01: type (i32) = 4,
+                },
+                "siteid" -> TColumnType {
+                  01: type (i32) = 5,
+                },
+                "username" -> TColumnType {
+                  01: type (i32) = 15,
+                  02: len (i32) = 32,
+                },
+              },
+              06: columns (list) = list<string>[4] {
+                [0] = "siteid",
+                [1] = "citycode",
+                [2] = "username",
+                [3] = "age",
+              },
+              09: max_filter_ratio (double) = 0,
+            },
+          },
+        },
+      },
+      05: output_sink (struct) = TDataSink {
+        01: type (i32) = 2,
+        04: split_sink (struct) = TDataSplitSink {
+          01: partition_exprs (list) = list<struct>[0] {
+          },
+          02: partition_infos (list) = list<struct>[1] {
+            [0] = TRangePartition {
+              01: partition_id (i64) = 10015,
+              02: range (struct) = TPartitionRange {
+                01: start_key (struct) = TPartitionKey {
+                  01: sign (i16) = -1,
+                },
+                02: end_key (struct) = TPartitionKey {
+                  01: sign (i16) = 1,
+                },
+                03: include_start_key (bool) = true,
+                04: include_end_key (bool) = true,
+              },
+              03: distributed_exprs (list) = list<struct>[1] {
+                [0] = TExpr {
+                  01: nodes (list) = list<struct>[1] {
+                    [0] = TExprNode {
+                      01: node_type (i32) = 16,
+                      02: type (struct) = TTypeDesc {
+                        01: types (list) = list<struct>[1] {
+                          [0] = TTypeNode {
+                            01: type (i32) = 0,
+                            02: scalar_type (struct) = TScalarType {
+                              01: type (i32) = 5,
+                            },
+                          },
+                        },
+                      },
+                      04: num_children (i32) = 0,
+                      15: slot_ref (struct) = TSlotRef {
+                        01: slot_id (i32) = 0,
+                        02: tuple_id (i32) = 0,
+                      },
+                      20: output_scale (i32) = -1,
+                      23: output_column (i32) = -1,
+                    },
+                  },
+                },
+              },
+              04: distribute_bucket (i32) = 1,
+            },
+          },
+          04: rollup_schemas (map) = map<string,struct>[1] {
+            "10016" -> TRollupSchema {
+              01: keys (list) = list<struct>[1] {
+                [0] = TExpr {
+                  01: nodes (list) = list<struct>[1] {
+                    [0] = TExprNode {
+                      01: node_type (i32) = 16,
+                      02: type (struct) = TTypeDesc {
+                        01: types (list) = list<struct>[1] {
+                          [0] = TTypeNode {
+                            01: type (i32) = 0,
+                            02: scalar_type (struct) = TScalarType {
+                              01: type (i32) = 5,
+                            },
+                          },
+                        },
+                      },
+                      04: num_children (i32) = 0,
+                      15: slot_ref (struct) = TSlotRef {
+                        01: slot_id (i32) = 0,
+                        02: tuple_id (i32) = 0,
+                      },
+                      20: output_scale (i32) = -1,
+                      23: output_column (i32) = -1,
+                    },
+                  },
+                },
+              },
+              02: values (list) = list<struct>[3] {
+                [0] = TExpr {
+                  01: nodes (list) = list<struct>[1] {
+                    [0] = TExprNode {
+                      01: node_type (i32) = 16,
+                      02: type (struct) = TTypeDesc {
+                        01: types (list) = list<struct>[1] {
+                          [0] = TTypeNode {
+                            01: type (i32) = 0,
+                            02: scalar_type (struct) = TScalarType {
+                              01: type (i32) = 4,
+                            },
+                          },
+                        },
+                      },
+                      04: num_children (i32) = 0,
+                      15: slot_ref (struct) = TSlotRef {
+                        01: slot_id (i32) = 1,
+                        02: tuple_id (i32) = 0,
+                      },
+                      20: output_scale (i32) = -1,
+                      23: output_column (i32) = -1,
+                    },
+                  },
+                },
+                [1] = TExpr {
+                  01: nodes (list) = list<struct>[1] {
+                    [0] = TExprNode {
+                      01: node_type (i32) = 16,
+                      02: type (struct) = TTypeDesc {
+                        01: types (list) = list<struct>[1] {
+                          [0] = TTypeNode {
+                            01: type (i32) = 0,
+                            02: scalar_type (struct) = TScalarType {
+                              01: type (i32) = 15,
+                              02: len (i32) = -1,
+                            },
+                          },
+                        },
+                      },
+                      04: num_children (i32) = 0,
+                      15: slot_ref (struct) = TSlotRef {
+                        01: slot_id (i32) = 2,
+                        02: tuple_id (i32) = 0,
+                      },
+                      20: output_scale (i32) = -1,
+                      23: output_column (i32) = -1,
+                    },
+                  },
+                },
+                [2] = TExpr {
+                  01: nodes (list) = list<struct>[1] {
+                    [0] = TExprNode {
+                      01: node_type (i32) = 16,
+                      02: type (struct) = TTypeDesc {
+                        01: types (list) = list<struct>[1] {
+                          [0] = TTypeNode {
+                            01: type (i32) = 0,
+                            02: scalar_type (struct) = TScalarType {
+                              01: type (i32) = 6,
+                            },
+                          },
+                        },
+                      },
+                      04: num_children (i32) = 0,
+                      15: slot_ref (struct) = TSlotRef {
+                        01: slot_id (i32) = 3,
+                        02: tuple_id (i32) = 0,
+                      },
+                      20: output_scale (i32) = -1,
+                      23: output_column (i32) = -1,
+                    },
+                  },
+                },
+              },
+              03: value_ops (list) = list<i32>[3] {
+                [0] = 3,
+                [1] = 3,
+                [2] = 3,
+              },
+              04: keys_type (string) = "UNIQUE_KEYS",
+            },
+          },
+        },
+      },
+      06: partition (struct) = TDataPartition {
+        01: type (i32) = 0,
+        02: partition_exprs (list) = list<struct>[0] {
+        },
+      },
+    },
+    03: desc_tbl (struct) = TDescriptorTable {
+      01: slotDescriptors (list) = list<struct>[4] {
+        [0] = TSlotDescriptor {
+          01: id (i32) = 0,
+          02: parent (i32) = 0,
+          03: slotType (struct) = TTypeDesc {
+            01: types (list) = list<struct>[1] {
+              [0] = TTypeNode {
+                01: type (i32) = 0,
+                02: scalar_type (struct) = TScalarType {
+                  01: type (i32) = 5,
+                },
+              },
+            },
+          },
+          04: columnPos (i32) = -1,
+          05: byteOffset (i32) = 4,
+          06: nullIndicatorByte (i32) = 0,
+          07: nullIndicatorBit (i32) = 1,
+          08: colName (string) = "siteid",
+          09: slotIdx (i32) = 1,
+          10: isMaterialized (bool) = true,
+        },
+        [1] = TSlotDescriptor {
+          01: id (i32) = 1,
+          02: parent (i32) = 0,
+          03: slotType (struct) = TTypeDesc {
+            01: types (list) = list<struct>[1] {
+              [0] = TTypeNode {
+                01: type (i32) = 0,
+                02: scalar_type (struct) = TScalarType {
+                  01: type (i32) = 4,
+                },
+              },
+            },
+          },
+          04: columnPos (i32) = -1,
+          05: byteOffset (i32) = 2,
+          06: nullIndicatorByte (i32) = 0,
+          07: nullIndicatorBit (i32) = 0,
+          08: colName (string) = "citycode",
+          09: slotIdx (i32) = 0,
+          10: isMaterialized (bool) = true,
+        },
+        [2] = TSlotDescriptor {
+          01: id (i32) = 2,
+          02: parent (i32) = 0,
+          03: slotType (struct) = TTypeDesc {
+            01: types (list) = list<struct>[1] {
+              [0] = TTypeNode {
+                01: type (i32) = 0,
+                02: scalar_type (struct) = TScalarType {
+                  01: type (i32) = 15,
+                  02: len (i32) = -1,
+                },
+              },
+            },
+          },
+          04: columnPos (i32) = -1,
+          05: byteOffset (i32) = 16,
+          06: nullIndicatorByte (i32) = 0,
+          07: nullIndicatorBit (i32) = 3,
+          08: colName (string) = "username",
+          09: slotIdx (i32) = 3,
+          10: isMaterialized (bool) = true,
+        },
+        [3] = TSlotDescriptor {
+          01: id (i32) = 3,
+          02: parent (i32) = 0,
+          03: slotType (struct) = TTypeDesc {
+            01: types (list) = list<struct>[1] {
+              [0] = TTypeNode {
+                01: type (i32) = 0,
+                02: scalar_type (struct) = TScalarType {
+                  01: type (i32) = 6,
+                },
+              },
+            },
+          },
+          04: columnPos (i32) = -1,
+          05: byteOffset (i32) = 8,
+          06: nullIndicatorByte (i32) = 0,
+          07: nullIndicatorBit (i32) = 2,
+          08: colName (string) = "age",
+          09: slotIdx (i32) = 2,
+          10: isMaterialized (bool) = true,
+        },
+      },
+      02: tupleDescriptors (list) = list<struct>[1] {
+        [0] = TTupleDescriptor {
+          01: id (i32) = 0,
+          02: byteSize (i32) = 32,
+          03: numNullBytes (i32) = 1,
+          04: tableId (i64) = 10016,
+          05: numNullSlots (i32) = 4,
+        },
+      },
+      03: tableDescriptors (list) = list<struct>[1] {
+        [0] = TTableDescriptor {
+          01: id (i64) = 10016,
+          02: tableType (i32) = 1,
+          03: numCols (i32) = 4,
+          04: numClusteringCols (i32) = 0,
+          07: tableName (string) = "table2",
+          08: dbName (string) = "",
+          11: olapTable (struct) = TOlapTable {
+            01: tableName (string) = "table2",
+          },
+        },
+      },
+    },
+    04: params (struct) = TPlanFragmentExecParams {
+      01: query_id (struct) = TUniqueId {
+        01: hi (i64) = 10026,
+        02: lo (i64) = 0,
+      },
+      02: fragment_instance_id (struct) = TUniqueId {
+        01: hi (i64) = 10026,
+        02: lo (i64) = 0,
+      },
+      03: per_node_scan_ranges (map) = map<i32,list>[0] {
+      },
+      04: per_exch_num_senders (map) = map<i32,i32>[0] {
+      },
+      05: destinations (list) = list<struct>[0] {
+      },
+    },
+    08: query_options (struct) = TQueryOptions {
+      01: abort_on_error (bool) = false,
+      02: max_errors (i32) = 0,
+      03: disable_codegen (bool) = true,
+      04: batch_size (i32) = 0,
+      05: num_nodes (i32) = 0,
+      06: max_scan_range_length (i64) = 0,
+      07: num_scanner_threads (i32) = 0,
+      08: max_io_buffers (i32) = 0,
+      09: allow_unsupported_formats (bool) = false,
+      10: default_order_by_limit (i64) = -1,
+      11: debug_action (string) = "",
+      12: mem_limit (i64) = 2147483648,
+      13: abort_on_default_limit_exceeded (bool) = false,
+      14: query_timeout (i32) = 3600,
+      15: is_report_success (bool) = false,
+      16: codegen_level (i32) = 0,
+      17: kudu_latest_observed_ts (i64) = 9223372036854775807,
+      18: query_type (i32) = 1,
+    },
+    11: import_label (string) = "table2_20170714",
+    12: db_name (string) = "default_cluster:bb",
+    13: load_job_id (i64) = 10026,
+    14: load_error_hub_info (struct) = TLoadErrorHubInfo {
+      01: type (i32) = 1,
+    },
+  },
+}
+I0521 06:04:36.381979 107332 plan_fragment_executor.cpp:73] Prepare(): query_id=272a:0 instance_id=272a:0 backend_num=0
+I0521 06:04:36.382053 107332 plan_fragment_executor.cpp:130] Using query memory limit: 2.00 GB
+I0521 06:04:36.382112 107332 csv_scan_node.cpp:122] csv scan node: TPlanNode {
+  01: node_id (i32) = 0,
+  02: node_type (i32) = 2,
+  03: num_children (i32) = 0,
+  04: limit (i64) = -1,
+  05: row_tuples (list) = list<i32>[1] {
+    [0] = 0,
+  },
+  06: nullable_tuples (list) = list<bool>[1] {
+    [0] = false,
+  },
+  08: compact_data (bool) = false,
+  19: csv_scan_node (struct) = TCsvScanNode {
+    01: tuple_id (i32) = 0,
+    02: file_paths (list) = list<string>[1] {
+      [0] = "/opt/palo/output/be/data/mini_download/bb/table2_20170714/table2..20180521060434.839469",
+    },
+    03: column_separator (string) = "\t",
+    04: line_delimiter (string) = "\n",
+    05: column_type_mapping (map) = map<string,struct>[4] {
+      "age" -> TColumnType {
+        01: type (i32) = 6,
+      },
+      "citycode" -> TColumnType {
+        01: type (i32) = 4,
+      },
+      "siteid" -> TColumnType {
+        01: type (i32) = 5,
+      },
+      "username" -> TColumnType {
+        01: type (i32) = 15,
+        02: len (i32) = 32,
+      },
+    },
+    06: columns (list) = list<string>[4] {
+      [0] = "siteid",
+      [1] = "citycode",
+      [2] = "username",
+      [3] = "age",
+    },
+    09: max_filter_ratio (double) = 0,
+  },
+}
+I0521 06:04:36.382146 107332 csv_scan_node.cpp:134] CsvScanNode::Prepare
+I0521 06:04:36.382184 107332 plan_fragment_executor.cpp:172] scan_nodes.size()=0
+I0521 06:04:36.382187 107332 plan_fragment_executor.cpp:173] params.per_node_scan_ranges.size()=0
+I0521 06:04:36.382232 107332 data_spliter.cpp:54] TDataSplitSink: TDataSplitSink {
+  01: partition_exprs (list) = list<struct>[0] {
+  },
+  02: partition_infos (list) = list<struct>[1] {
+    [0] = TRangePartition {
+      01: partition_id (i64) = 10015,
+      02: range (struct) = TPartitionRange {
+        01: start_key (struct) = TPartitionKey {
+          01: sign (i16) = -1,
+        },
+        02: end_key (struct) = TPartitionKey {
+          01: sign (i16) = 1,
+        },
+        03: include_start_key (bool) = true,
+        04: include_end_key (bool) = true,
+      },
+      03: distributed_exprs (list) = list<struct>[1] {
+        [0] = TExpr {
+          01: nodes (list) = list<struct>[1] {
+            [0] = TExprNode {
+              01: node_type (i32) = 16,
+              02: type (struct) = TTypeDesc {
+                01: types (list) = list<struct>[1] {
+                  [0] = TTypeNode {
+                    01: type (i32) = 0,
+                    02: scalar_type (struct) = TScalarType {
+                      01: type (i32) = 5,
+                    },
+                  },
+                },
+              },
+              04: num_children (i32) = 0,
+              15: slot_ref (struct) = TSlotRef {
+                01: slot_id (i32) = 0,
+                02: tuple_id (i32) = 0,
+              },
+              20: output_scale (i32) = -1,
+              23: output_column (i32) = -1,
+            },
+          },
+        },
+      },
+      04: distribute_bucket (i32) = 1,
+    },
+  },
+  04: rollup_schemas (map) = map<string,struct>[1] {
+    "10016" -> TRollupSchema {
+      01: keys (list) = list<struct>[1] {
+        [0] = TExpr {
+          01: nodes (list) = list<struct>[1] {
+            [0] = TExprNode {
+              01: node_type (i32) = 16,
+              02: type (struct) = TTypeDesc {
+                01: types (list) = list<struct>[1] {
+                  [0] = TTypeNode {
+                    01: type (i32) = 0,
+                    02: scalar_type (struct) = TScalarType {
+                      01: type (i32) = 5,
+                    },
+                  },
+                },
+              },
+              04: num_children (i32) = 0,
+              15: slot_ref (struct) = TSlotRef {
+                01: slot_id (i32) = 0,
+                02: tuple_id (i32) = 0,
+              },
+              20: output_scale (i32) = -1,
+              23: output_column (i32) = -1,
+            },
+          },
+        },
+      },
+      02: values (list) = list<struct>[3] {
+        [0] = TExpr {
+          01: nodes (list) = list<struct>[1] {
+            [0] = TExprNode {
+              01: node_type (i32) = 16,
+              02: type (struct) = TTypeDesc {
+                01: types (list) = list<struct>[1] {
+                  [0] = TTypeNode {
+                    01: type (i32) = 0,
+                    02: scalar_type (struct) = TScalarType {
+                      01: type (i32) = 4,
+                    },
+                  },
+                },
+              },
+              04: num_children (i32) = 0,
+              15: slot_ref (struct) = TSlotRef {
+                01: slot_id (i32) = 1,
+                02: tuple_id (i32) = 0,
+              },
+              20: output_scale (i32) = -1,
+              23: output_column (i32) = -1,
+            },
+          },
+        },
+        [1] = TExpr {
+          01: nodes (list) = list<struct>[1] {
+            [0] = TExprNode {
+              01: node_type (i32) = 16,
+              02: type (struct) = TTypeDesc {
+                01: types (list) = list<struct>[1] {
+                  [0] = TTypeNode {
+                    01: type (i32) = 0,
+                    02: scalar_type (struct) = TScalarType {
+                      01: type (i32) = 15,
+                      02: len (i32) = -1,
+                    },
+                  },
+                },
+              },
+              04: num_children (i32) = 0,
+              15: slot_ref (struct) = TSlotRef {
+                01: slot_id (i32) = 2,
+                02: tuple_id (i32) = 0,
+              },
+              20: output_scale (i32) = -1,
+              23: output_column (i32) = -1,
+            },
+          },
+        },
+        [2] = TExpr {
+          01: nodes (list) = list<struct>[1] {
+            [0] = TExprNode {
+              01: node_type (i32) = 16,
+              02: type (struct) = TTypeDesc {
+                01: types (list) = list<struct>[1] {
+                  [0] = TTypeNode {
+                    01: type (i32) = 0,
+                    02: scalar_type (struct) = TScalarType {
+                      01: type (i32) = 6,
+                    },
+                  },
+                },
+              },
+              04: num_children (i32) = 0,
+              15: slot_ref (struct) = TSlotRef {
+                01: slot_id (i32) = 3,
+                02: tuple_id (i32) = 0,
+              },
+              20: output_scale (i32) = -1,
+              23: output_column (i32) = -1,
+            },
+          },
+        },
+      },
+      03: value_ops (list) = list<i32>[3] {
+        [0] = 3,
+        [1] = 3,
+        [2] = 3,
+      },
+      04: keys_type (string) = "UNIQUE_KEYS",
+    },
+  },
+}
+I0521 06:04:36.382249 107332 dpp_sink_internal.cpp:197] construct from thrift: TPartitionRange {
+  01: start_key (struct) = TPartitionKey {
+    01: sign (i16) = -1,
+  },
+  02: end_key (struct) = TPartitionKey {
+    01: sign (i16) = 1,
+  },
+  03: include_start_key (bool) = true,
+  04: include_end_key (bool) = true,
+}
+I0521 06:04:36.382261 107332 dpp_sink_internal.cpp:204] after construct: start_key: [sign: -1; type: INVALID; key: ]; end_key: [sign: 1; type: INVALID; key: ]; include_start: 1; include_end: 1;
+I0521 06:04:36.382287 107332 plan_fragment_executor.cpp:226] plan_root=
+csvScanNode(tupleid=0)
+I0521 06:04:36.382306 107332 etl_job_mgr.cpp:98] Job id(TUniqueId(hi=10026, lo=0)) insert to EtlJobMgr.
+I0521 06:04:36.382311 107332 agent_server.cpp:402] start etl task successfull id=TUniqueId(hi=10026, lo=0)
+I0521 06:04:36.382328 107165 plan_fragment_executor.cpp:256] Open(): instance_id=TUniqueId(hi=10026, lo=0)
+I0521 06:04:36.382339 107165 csv_scan_node.cpp:230] CsvScanNode::Open
+I0521 06:04:36.382350 107165 csv_scanner.cpp:41] CsvScanner::Connect
+I0521 06:04:36.382457 107165 csv_scan_node.cpp:251] CsvScanNode::GetNext
+I0521 06:04:36.382470 107165 csv_scanner.cpp:65] open csv file: [0] /opt/palo/output/be/data/mini_download/bb/table2_20170714/table2..20180521060434.839469
+I0521 06:04:36.382550 107165 csv_scan_node.cpp:328] normal_row_number: 9; error_row_number: 0
+I0521 06:04:36.382580 107165 plan_fragment_executor.cpp:309] open_internal: #rows=9 desc=tuple_desc_map: [Tuple(id=0 size=32 slots=[Slot(id=0 type=INT col=-1 offset=4 null=(offset=0 mask=40)), Slot(id=1 type=SMALLINT col=-1 offset=2 null=(offset=0 mask=80)), Slot(id=2 type=VARCHAR col=-1 offset=16 null=(offset=0 mask=10)), Slot(id=3 type=BIGINT col=-1 offset=8 null=(offset=0 mask=20))] has_varlen_slots=1)] tuple_id_map: [0] tuple_is_nullable: [0] 
+I0521 06:04:36.382596 107165 plan_fragment_executor.cpp:314] [(15 11 ptr:0x5fa6000 len5 22)]
+I0521 06:04:36.382602 107165 plan_fragment_executor.cpp:314] [(14 12 ptr:0x5fa6008 len7 22)]
+I0521 06:04:36.382611 107165 plan_fragment_executor.cpp:314] [(13 13 ptr:0x5fa6010 len5 24)]
+I0521 06:04:36.382617 107165 plan_fragment_executor.cpp:314] [(12 14 ptr:0x5fa6018 len6 33)]
+I0521 06:04:36.382624 107165 plan_fragment_executor.cpp:314] [(11 15 ptr:0x5fa6020 len6 35)]
+I0521 06:04:36.382644 107165 plan_fragment_executor.cpp:314] [(19 17 ptr:0x5fa6028 len6 35)]
+I0521 06:04:36.382652 107165 plan_fragment_executor.cpp:314] [(18 18 ptr:0x5fa6030 len6 35)]
+I0521 06:04:36.382658 107165 plan_fragment_executor.cpp:314] [(17 19 ptr:0x5fa6038 len6 35)]
+I0521 06:04:36.382666 107165 plan_fragment_executor.cpp:314] [(16 20 ptr:0x5fa6040 len6 35)]
+I0521 06:04:36.382675 107165 data_spliter.cpp:263] DataSpliter::send
+I0521 06:04:36.382688 107165 data_spliter.cpp:203] DataSpliter::send_row 
+I0521 06:04:36.382696 107165 data_spliter.cpp:203] DataSpliter::send_row 
+I0521 06:04:36.382700 107165 data_spliter.cpp:203] DataSpliter::send_row 
+I0521 06:04:36.382704 107165 data_spliter.cpp:203] DataSpliter::send_row 
+I0521 06:04:36.382706 107165 data_spliter.cpp:203] DataSpliter::send_row 
+I0521 06:04:36.382709 107165 data_spliter.cpp:203] DataSpliter::send_row 
+I0521 06:04:36.382712 107165 data_spliter.cpp:203] DataSpliter::send_row 
+I0521 06:04:36.382715 107165 data_spliter.cpp:203] DataSpliter::send_row 
+I0521 06:04:36.382717 107165 data_spliter.cpp:203] DataSpliter::send_row 
+I0521 06:04:36.382740 107165 dpp_sink.cpp:293] Translator::create_writer
+I0521 06:04:36.382766 107165 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/mini_download/default_cluster:bb/table2_20170714/output/table2_20170714.10015.10016.0' flag=577 mode=448 fd=48]
+I0521 06:04:36.382835 107156 dpp_sink.cpp:782] Translator::process
+I0521 06:04:36.382863 107156 dpp_writer.cpp:233] DppWriter::add_batch
+I0521 06:04:36.382871 107156 dpp_writer.cpp:116] DppWriter::append_one_row
+I0521 06:04:36.382875 107156 dpp_writer.cpp:146] TYPE_INT : 11 
+I0521 06:04:36.382894 107156 dpp_writer.cpp:116] DppWriter::append_one_row
+I0521 06:04:36.382899 107156 dpp_writer.cpp:146] TYPE_INT : 12 
+I0521 06:04:36.382903 107156 dpp_writer.cpp:116] DppWriter::append_one_row
+I0521 06:04:36.382906 107156 dpp_writer.cpp:146] TYPE_INT : 13 
+I0521 06:04:36.382911 107156 dpp_writer.cpp:116] DppWriter::append_one_row
+I0521 06:04:36.382913 107156 dpp_writer.cpp:146] TYPE_INT : 14 
+I0521 06:04:36.382918 107156 dpp_writer.cpp:116] DppWriter::append_one_row
+I0521 06:04:36.382921 107156 dpp_writer.cpp:146] TYPE_INT : 15 
+I0521 06:04:36.382925 107156 dpp_writer.cpp:116] DppWriter::append_one_row
+I0521 06:04:36.382928 107156 dpp_writer.cpp:146] TYPE_INT : 16 
+I0521 06:04:36.382932 107156 dpp_writer.cpp:116] DppWriter::append_one_row
+I0521 06:04:36.382936 107156 dpp_writer.cpp:146] TYPE_INT : 17 
+I0521 06:04:36.382941 107156 dpp_writer.cpp:116] DppWriter::append_one_row
+I0521 06:04:36.382943 107156 dpp_writer.cpp:146] TYPE_INT : 18 
+I0521 06:04:36.382947 107156 dpp_writer.cpp:116] DppWriter::append_one_row
+I0521 06:04:36.382951 107156 dpp_writer.cpp:146] TYPE_INT : 19 
+I0521 06:04:36.383072 107165 plan_fragment_executor.cpp:341] Fragment 272a:0:(Active: 441.290us, % non-child: 0.00%)
+   - AverageThreadTokens: 0.00 
+   - RowsProduced: 9
+  BlockMgr:
+     - BlockWritesOutstanding: 0
+     - BlocksCreated: 0
+     - BlocksRecycled: 0
+     - BufferedPins: 0
+     - BytesWritten: 0
+     - MaxBlockSize: 8.00 MB
+     - MemoryLimit: 2.00 GB
+     - TotalBufferWaitTime: 0.000ns
+     - TotalEncryptionTime: 0.000ns
+     - TotalIntegrityCheckTime: 0.000ns
+     - TotalReadBlockTime: 0.000ns
+  DataSplitSink (dst_id=TUniqueId(hi=10026, lo=0)):
+     - process batch: 42.065us
+     - sort time: 60.924us
+    Dpp sink:(Active: 259.392us, % non-child: 0.00%)
+      Dpp translator(10015_0_10016):
+         - add batch time: 3.357us
+         - aggregate time: 8.137us
+         - sort time: 2.603us
+         - write to file time: 4.351us
+  CSV_SCAN_NODE (id=0):(Active: 104.730us, % non-child: 0.00%)
+     - BytesRead: 0
+     - MemoryUsed: 0
+     - NumThread: 0
+     - PerReadThreadRawHdfsThroughput: 0.00 /sec
+     - RowsRead: 0
+     - RowsReturned: 9
+     - RowsReturnedRate: 85.94 K/sec
+     - ScanRangesComplete: 0
+     - ScannerThreadsInvoluntaryContextSwitches: 0
+     - ScannerThreadsTotalWallClockTime: 0.000ns
+       - MaterializeTupleTime(*): 99.568us
+       - ScannerThreadsSysTime: 0.000ns
+       - ScannerThreadsUserTime: 0.000ns
+     - ScannerThreadsVoluntaryContextSwitches: 0
+     - TotalRawReadTime(*): 0.000ns
+     - TotalReadThroughput: 0.00 /sec
+     - split check timer: 42.898us
+     - split line timer: 23.221us
+I0521 06:04:36.383600 107165 csv_scan_node.cpp:341] CsvScanNode::Close
+I0521 06:04:36.383647 107165 runtime_state.cpp:341] create error log file: error_log_default_cluster:bb_table2_20170714_272a_0
+I0521 06:04:36.383677 107165 load_error_hub.cpp:41] create_hub: TLoadErrorHubInfo {
+  01: type (i32) = 1,
+}
+I0521 06:04:36.383685 107165 fragment_mgr.cpp:197] execute time is 1
+I0521 06:04:36.383704 107165 etl_job_mgr.cpp:219] Move job(TUniqueId(hi=10026, lo=0)) from running to success jobs
+I0521 06:04:36.383716 107165 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:36.383975 107165 etl_job_mgr.cpp:149] Successfully report elt job status to master.id=272a:0
+I0521 06:04:36.674666 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:36.974673 107332 topic_subscriber.cpp:44] Received master's published state, begin to handle
+I0521 06:04:36.974692 107332 user_resource_listener.cpp:52] Latest version for master is  0
+I0521 06:04:36.974848 107379 user_resource_listener.cpp:63] New version 0 is bigger than older version -1
+I0521 06:04:36.974860 107379 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:36.974871 107379 user_resource_listener.cpp:81] Call master to get resource
+I0521 06:04:36.975030 107379 user_resource_listener.cpp:83] Call master to get resource successfully
+I0521 06:04:36.975035 107379 user_resource_listener.cpp:105] Begin to update user's cgroups resource
+I0521 06:04:36.975039 107379 cgroups_mgr.cpp:65] Current resource version is -1. Resource version is 0
+W0521 06:04:36.975041 107379 cgroups_mgr.cpp:69] Cgroups manager initialized failed, will not update local cgroups!
+I0521 06:04:36.975102 107332 topic_subscriber.cpp:59] Handle master's published state finished
+I0521 06:04:36.975113 107332 agent_server.cpp:394] AgentService receive contains 1 publish updates
+I0521 06:04:39.000201 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=48]
+I0521 06:04:39.897120 107258 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0521 06:04:39.897133 107258 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:39.897267 107258 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0521 06:04:41.674813 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:44.000167 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=48]
+I0521 06:04:46.382120 107332 task_worker_pool.cpp:222] type: 2, signature: 10017 insert success. queue size: 1
+I0521 06:04:46.382189 107238 task_worker_pool.cpp:712] get push task. signature: 10017, user: root, priority: 1
+I0521 06:04:46.382205 107238 command_executor.cpp:335] begin to process get_table. [table=10017 schema_hash=1639769700]
+I0521 06:04:46.382217 107238 olap_engine.cpp:300] begin to get olap table. [table=10017]
+I0521 06:04:46.382221 107238 olap_engine.cpp:306] get olap table success. [table=10017]
+I0521 06:04:46.382277 107238 utils.cpp:1479] find file. [d_name='10017.hdr']
+I0521 06:04:46.382287 107238 utils.cpp:1479] find file. [d_name='10017_7_7_6323333689759570511_0.dat']
+I0521 06:04:46.382293 107238 utils.cpp:1479] find file. [d_name='10017_7_7_6323333689759570511_0.idx']
+I0521 06:04:46.382300 107238 utils.cpp:1479] find file. [d_name='10017_0_1_0_0.dat']
+I0521 06:04:46.382308 107238 utils.cpp:1479] find file. [d_name='10017_8_8_6498461967080291354_0.idx']
+I0521 06:04:46.382315 107238 utils.cpp:1479] find file. [d_name='10017_6_6_8193119336413521438_0.idx']
+I0521 06:04:46.382323 107238 utils.cpp:1479] find file. [d_name='10017_2_5_2156334745782560526_0.idx']
+I0521 06:04:46.382347 107238 utils.cpp:1479] find file. [d_name='10017_0_1_0_0.idx']
+I0521 06:04:46.382355 107238 utils.cpp:1479] find file. [d_name='10017_6_6_8193119336413521438_0.dat']
+I0521 06:04:46.382362 107238 utils.cpp:1479] find file. [d_name='10017_8_8_6498461967080291354_0.dat']
+I0521 06:04:46.382369 107238 utils.cpp:1479] find file. [d_name='10017_2_5_2156334745782560526_0.dat']
+I0521 06:04:46.382382 107238 olap_table.cpp:281] begin to load indices. [version_size=5 table='10017.1639769700']
+I0521 06:04:46.382411 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.idx' flag=0 fd=48]
+I0521 06:04:46.382884 107238 file_helper.h:364] fix head loaded. [file_length = 67, checksum = 1, protobuf_length = 15, proto_checksum = 150864235, magic_number = 0, version = 1
+I0521 06:04:46.382915 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.dat' flag=0 fd=48]
+I0521 06:04:46.383332 107238 file_helper.h:364] fix head loaded. [file_length = 411, checksum = -1, protobuf_length = 275, proto_checksum = 3801821575, magic_number = 0, version = 1
+I0521 06:04:46.383373 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_6_6_8193119336413521438_0.idx' flag=0 fd=48]
+I0521 06:04:46.383731 107238 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 6357004, protobuf_length = 23, proto_checksum = 1670711236, magic_number = 0, version = 1
+I0521 06:04:46.383747 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_6_6_8193119336413521438_0.dat' flag=0 fd=48]
+I0521 06:04:46.384079 107238 file_helper.h:364] fix head loaded. [file_length = 619, checksum = -388123743, protobuf_length = 276, proto_checksum = 2405118767, magic_number = 0, version = 1
+I0521 06:04:46.384104 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_5_2156334745782560526_0.idx' flag=0 fd=48]
+I0521 06:04:46.384429 107238 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 1114114, protobuf_length = 23, proto_checksum = 1757612040, magic_number = 0, version = 1
+I0521 06:04:46.384444 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_5_2156334745782560526_0.dat' flag=0 fd=48]
+I0521 06:04:46.384843 107238 file_helper.h:364] fix head loaded. [file_length = 651, checksum = 1166351212, protobuf_length = 277, proto_checksum = 3543282552, magic_number = 0, version = 1
+I0521 06:04:46.384867 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_7_7_6323333689759570511_0.idx' flag=0 fd=48]
+I0521 06:04:46.385233 107238 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 6357004, protobuf_length = 23, proto_checksum = 1690044359, magic_number = 0, version = 1
+I0521 06:04:46.385248 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_7_7_6323333689759570511_0.dat' flag=0 fd=48]
+I0521 06:04:46.385573 107238 file_helper.h:364] fix head loaded. [file_length = 619, checksum = -388123743, protobuf_length = 276, proto_checksum = 2405118767, magic_number = 0, version = 1
+I0521 06:04:46.385596 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.idx' flag=0 fd=48]
+I0521 06:04:46.385967 107238 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 6357004, protobuf_length = 23, proto_checksum = 1724188619, magic_number = 0, version = 1
+I0521 06:04:46.385982 107238 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.dat' flag=0 fd=48]
+I0521 06:04:46.386356 107238 file_helper.h:364] fix head loaded. [file_length = 619, checksum = -388123743, protobuf_length = 276, proto_checksum = 2405118767, magic_number = 0, version = 1
+W0521 06:04:46.386389 107238 olap_index.cpp:245] OLAPIndex::load
+I0521 06:04:46.386401 107238 olap_index.cpp:268] start to load data  segment. [seg_path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.dat'] ,seg id : 0
+I0521 06:04:46.386407 107238 olap_index.cpp:293] OLAPIndex::load_pb
+I0521 06:04:46.386411 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386425 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.dat' flag=0 fd=48] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.dat
+I0521 06:04:46.386430 107238 file_helper.h:364] fix head loaded. [file_length = 619, checksum = -388123743, protobuf_length = 276, proto_checksum = 2405118767, magic_number = 0, version = 1
+I0521 06:04:46.386456 107238 olap_index.cpp:278] start to load index  segment. [path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.idx'] ,seg id :0
+I0521 06:04:46.386461 107238 olap_index.cpp:652] MemIndex::load_segment
+I0521 06:04:46.386464 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386472 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.idx' flag=0 fd=50] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_8_8_6498461967080291354_0.idx
+I0521 06:04:46.386477 107238 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 6357004, protobuf_length = 23, proto_checksum = 1724188619, magic_number = 0, version = 1
+I0521 06:04:46.386487 107238 olap_table.cpp:369] load OLAPIndex success. [version='8-8' version_hash=6498461967080291354 num_segments=1 table='10017.1639769700']
+W0521 06:04:46.386490 107238 olap_index.cpp:245] OLAPIndex::load
+I0521 06:04:46.386498 107238 olap_index.cpp:268] start to load data  segment. [seg_path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.dat'] ,seg id : 0
+I0521 06:04:46.386502 107238 olap_index.cpp:293] OLAPIndex::load_pb
+I0521 06:04:46.386504 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386512 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.dat' flag=0 fd=51] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.dat
+I0521 06:04:46.386518 107238 file_helper.h:364] fix head loaded. [file_length = 411, checksum = -1, protobuf_length = 275, proto_checksum = 3801821575, magic_number = 0, version = 1
+I0521 06:04:46.386550 107238 olap_index.cpp:278] start to load index  segment. [path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.idx'] ,seg id :0
+I0521 06:04:46.386554 107238 olap_index.cpp:652] MemIndex::load_segment
+I0521 06:04:46.386559 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386566 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.idx' flag=0 fd=52] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.idx
+I0521 06:04:46.386571 107238 file_helper.h:364] fix head loaded. [file_length = 67, checksum = 1, protobuf_length = 15, proto_checksum = 150864235, magic_number = 0, version = 1
+I0521 06:04:46.386579 107238 olap_table.cpp:369] load OLAPIndex success. [version='0-1' version_hash=0 num_segments=1 table='10017.1639769700']
+W0521 06:04:46.386582 107238 olap_index.cpp:245] OLAPIndex::load
+I0521 06:04:46.386591 107238 olap_index.cpp:268] start to load data  segment. [seg_path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_6_6_8193119336413521438_0.dat'] ,seg id : 0
+I0521 06:04:46.386595 107238 olap_index.cpp:293] OLAPIndex::load_pb
+I0521 06:04:46.386597 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386613 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_6_6_8193119336413521438_0.dat' flag=0 fd=53] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_6_6_8193119336413521438_0.dat
+I0521 06:04:46.386618 107238 file_helper.h:364] fix head loaded. [file_length = 619, checksum = -388123743, protobuf_length = 276, proto_checksum = 2405118767, magic_number = 0, version = 1
+I0521 06:04:46.386633 107238 olap_index.cpp:278] start to load index  segment. [path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_6_6_8193119336413521438_0.idx'] ,seg id :0
+I0521 06:04:46.386637 107238 olap_index.cpp:652] MemIndex::load_segment
+I0521 06:04:46.386641 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386647 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_6_6_8193119336413521438_0.idx' flag=0 fd=54] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_6_6_8193119336413521438_0.idx
+I0521 06:04:46.386652 107238 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 6357004, protobuf_length = 23, proto_checksum = 1670711236, magic_number = 0, version = 1
+I0521 06:04:46.386659 107238 olap_table.cpp:369] load OLAPIndex success. [version='6-6' version_hash=8193119336413521438 num_segments=1 table='10017.1639769700']
+W0521 06:04:46.386663 107238 olap_index.cpp:245] OLAPIndex::load
+I0521 06:04:46.386669 107238 olap_index.cpp:268] start to load data  segment. [seg_path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_5_2156334745782560526_0.dat'] ,seg id : 0
+I0521 06:04:46.386672 107238 olap_index.cpp:293] OLAPIndex::load_pb
+I0521 06:04:46.386677 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386683 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_5_2156334745782560526_0.dat' flag=0 fd=55] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_5_2156334745782560526_0.dat
+I0521 06:04:46.386687 107238 file_helper.h:364] fix head loaded. [file_length = 651, checksum = 1166351212, protobuf_length = 277, proto_checksum = 3543282552, magic_number = 0, version = 1
+I0521 06:04:46.386701 107238 olap_index.cpp:278] start to load index  segment. [path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_5_2156334745782560526_0.idx'] ,seg id :0
+I0521 06:04:46.386704 107238 olap_index.cpp:652] MemIndex::load_segment
+I0521 06:04:46.386708 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386714 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_5_2156334745782560526_0.idx' flag=0 fd=56] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_5_2156334745782560526_0.idx
+I0521 06:04:46.386719 107238 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 1114114, protobuf_length = 23, proto_checksum = 1757612040, magic_number = 0, version = 1
+I0521 06:04:46.386726 107238 olap_table.cpp:369] load OLAPIndex success. [version='2-5' version_hash=2156334745782560526 num_segments=1 table='10017.1639769700']
+W0521 06:04:46.386729 107238 olap_index.cpp:245] OLAPIndex::load
+I0521 06:04:46.386736 107238 olap_index.cpp:268] start to load data  segment. [seg_path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_7_7_6323333689759570511_0.dat'] ,seg id : 0
+I0521 06:04:46.386739 107238 olap_index.cpp:293] OLAPIndex::load_pb
+I0521 06:04:46.386742 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386750 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_7_7_6323333689759570511_0.dat' flag=0 fd=57] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_7_7_6323333689759570511_0.dat
+I0521 06:04:46.386754 107238 file_helper.h:364] fix head loaded. [file_length = 619, checksum = -388123743, protobuf_length = 276, proto_checksum = 2405118767, magic_number = 0, version = 1
+I0521 06:04:46.386773 107238 olap_index.cpp:278] start to load index  segment. [path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_7_7_6323333689759570511_0.idx'] ,seg id :0
+I0521 06:04:46.386777 107238 olap_index.cpp:652] MemIndex::load_segment
+I0521 06:04:46.386780 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.386788 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_7_7_6323333689759570511_0.idx' flag=0 fd=58] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_7_7_6323333689759570511_0.idx
+I0521 06:04:46.386793 107238 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 6357004, protobuf_length = 23, proto_checksum = 1690044359, magic_number = 0, version = 1
+I0521 06:04:46.386801 107238 olap_table.cpp:369] load OLAPIndex success. [version='7-7' version_hash=6323333689759570511 num_segments=1 table='10017.1639769700']
+I0521 06:04:46.386831 107238 pusher.cpp:87] start get file. remote_full_path:http://172.17.0.2:8040/api/_download_load?token=f0438ac0-10ce-4752-8903-8e9f32a22269&file=/opt/palo/output/be/data/mini_download/default_cluster:bb/table2_20170714/output/table2_20170714.10015.10016.0
+I0521 06:04:46.386840 107238 pusher.cpp:121] download dir not exist: /opt/palo/output/be/data/dpp_download
+I0521 06:04:46.386890 107238 pusher.cpp:223] estimate_time_out: 300, download_timeout: 0, curl_opt_timeout: 300
+I0521 06:04:46.386894 107238 pusher.cpp:224] download file, retry time:0
+I0521 06:04:46.386898 107238 pusher.cpp:136] begin download file. tablet=10017
+I0521 06:04:46.386996 107238 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/dpp_download/table2_20170714.10015.10016.0_139801405191936' flag=577 mode=384 fd=59]
+I0521 06:04:46.387257 107309 download_action.cpp:111] accept one download request HttpRequest: 
+method:0
+uri:/api/_download_load
+raw_path:/api/_download_load
+headers: 
+key=Accept, value=*/*
+key=Authorization, value=Basic Og==
+key=Host, value=172.17.0.2:8040
+params: 
+key=file, value=/opt/palo/output/be/data/mini_download/default_cluster:bb/table2_20170714/output/table2_20170714.10015.10016.0
+key=token, value=f0438ac0-10ce-4752-8903-8e9f32a22269
+I0521 06:04:46.387315 107309 download_action.cpp:252] file_name: /opt/palo/output/be/data/mini_download/default_cluster:bb/table2_20170714/output/table2_20170714.10015.10016.0; file extension: [.0]
+I0521 06:04:46.387392 107309 download_action.cpp:132] deal with download requesst finished! 
+I0521 06:04:46.387979 107238 pusher.cpp:156] down load file success. local_file=/opt/palo/output/be/data/dpp_download/table2_20170714.10015.10016.0_139801405191936, remote_file=http://172.17.0.2:8040/api/_download_load?token=f0438ac0-10ce-4752-8903-8e9f32a22269&file=/opt/palo/output/be/data/mini_download/default_cluster:bb/table2_20170714/output/table2_20170714.10015.10016.0, tablet=10017, cost=1, file size: 248 B, download rate: 0.242188 KB/s
+I0521 06:04:46.387995 107238 pusher.cpp:242] file_size: 248, local_file_size: 248
+I0521 06:04:46.388000 107238 command_executor.cpp:166] begin to process push. [tablet_id=10017 version=9]
+I0521 06:04:46.388003 107238 olap_engine.cpp:300] begin to get olap table. [table=10017]
+I0521 06:04:46.388006 107238 olap_engine.cpp:306] get olap table success. [table=10017]
+I0521 06:04:46.388015 107238 push_handler.cpp:51] begin to push data. [table='10017.1639769700' version=9]
+I0521 06:04:46.388020 107238 push_handler.h:112] obtain all header locks rd. [table='10017.1639769700']
+I0521 06:04:46.388025 107238 push_handler.h:137] release all header locks. [table='10017.1639769700']
+I0521 06:04:46.388029 107238 push_handler.h:112] obtain all header locks rd. [table='10017.1639769700']
+I0521 06:04:46.388034 107238 push_handler.h:137] release all header locks. [table='10017.1639769700']
+I0521 06:04:46.388037 107238 push_handler.h:124] obtain all header locks wr. [table='10017.1639769700']
+I0521 06:04:46.388052 107238 push_handler.cpp:585] latest deltas was founded. [table='10017.1639769700' version=8-8]
+I0521 06:04:46.388056 107238 push_handler.h:137] release all header locks. [table='10017.1639769700']
+I0521 06:04:46.388059 107238 push_handler.cpp:333] start to convert delta file.
+I0521 06:04:46.388065 107238 push_handler.cpp:704] BinaryFile::init , open file : /opt/palo/output/be/data/dpp_download/table2_20170714.10015.10016.0_139801405191936
+I0521 06:04:46.388079 107238 file_helper.cpp:292] success to open file. [file_name='/opt/palo/output/be/data/dpp_download/table2_20170714.10015.10016.0_139801405191936' flag='rb']
+I0521 06:04:46.388093 107238 file_helper.h:364] fix head loaded. [file_length = 248, checksum = -2011098498, protobuf_length = 2, proto_checksum = 2293778, magic_number = 0, version = 1
+I0521 06:04:46.388104 107238 push_handler.cpp:376] init OLAPIndex.
+I0521 06:04:46.388109 107238 push_handler.cpp:394] init writer. [table='10017.1639769700' block_row_size=1024]
+I0521 06:04:46.388128 107238 data_writer.cpp:71] init ColumnData writer. [table='10017.1639769700' block_row_size=1024]
+I0521 06:04:46.388136 107238 row_block.cpp:432] auto_allocate detected
+I0521 06:04:46.388166 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 0
+I0521 06:04:46.388170 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388173 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388180 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 4
+I0521 06:04:46.388182 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388185 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388192 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 0
+I0521 06:04:46.388195 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388198 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388201 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 4
+I0521 06:04:46.388204 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388206 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388213 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 0
+I0521 06:04:46.388216 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388219 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388222 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 4
+I0521 06:04:46.388226 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388227 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388231 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 6
+I0521 06:04:46.388233 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388236 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388243 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 0
+I0521 06:04:46.388247 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388248 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388252 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 4
+I0521 06:04:46.388254 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388257 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388631 107238 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_9_9_4271873283010470501_0.idx' flag=193 mode=384 fd=60]
+I0521 06:04:46.388644 107238 push_handler.cpp:418] start to convert row file to delta.
+W0521 06:04:46.388648 107238 push_handler.cpp:776] BinaryReader::next
+I0521 06:04:46.388659 107238 push_handler.cpp:841] schema[0].name : siteid ,value : 11 
+I0521 06:04:46.388669 107238 push_handler.cpp:434] in convert ,reader->next : 0&11|0&15|0&'hel1'|0&35
+W0521 06:04:46.388674 107238 push_handler.cpp:776] BinaryReader::next
+I0521 06:04:46.388687 107238 push_handler.cpp:841] schema[0].name : siteid ,value : 12 
+I0521 06:04:46.388695 107238 push_handler.cpp:434] in convert ,reader->next : 0&12|0&14|0&'bush'|0&33
+W0521 06:04:46.388697 107238 push_handler.cpp:776] BinaryReader::next
+I0521 06:04:46.388703 107238 push_handler.cpp:841] schema[0].name : siteid ,value : 13 
+I0521 06:04:46.388710 107238 push_handler.cpp:434] in convert ,reader->next : 0&13|0&13|0&'tom'|0&24
+W0521 06:04:46.388712 107238 push_handler.cpp:776] BinaryReader::next
+I0521 06:04:46.388717 107238 push_handler.cpp:841] schema[0].name : siteid ,value : 14 
+I0521 06:04:46.388723 107238 push_handler.cpp:434] in convert ,reader->next : 0&14|0&12|0&'grace'|0&22
+W0521 06:04:46.388726 107238 push_handler.cpp:776] BinaryReader::next
+I0521 06:04:46.388731 107238 push_handler.cpp:841] schema[0].name : siteid ,value : 15 
+I0521 06:04:46.388737 107238 push_handler.cpp:434] in convert ,reader->next : 0&15|0&11|0&'jim'|0&22
+W0521 06:04:46.388741 107238 push_handler.cpp:776] BinaryReader::next
+I0521 06:04:46.388746 107238 push_handler.cpp:841] schema[0].name : siteid ,value : 16 
+I0521 06:04:46.388751 107238 push_handler.cpp:434] in convert ,reader->next : 0&16|0&20|0&'hel6'|0&35
+W0521 06:04:46.388754 107238 push_handler.cpp:776] BinaryReader::next
+I0521 06:04:46.388759 107238 push_handler.cpp:841] schema[0].name : siteid ,value : 17 
+I0521 06:04:46.388765 107238 push_handler.cpp:434] in convert ,reader->next : 0&17|0&19|0&'hel5'|0&35
+W0521 06:04:46.388768 107238 push_handler.cpp:776] BinaryReader::next
+I0521 06:04:46.388773 107238 push_handler.cpp:841] schema[0].name : siteid ,value : 18 
+I0521 06:04:46.388779 107238 push_handler.cpp:434] in convert ,reader->next : 0&18|0&18|0&'hel4'|0&35
+W0521 06:04:46.388782 107238 push_handler.cpp:776] BinaryReader::next
+I0521 06:04:46.388788 107238 push_handler.cpp:841] schema[0].name : siteid ,value : 19 
+I0521 06:04:46.388793 107238 push_handler.cpp:434] in convert ,reader->next : 0&19|0&17|0&'hel3'|0&35
+I0521 06:04:46.388801 107238 data_writer.cpp:196] ColumnDataWriter::_flush_row_block ,row_block->row_block_info().row_num :9
+I0521 06:04:46.388815 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.388824 107238 data_writer.cpp:207] _segment_writer->write : 0&11|0&15|0&'hel1'|0&35
+I0521 06:04:46.388831 107238 data_writer.cpp:207] _segment_writer->write : 0&12|0&14|0&'bush'|0&33
+I0521 06:04:46.388837 107238 data_writer.cpp:207] _segment_writer->write : 0&13|0&13|0&'tom'|0&24
+I0521 06:04:46.388842 107238 data_writer.cpp:207] _segment_writer->write : 0&14|0&12|0&'grace'|0&22
+I0521 06:04:46.388849 107238 data_writer.cpp:207] _segment_writer->write : 0&15|0&11|0&'jim'|0&22
+I0521 06:04:46.388854 107238 data_writer.cpp:207] _segment_writer->write : 0&16|0&20|0&'hel6'|0&35
+I0521 06:04:46.388859 107238 data_writer.cpp:207] _segment_writer->write : 0&17|0&19|0&'hel5'|0&35
+I0521 06:04:46.388891 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.388902 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.388911 107238 data_writer.cpp:207] _segment_writer->write : 0&18|0&18|0&'hel4'|0&35
+I0521 06:04:46.388916 107238 data_writer.cpp:207] _segment_writer->write : 0&19|0&17|0&'hel3'|0&35
+I0521 06:04:46.388955 107238 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_9_9_4271873283010470501_0.dat' flag=193 mode=384 fd=61]
+I0521 06:04:46.388964 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 0
+I0521 06:04:46.388968 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388970 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388974 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 4
+I0521 06:04:46.388978 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388979 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388983 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 0
+I0521 06:04:46.388993 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.388996 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.388999 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 4
+I0521 06:04:46.389003 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.389005 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.389008 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 0
+I0521 06:04:46.389011 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.389014 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.389017 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 4
+I0521 06:04:46.389020 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.389024 107238 out_stream.cpp:333] add current: 53
+I0521 06:04:46.389026 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 6
+I0521 06:04:46.389029 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.389032 107238 out_stream.cpp:333] add current: 4
+I0521 06:04:46.389035 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 0
+I0521 06:04:46.389039 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.389041 107238 out_stream.cpp:336] add current: 0
+I0521 06:04:46.389044 107238 out_stream.cpp:327] begin recording position [OutStream], recorded position count: 4
+I0521 06:04:46.389046 107238 out_stream.cpp:328] add _spilled_bytes: 0
+I0521 06:04:46.389050 107238 out_stream.cpp:333] add current: 6
+I0521 06:04:46.389053 107238 segment_writer.cpp:307] create row_index_entry, _block_count = 0, _row_in_block = 9
+I0521 06:04:46.389057 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389082 107238 stream_index_writer.cpp:168] header info: pos 3, stat 5
+I0521 06:04:46.389086 107238 stream_index_writer.cpp:169] entry_size: 22
+I0521 06:04:46.389091 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389097 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389104 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389109 107238 stream_index_writer.cpp:168] header info: pos 3, stat 3
+I0521 06:04:46.389112 107238 stream_index_writer.cpp:169] entry_size: 18
+I0521 06:04:46.389116 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389120 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389125 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389130 107238 stream_index_writer.cpp:168] header info: pos 5, stat 22
+I0521 06:04:46.389133 107238 stream_index_writer.cpp:169] entry_size: 20
+I0521 06:04:46.389137 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389147 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389150 107238 stream_index_writer.cpp:168] header info: pos 3, stat 7
+I0521 06:04:46.389153 107238 stream_index_writer.cpp:169] entry_size: 30
+I0521 06:04:46.389156 107238 out_stream.cpp:95]  OutStream::_create_new_input_buffer ,size : 10248
+I0521 06:04:46.389164 107238 segment_writer.cpp:204] stream id=0, type=0, length=46
+I0521 06:04:46.389168 107238 segment_writer.cpp:204] stream id=1, type=0, length=42
+I0521 06:04:46.389170 107238 segment_writer.cpp:204] stream id=2, type=0, length=44
+I0521 06:04:46.389173 107238 segment_writer.cpp:204] stream id=3, type=0, length=54
+I0521 06:04:46.389178 107238 segment_writer.cpp:204] stream id=0, type=2, length=12
+I0521 06:04:46.389180 107238 segment_writer.cpp:204] stream id=1, type=2, length=17
+I0521 06:04:46.389183 107238 segment_writer.cpp:204] stream id=2, type=2, length=58
+I0521 06:04:46.389186 107238 segment_writer.cpp:204] stream id=2, type=3, length=14
+I0521 06:04:46.389195 107238 segment_writer.cpp:204] stream id=3, type=2, length=16
+I0521 06:04:46.389206 107238 segment_writer.cpp:261] stream write to file unique_column_id = 0, type = 0
+I0521 06:04:46.389211 107238 out_stream.cpp:388] write stream begin: 316
+I0521 06:04:46.389221 107238 out_stream.cpp:396] write stream end: 362
+I0521 06:04:46.389225 107238 segment_writer.cpp:261] stream write to file unique_column_id = 1, type = 0
+I0521 06:04:46.389230 107238 out_stream.cpp:388] write stream begin: 362
+I0521 06:04:46.389235 107238 out_stream.cpp:396] write stream end: 404
+I0521 06:04:46.389238 107238 segment_writer.cpp:261] stream write to file unique_column_id = 2, type = 0
+I0521 06:04:46.389243 107238 out_stream.cpp:388] write stream begin: 404
+I0521 06:04:46.389247 107238 out_stream.cpp:396] write stream end: 448
+I0521 06:04:46.389251 107238 segment_writer.cpp:261] stream write to file unique_column_id = 3, type = 0
+I0521 06:04:46.389256 107238 out_stream.cpp:388] write stream begin: 448
+I0521 06:04:46.389261 107238 out_stream.cpp:396] write stream end: 502
+I0521 06:04:46.389264 107238 segment_writer.cpp:261] stream write to file unique_column_id = 0, type = 2
+I0521 06:04:46.389268 107238 out_stream.cpp:388] write stream begin: 502
+I0521 06:04:46.389273 107238 out_stream.cpp:396] write stream end: 514
+I0521 06:04:46.389277 107238 segment_writer.cpp:261] stream write to file unique_column_id = 1, type = 2
+I0521 06:04:46.389281 107238 out_stream.cpp:388] write stream begin: 514
+I0521 06:04:46.389286 107238 out_stream.cpp:396] write stream end: 531
+I0521 06:04:46.389289 107238 segment_writer.cpp:261] stream write to file unique_column_id = 2, type = 2
+I0521 06:04:46.389294 107238 out_stream.cpp:388] write stream begin: 531
+I0521 06:04:46.389298 107238 out_stream.cpp:396] write stream end: 589
+I0521 06:04:46.389302 107238 segment_writer.cpp:261] stream write to file unique_column_id = 2, type = 3
+I0521 06:04:46.389307 107238 out_stream.cpp:388] write stream begin: 589
+I0521 06:04:46.389312 107238 out_stream.cpp:396] write stream end: 603
+I0521 06:04:46.389315 107238 segment_writer.cpp:261] stream write to file unique_column_id = 3, type = 2
+I0521 06:04:46.389319 107238 out_stream.cpp:388] write stream begin: 603
+I0521 06:04:46.389324 107238 out_stream.cpp:396] write stream end: 619
+I0521 06:04:46.389802 107238 olap_index.cpp:610] finalize_segment. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_9_9_4271873283010470501_0.idx' file_length=84]
+I0521 06:04:46.390223 107238 push_handler.cpp:455] load the index.
+W0521 06:04:46.390229 107238 olap_index.cpp:245] OLAPIndex::load
+I0521 06:04:46.390239 107238 olap_index.cpp:268] start to load data  segment. [seg_path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_9_9_4271873283010470501_0.dat'] ,seg id : 0
+I0521 06:04:46.390242 107238 olap_index.cpp:293] OLAPIndex::load_pb
+I0521 06:04:46.390246 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.390259 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_9_9_4271873283010470501_0.dat' flag=0 fd=60] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_9_9_4271873283010470501_0.dat
+I0521 06:04:46.390265 107238 file_helper.h:364] fix head loaded. [file_length = 619, checksum = -388123743, protobuf_length = 276, proto_checksum = 2405118767, magic_number = 0, version = 1
+I0521 06:04:46.390283 107238 olap_index.cpp:278] start to load index  segment. [path='/opt/palo/output/be/data/data/0/10017/1639769700/10017_9_9_4271873283010470501_0.idx'] ,seg id :0
+I0521 06:04:46.390286 107238 olap_index.cpp:652] MemIndex::load_segment
+I0521 06:04:46.390290 107238 file_helper.cpp:74] FileHandler::open_with_cache
+I0521 06:04:46.390297 107238 file_helper.cpp:103] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_9_9_4271873283010470501_0.idx' flag=0 fd=61] , insert into _fd_cache,key is :/opt/palo/output/be/data/data/0/10017/1639769700/10017_9_9_4271873283010470501_0.idx
+I0521 06:04:46.390311 107238 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 6357004, protobuf_length = 23, proto_checksum = 1748699097, magic_number = 0, version = 1
+I0521 06:04:46.390326 107238 push_handler.h:124] obtain all header locks wr. [table='10017.1639769700']
+I0521 06:04:46.390336 107238 olap_header.cpp:686] vertex with vertex value already exists. [value=9]
+I0521 06:04:46.390367 107238 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017.hdr' flag=577 mode=384 fd=59]
+I0521 06:04:46.390411 107238 push_handler.h:137] release all header locks. [table='10017.1639769700']
+I0521 06:04:46.390417 107238 olap_engine.cpp:300] begin to get olap table. [table=10017]
+I0521 06:04:46.390420 107238 olap_engine.cpp:306] get olap table success. [table=10017]
+I0521 06:04:46.390425 107238 push_handler.cpp:297] finish to process push. [res=0]
+I0521 06:04:46.390429 107238 command_executor.cpp:202] success to finish push. cost: 0. [table=10017.1639769700]
+I0521 06:04:46.390434 107238 pusher.cpp:267] Push finish, cost time: 0
+I0521 06:04:46.390465 107238 task_worker_pool.cpp:767] push ok.signature: 10017
+I0521 06:04:46.390470 107238 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:46.390756 107238 task_worker_pool.cpp:288] finish task success.result: 0
+I0521 06:04:46.390764 107238 task_worker_pool.cpp:251] type: 2, signature: 10017 has been erased. queue size: 0
+I0521 06:04:46.674928 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:46.842545 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:47.842698 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:48.842862 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:49.000165 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=59]
+I0521 06:04:49.843015 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:49.897400 107258 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0521 06:04:49.897413 107258 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0521 06:04:49.897544 107258 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0521 06:04:50.843168 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:51.675076 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:51.843319 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:52.843468 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:53.843654 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:54.000185 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=59]
+I0521 06:04:54.843829 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:55.844002 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:56.383741 107332 agent_server.cpp:435] delete etl files successful with param TDeleteEtlFilesRequest(protocol_version=0, mini_load_id=TUniqueId(hi=10002, lo=10026), db_name=default_cluster:bb, label=table2_20170714)
+I0521 06:04:56.675201 107329 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0521 06:04:56.844167 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:57.844347 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:58.844525 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:59.000164 107103 file_helper.cpp:128] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=59]
+I0521 06:04:59.844702 107105 olap_header.cpp:398] calculated shortest path. [version='0-5' path='0-1 2-5 ']
+I0521 06:04:59.897676 107258 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020

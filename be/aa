@@ -1,0 +1,1237 @@
+I0516 12:35:04.767743 81673 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0516 12:35:04.767891 81673 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0516 12:35:08.768543 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:09.000218 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=49]
+I0516 12:35:13.768640 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:14.000208 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=49]
+I0516 12:35:14.768031 81673 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0516 12:35:14.768051 81673 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0516 12:35:14.768193 81673 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0516 12:35:18.768795 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:19.000201 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=49]
+I0516 12:35:23.768916 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:24.000195 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=49]
+I0516 12:35:24.768335 81673 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0516 12:35:24.768353 81673 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0516 12:35:24.768503 81673 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0516 12:35:28.769073 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:29.000201 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=49]
+I0516 12:35:33.769191 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:34.000208 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=49]
+I0516 12:35:34.768638 81673 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0516 12:35:34.768795 81673 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0516 12:35:34.768939 81673 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0516 12:35:36.975203 81768 topic_subscriber.cpp:44] Received master's published state, begin to handle
+I0516 12:35:36.975224 81768 user_resource_listener.cpp:52] Latest version for master is  0
+I0516 12:35:36.975317 81779 user_resource_listener.cpp:63] New version 0 is bigger than older version -1
+I0516 12:35:36.975330 81779 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0516 12:35:36.975342 81779 user_resource_listener.cpp:81] Call master to get resource
+I0516 12:35:36.975486 81779 user_resource_listener.cpp:83] Call master to get resource successfully
+I0516 12:35:36.975491 81779 user_resource_listener.cpp:105] Begin to update user's cgroups resource
+I0516 12:35:36.975493 81779 cgroups_mgr.cpp:65] Current resource version is -1. Resource version is 0
+W0516 12:35:36.975497 81779 cgroups_mgr.cpp:69] Cgroups manager initialized failed, will not update local cgroups!
+I0516 12:35:36.975570 81768 topic_subscriber.cpp:59] Handle master's published state finished
+I0516 12:35:36.975582 81768 agent_server.cpp:394] AgentService receive contains 1 publish updates
+I0516 12:35:38.769347 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:39.000221 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=49]
+I0516 12:35:39.161422 81768 backend_service.cpp:105] exec_plan_fragment() instance_id=TUniqueId(hi=-4994203408119935945, lo=-6378940967593267902) coord=TNetworkAddress(hostname=172.17.0.2, port=9020) backend#=0
+I0516 12:35:39.161554 81768 backend_service.cpp:107] exec_plan_fragment params is TExecPlanFragmentParams {
+  01: protocol_version (i32) = 0,
+  02: fragment (struct) = TPlanFragment {
+    02: plan (struct) = TPlan {
+      01: nodes (list) = list<struct>[1] {
+        [0] = TPlanNode {
+          01: node_id (i32) = 0,
+          02: node_type (i32) = 19,
+          03: num_children (i32) = 0,
+          04: limit (i64) = 1,
+          05: row_tuples (list) = list<i32>[1] {
+            [0] = 0,
+          },
+          06: nullable_tuples (list) = list<bool>[1] {
+            [0] = false,
+          },
+          08: compact_data (bool) = false,
+          28: union_node (struct) = TUnionNode {
+            01: tuple_id (i32) = 0,
+            02: result_expr_lists (list) = list<list>[0] {
+            },
+            03: const_expr_lists (list) = list<list>[1] {
+              [0] = list<struct>[1] {
+                [0] = TExpr {
+                  01: nodes (list) = list<struct>[1] {
+                    [0] = TExprNode {
+                      01: node_type (i32) = 17,
+                      02: type (struct) = TTypeDesc {
+                        01: types (list) = list<struct>[1] {
+                          [0] = TTypeNode {
+                            01: type (i32) = 0,
+                            02: scalar_type (struct) = TScalarType {
+                              01: type (i32) = 15,
+                              02: len (i32) = -1,
+                            },
+                          },
+                        },
+                      },
+                      04: num_children (i32) = 0,
+                      16: string_literal (struct) = TStringLiteral {
+                        01: value (string) = "Palo version 0.8.0",
+                      },
+                      20: output_scale (i32) = -1,
+                    },
+                  },
+                },
+              },
+            },
+            04: first_materialized_child_idx (i64) = 0,
+          },
+        },
+      },
+    },
+    04: output_exprs (list) = list<struct>[1] {
+      [0] = TExpr {
+        01: nodes (list) = list<struct>[1] {
+          [0] = TExprNode {
+            01: node_type (i32) = 17,
+            02: type (struct) = TTypeDesc {
+              01: types (list) = list<struct>[1] {
+                [0] = TTypeNode {
+                  01: type (i32) = 0,
+                  02: scalar_type (struct) = TScalarType {
+                    01: type (i32) = 15,
+                    02: len (i32) = -1,
+                  },
+                },
+              },
+            },
+            04: num_children (i32) = 0,
+            16: string_literal (struct) = TStringLiteral {
+              01: value (string) = "Palo version 0.8.0",
+            },
+            20: output_scale (i32) = -1,
+          },
+        },
+      },
+    },
+    05: output_sink (struct) = TDataSink {
+      01: type (i32) = 1,
+      03: result_sink (struct) = TResultSink {
+      },
+    },
+    06: partition (struct) = TDataPartition {
+      01: type (i32) = 0,
+      02: partition_exprs (list) = list<struct>[0] {
+      },
+    },
+  },
+  03: desc_tbl (struct) = TDescriptorTable {
+    01: slotDescriptors (list) = list<struct>[1] {
+      [0] = TSlotDescriptor {
+        01: id (i32) = 0,
+        02: parent (i32) = 0,
+        03: slotType (struct) = TTypeDesc {
+          01: types (list) = list<struct>[1] {
+            [0] = TTypeNode {
+              01: type (i32) = 0,
+              02: scalar_type (struct) = TScalarType {
+                01: type (i32) = 15,
+                02: len (i32) = -1,
+              },
+            },
+          },
+        },
+        04: columnPos (i32) = -1,
+        05: byteOffset (i32) = 8,
+        06: nullIndicatorByte (i32) = 0,
+        07: nullIndicatorBit (i32) = 0,
+        08: colName (string) = "",
+        09: slotIdx (i32) = 0,
+        10: isMaterialized (bool) = true,
+      },
+    },
+    02: tupleDescriptors (list) = list<struct>[1] {
+      [0] = TTupleDescriptor {
+        01: id (i32) = 0,
+        02: byteSize (i32) = 24,
+        03: numNullBytes (i32) = 1,
+        05: numNullSlots (i32) = 1,
+      },
+    },
+  },
+  04: params (struct) = TPlanFragmentExecParams {
+    01: query_id (struct) = TUniqueId {
+      01: hi (i64) = -4994203408119935945,
+      02: lo (i64) = -6378940967593267903,
+    },
+    02: fragment_instance_id (struct) = TUniqueId {
+      01: hi (i64) = -4994203408119935945,
+      02: lo (i64) = -6378940967593267902,
+    },
+    03: per_node_scan_ranges (map) = map<i32,list>[0] {
+    },
+    04: per_exch_num_senders (map) = map<i32,i32>[0] {
+    },
+    05: destinations (list) = list<struct>[0] {
+    },
+    09: sender_id (i32) = 0,
+  },
+  05: coord (struct) = TNetworkAddress {
+    01: hostname (string) = "172.17.0.2",
+    02: port (i32) = 9020,
+  },
+  06: backend_num (i32) = 0,
+  07: query_globals (struct) = TQueryGlobals {
+    01: now_string (string) = "2018-05-16 12:35:39",
+  },
+  08: query_options (struct) = TQueryOptions {
+    01: abort_on_error (bool) = false,
+    02: max_errors (i32) = 0,
+    03: disable_codegen (bool) = true,
+    04: batch_size (i32) = 0,
+    05: num_nodes (i32) = 0,
+    06: max_scan_range_length (i64) = 0,
+    07: num_scanner_threads (i32) = 0,
+    08: max_io_buffers (i32) = 0,
+    09: allow_unsupported_formats (bool) = false,
+    10: default_order_by_limit (i64) = -1,
+    11: debug_action (string) = "",
+    12: mem_limit (i64) = 2147483648,
+    13: abort_on_default_limit_exceeded (bool) = false,
+    14: query_timeout (i32) = 300,
+    15: is_report_success (bool) = false,
+    16: codegen_level (i32) = 0,
+    17: kudu_latest_observed_ts (i64) = 9223372036854775807,
+    18: query_type (i32) = 0,
+  },
+  10: resource_info (struct) = TResourceInfo {
+    01: user (string) = "root",
+    02: group (string) = "normal",
+  },
+}
+I0516 12:35:39.161593 81768 plan_fragment_executor.cpp:73] Prepare(): query_id=bab10675f2f74c37:a77972fcaf6aad41 instance_id=bab10675f2f74c37:a77972fcaf6aad42 backend_num=0
+I0516 12:35:39.161681 81768 plan_fragment_executor.cpp:130] Using query memory limit: 2.00 GB
+I0516 12:35:39.161736 81768 plan_fragment_executor.cpp:172] scan_nodes.size()=0
+I0516 12:35:39.161739 81768 plan_fragment_executor.cpp:173] params.per_node_scan_ranges.size()=0
+I0516 12:35:39.161762 81768 plan_fragment_executor.cpp:226] plan_root=
+ conjuncts=[] id=0 type=UNION_NODE tuple_ids=[0, ]
+I0516 12:35:39.161824 81580 plan_fragment_executor.cpp:256] Open(): instance_id=TUniqueId(hi=-4994203408119935945, lo=-6378940967593267902)
+I0516 12:35:39.161911 81580 plan_fragment_executor.cpp:309] open_internal: #rows=1 desc=tuple_desc_map: [Tuple(id=0 size=24 slots=[Slot(id=0 type=VARCHAR col=-1 offset=8 null=(offset=0 mask=80))] has_varlen_slots=1)] tuple_id_map: [0] tuple_is_nullable: [0] 
+I0516 12:35:39.161927 81580 plan_fragment_executor.cpp:314] [(ptr:0x5066000 len18)]
+I0516 12:35:39.162026 81580 plan_fragment_executor.cpp:341] Fragment bab10675f2f74c37:a77972fcaf6aad42:(Active: 32.835us, % non-child: 0.00%)
+   - AverageThreadTokens: 0.00 
+   - RowsProduced: 1
+  BlockMgr:
+     - BlockWritesOutstanding: 0
+     - BlocksCreated: 0
+     - BlocksRecycled: 0
+     - BufferedPins: 0
+     - BytesWritten: 0
+     - MaxBlockSize: 8.00 MB
+     - MemoryLimit: 2.00 GB
+     - TotalBufferWaitTime: 0.000ns
+     - TotalEncryptionTime: 0.000ns
+     - TotalIntegrityCheckTime: 0.000ns
+     - TotalReadBlockTime: 0.000ns
+  DataBufferSender (dst_id=TUniqueId(hi=-4994203408119935945, lo=-6378940967593267902)):
+  UNION_NODE (id=0):(Active: 26.473us, % non-child: 0.00%)
+     - MemoryUsed: 0
+     - RowsReturned: 1
+     - RowsReturnedRate: 37.77 K/sec
+I0516 12:35:39.162047 81580 fragment_mgr.cpp:197] execute time is 0
+I0516 12:35:43.769465 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:44.000197 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=49]
+I0516 12:35:44.769085 81673 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0516 12:35:44.769104 81673 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0516 12:35:44.769258 81673 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0516 12:35:44.935519 81768 backend_service.cpp:105] exec_plan_fragment() instance_id=TUniqueId(hi=7353667295435966284, lo=-6573324101493125762) coord=TNetworkAddress(hostname=172.17.0.2, port=9020) backend#=0
+I0516 12:35:44.935644 81768 backend_service.cpp:107] exec_plan_fragment params is TExecPlanFragmentParams {
+  01: protocol_version (i32) = 0,
+  02: fragment (struct) = TPlanFragment {
+    02: plan (struct) = TPlan {
+      01: nodes (list) = list<struct>[1] {
+        [0] = TPlanNode {
+          01: node_id (i32) = 0,
+          02: node_type (i32) = 19,
+          03: num_children (i32) = 0,
+          04: limit (i64) = -1,
+          05: row_tuples (list) = list<i32>[1] {
+            [0] = 0,
+          },
+          06: nullable_tuples (list) = list<bool>[1] {
+            [0] = false,
+          },
+          08: compact_data (bool) = false,
+          28: union_node (struct) = TUnionNode {
+            01: tuple_id (i32) = 0,
+            02: result_expr_lists (list) = list<list>[0] {
+            },
+            03: const_expr_lists (list) = list<list>[1] {
+              [0] = list<struct>[1] {
+                [0] = TExpr {
+                  01: nodes (list) = list<struct>[1] {
+                    [0] = TExprNode {
+                      01: node_type (i32) = 19,
+                      02: type (struct) = TTypeDesc {
+                        01: types (list) = list<struct>[1] {
+                          [0] = TTypeNode {
+                            01: type (i32) = 0,
+                            02: scalar_type (struct) = TScalarType {
+                              01: type (i32) = 15,
+                              02: len (i32) = -1,
+                            },
+                          },
+                        },
+                      },
+                      04: num_children (i32) = 0,
+                      18: info_func (struct) = TInfoFunc {
+                        01: int_value (i64) = 0,
+                        02: str_value (string) = "",
+                      },
+                      20: output_scale (i32) = -1,
+                    },
+                  },
+                },
+              },
+            },
+            04: first_materialized_child_idx (i64) = 0,
+          },
+        },
+      },
+    },
+    04: output_exprs (list) = list<struct>[1] {
+      [0] = TExpr {
+        01: nodes (list) = list<struct>[1] {
+          [0] = TExprNode {
+            01: node_type (i32) = 19,
+            02: type (struct) = TTypeDesc {
+              01: types (list) = list<struct>[1] {
+                [0] = TTypeNode {
+                  01: type (i32) = 0,
+                  02: scalar_type (struct) = TScalarType {
+                    01: type (i32) = 15,
+                    02: len (i32) = -1,
+                  },
+                },
+              },
+            },
+            04: num_children (i32) = 0,
+            18: info_func (struct) = TInfoFunc {
+              01: int_value (i64) = 0,
+              02: str_value (string) = "",
+            },
+            20: output_scale (i32) = -1,
+          },
+        },
+      },
+    },
+    05: output_sink (struct) = TDataSink {
+      01: type (i32) = 1,
+      03: result_sink (struct) = TResultSink {
+      },
+    },
+    06: partition (struct) = TDataPartition {
+      01: type (i32) = 0,
+      02: partition_exprs (list) = list<struct>[0] {
+      },
+    },
+  },
+  03: desc_tbl (struct) = TDescriptorTable {
+    01: slotDescriptors (list) = list<struct>[1] {
+      [0] = TSlotDescriptor {
+        01: id (i32) = 0,
+        02: parent (i32) = 0,
+        03: slotType (struct) = TTypeDesc {
+          01: types (list) = list<struct>[1] {
+            [0] = TTypeNode {
+              01: type (i32) = 0,
+              02: scalar_type (struct) = TScalarType {
+                01: type (i32) = 15,
+                02: len (i32) = -1,
+              },
+            },
+          },
+        },
+        04: columnPos (i32) = -1,
+        05: byteOffset (i32) = 8,
+        06: nullIndicatorByte (i32) = 0,
+        07: nullIndicatorBit (i32) = 0,
+        08: colName (string) = "",
+        09: slotIdx (i32) = 0,
+        10: isMaterialized (bool) = true,
+      },
+    },
+    02: tupleDescriptors (list) = list<struct>[1] {
+      [0] = TTupleDescriptor {
+        01: id (i32) = 0,
+        02: byteSize (i32) = 24,
+        03: numNullBytes (i32) = 1,
+        05: numNullSlots (i32) = 1,
+      },
+    },
+  },
+  04: params (struct) = TPlanFragmentExecParams {
+    01: query_id (struct) = TUniqueId {
+      01: hi (i64) = 7353667295435966284,
+      02: lo (i64) = -6573324101493125763,
+    },
+    02: fragment_instance_id (struct) = TUniqueId {
+      01: hi (i64) = 7353667295435966284,
+      02: lo (i64) = -6573324101493125762,
+    },
+    03: per_node_scan_ranges (map) = map<i32,list>[0] {
+    },
+    04: per_exch_num_senders (map) = map<i32,i32>[0] {
+    },
+    05: destinations (list) = list<struct>[0] {
+    },
+    09: sender_id (i32) = 0,
+  },
+  05: coord (struct) = TNetworkAddress {
+    01: hostname (string) = "172.17.0.2",
+    02: port (i32) = 9020,
+  },
+  06: backend_num (i32) = 0,
+  07: query_globals (struct) = TQueryGlobals {
+    01: now_string (string) = "2018-05-16 12:35:44",
+  },
+  08: query_options (struct) = TQueryOptions {
+    01: abort_on_error (bool) = false,
+    02: max_errors (i32) = 0,
+    03: disable_codegen (bool) = true,
+    04: batch_size (i32) = 0,
+    05: num_nodes (i32) = 0,
+    06: max_scan_range_length (i64) = 0,
+    07: num_scanner_threads (i32) = 0,
+    08: max_io_buffers (i32) = 0,
+    09: allow_unsupported_formats (bool) = false,
+    10: default_order_by_limit (i64) = -1,
+    11: debug_action (string) = "",
+    12: mem_limit (i64) = 2147483648,
+    13: abort_on_default_limit_exceeded (bool) = false,
+    14: query_timeout (i32) = 300,
+    15: is_report_success (bool) = false,
+    16: codegen_level (i32) = 0,
+    17: kudu_latest_observed_ts (i64) = 9223372036854775807,
+    18: query_type (i32) = 0,
+  },
+  10: resource_info (struct) = TResourceInfo {
+    01: user (string) = "root",
+    02: group (string) = "normal",
+  },
+}
+I0516 12:35:44.935685 81768 plan_fragment_executor.cpp:73] Prepare(): query_id=660d79719cde474c:a4c6dc8e80fd0d7d instance_id=660d79719cde474c:a4c6dc8e80fd0d7e backend_num=0
+I0516 12:35:44.935719 81768 plan_fragment_executor.cpp:130] Using query memory limit: 2.00 GB
+I0516 12:35:44.935786 81768 plan_fragment_executor.cpp:172] scan_nodes.size()=0
+I0516 12:35:44.935792 81768 plan_fragment_executor.cpp:173] params.per_node_scan_ranges.size()=0
+I0516 12:35:44.935817 81768 plan_fragment_executor.cpp:226] plan_root=
+ conjuncts=[] id=0 type=UNION_NODE tuple_ids=[0, ]
+I0516 12:35:44.935869 81581 plan_fragment_executor.cpp:256] Open(): instance_id=TUniqueId(hi=7353667295435966284, lo=-6573324101493125762)
+I0516 12:35:44.935922 81581 plan_fragment_executor.cpp:309] open_internal: #rows=1 desc=tuple_desc_map: [Tuple(id=0 size=24 slots=[Slot(id=0 type=VARCHAR col=-1 offset=8 null=(offset=0 mask=80))] has_varlen_slots=1)] tuple_id_map: [0] tuple_is_nullable: [0] 
+I0516 12:35:44.935932 81581 plan_fragment_executor.cpp:314] [(ptr:0x3389ec8 len0)]
+I0516 12:35:44.935999 81581 plan_fragment_executor.cpp:341] Fragment 660d79719cde474c:a4c6dc8e80fd0d7e:(Active: 27.402us, % non-child: 0.00%)
+   - AverageThreadTokens: 0.00 
+   - RowsProduced: 1
+  BlockMgr:
+     - BlockWritesOutstanding: 0
+     - BlocksCreated: 0
+     - BlocksRecycled: 0
+     - BufferedPins: 0
+     - BytesWritten: 0
+     - MaxBlockSize: 8.00 MB
+     - MemoryLimit: 2.00 GB
+     - TotalBufferWaitTime: 0.000ns
+     - TotalEncryptionTime: 0.000ns
+     - TotalIntegrityCheckTime: 0.000ns
+     - TotalReadBlockTime: 0.000ns
+  DataBufferSender (dst_id=TUniqueId(hi=7353667295435966284, lo=-6573324101493125762)):
+  UNION_NODE (id=0):(Active: 27.728us, % non-child: 0.00%)
+     - MemoryUsed: 0
+     - RowsReturned: 1
+     - RowsReturnedRate: 36.06 K/sec
+I0516 12:35:44.936009 81581 fragment_mgr.cpp:197] execute time is 0
+I0516 12:35:47.703243 81768 backend_service.cpp:105] exec_plan_fragment() instance_id=TUniqueId(hi=5803873253712807336, lo=-6169801823134726635) coord=TNetworkAddress(hostname=172.17.0.2, port=9020) backend#=0
+I0516 12:35:47.703413 81768 backend_service.cpp:107] exec_plan_fragment params is TExecPlanFragmentParams {
+  01: protocol_version (i32) = 0,
+  02: fragment (struct) = TPlanFragment {
+    02: plan (struct) = TPlan {
+      01: nodes (list) = list<struct>[2] {
+        [0] = TPlanNode {
+          01: node_id (i32) = 1,
+          02: node_type (i32) = 6,
+          03: num_children (i32) = 1,
+          04: limit (i64) = -1,
+          05: row_tuples (list) = list<i32>[1] {
+            [0] = 1,
+          },
+          06: nullable_tuples (list) = list<bool>[1] {
+            [0] = false,
+          },
+          08: compact_data (bool) = false,
+          12: agg_node (struct) = TAggregationNode {
+            01: grouping_exprs (list) = list<struct>[1] {
+              [0] = TExpr {
+                01: nodes (list) = list<struct>[1] {
+                  [0] = TExprNode {
+                    01: node_type (i32) = 16,
+                    02: type (struct) = TTypeDesc {
+                      01: types (list) = list<struct>[1] {
+                        [0] = TTypeNode {
+                          01: type (i32) = 0,
+                          02: scalar_type (struct) = TScalarType {
+                            01: type (i32) = 4,
+                          },
+                        },
+                      },
+                    },
+                    04: num_children (i32) = 0,
+                    15: slot_ref (struct) = TSlotRef {
+                      01: slot_id (i32) = 0,
+                      02: tuple_id (i32) = 0,
+                    },
+                    20: output_scale (i32) = -1,
+                    23: output_column (i32) = -1,
+                  },
+                },
+              },
+            },
+            02: aggregate_functions (list) = list<struct>[1] {
+              [0] = TExpr {
+                01: nodes (list) = list<struct>[1] {
+                  [0] = TExprNode {
+                    01: node_type (i32) = 0,
+                    02: type (struct) = TTypeDesc {
+                      01: types (list) = list<struct>[1] {
+                        [0] = TTypeNode {
+                          01: type (i32) = 0,
+                          02: scalar_type (struct) = TScalarType {
+                            01: type (i32) = 6,
+                          },
+                        },
+                      },
+                    },
+                    04: num_children (i32) = 0,
+                    05: agg_expr (struct) = TAggregateExpr {
+                      01: is_merge_agg (bool) = false,
+                    },
+                    20: output_scale (i32) = -1,
+                    26: fn (struct) = TFunction {
+                      01: name (struct) = TFunctionName {
+                        02: function_name (string) = "count",
+                      },
+                      02: binary_type (i32) = 0,
+                      03: arg_types (list) = list<struct>[0] {
+                      },
+                      04: ret_type (struct) = TTypeDesc {
+                        01: types (list) = list<struct>[1] {
+                          [0] = TTypeNode {
+                            01: type (i32) = 0,
+                            02: scalar_type (struct) = TScalarType {
+                              01: type (i32) = 6,
+                            },
+                          },
+                        },
+                      },
+                      05: has_var_args (bool) = false,
+                      07: signature (string) = "count()",
+                      10: aggregate_fn (struct) = TAggregateFunction {
+                        01: intermediate_type (struct) = TTypeDesc {
+                          01: types (list) = list<struct>[1] {
+                            [0] = TTypeNode {
+                              01: type (i32) = 0,
+                              02: scalar_type (struct) = TScalarType {
+                                01: type (i32) = 6,
+                              },
+                            },
+                          },
+                        },
+                        02: update_fn_symbol (string) = "_ZN4palo18AggregateFunctions17count_star_updateEPN8palo_udf15FunctionContextEPNS1_9BigIntValE",
+                        03: init_fn_symbol (string) = "_ZN4palo18AggregateFunctions9init_zeroIN8palo_udf9BigIntValEEEvPNS2_15FunctionContextEPT_",
+                        05: merge_fn_symbol (string) = "_ZN4palo18AggregateFunctions11count_mergeEPN8palo_udf15FunctionContextERKNS1_9BigIntValEPS4_",
+                        09: remove_fn_symbol (string) = "_ZN4palo18AggregateFunctions17count_star_removeEPN8palo_udf15FunctionContextEPNS1_9BigIntValE",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            03: intermediate_tuple_id (i32) = 1,
+            04: output_tuple_id (i32) = 1,
+            05: need_finalize (bool) = true,
+          },
+        },
+        [1] = TPlanNode {
+          01: node_id (i32) = 0,
+          02: node_type (i32) = 0,
+          03: num_children (i32) = 0,
+          04: limit (i64) = -1,
+          05: row_tuples (list) = list<i32>[1] {
+            [0] = 0,
+          },
+          06: nullable_tuples (list) = list<bool>[1] {
+            [0] = false,
+          },
+          08: compact_data (bool) = false,
+          18: olap_scan_node (struct) = TOlapScanNode {
+            01: tuple_id (i32) = 0,
+            02: key_column_name (list) = list<string>[1] {
+              [0] = "siteid",
+            },
+            03: key_column_type (list) = list<i32>[1] {
+              [0] = 5,
+            },
+            04: is_preaggregation (bool) = false,
+          },
+        },
+      },
+    },
+    04: output_exprs (list) = list<struct>[2] {
+      [0] = TExpr {
+        01: nodes (list) = list<struct>[1] {
+          [0] = TExprNode {
+            01: node_type (i32) = 16,
+            02: type (struct) = TTypeDesc {
+              01: types (list) = list<struct>[1] {
+                [0] = TTypeNode {
+                  01: type (i32) = 0,
+                  02: scalar_type (struct) = TScalarType {
+                    01: type (i32) = 4,
+                  },
+                },
+              },
+            },
+            04: num_children (i32) = 0,
+            15: slot_ref (struct) = TSlotRef {
+              01: slot_id (i32) = 1,
+              02: tuple_id (i32) = 1,
+            },
+            20: output_scale (i32) = -1,
+            23: output_column (i32) = -1,
+          },
+        },
+      },
+      [1] = TExpr {
+        01: nodes (list) = list<struct>[1] {
+          [0] = TExprNode {
+            01: node_type (i32) = 16,
+            02: type (struct) = TTypeDesc {
+              01: types (list) = list<struct>[1] {
+                [0] = TTypeNode {
+                  01: type (i32) = 0,
+                  02: scalar_type (struct) = TScalarType {
+                    01: type (i32) = 6,
+                  },
+                },
+              },
+            },
+            04: num_children (i32) = 0,
+            15: slot_ref (struct) = TSlotRef {
+              01: slot_id (i32) = 2,
+              02: tuple_id (i32) = 1,
+            },
+            20: output_scale (i32) = -1,
+            23: output_column (i32) = -1,
+          },
+        },
+      },
+    },
+    05: output_sink (struct) = TDataSink {
+      01: type (i32) = 1,
+      03: result_sink (struct) = TResultSink {
+      },
+    },
+    06: partition (struct) = TDataPartition {
+      01: type (i32) = 1,
+      02: partition_exprs (list) = list<struct>[0] {
+      },
+    },
+  },
+  03: desc_tbl (struct) = TDescriptorTable {
+    01: slotDescriptors (list) = list<struct>[3] {
+      [0] = TSlotDescriptor {
+        01: id (i32) = 0,
+        02: parent (i32) = 0,
+        03: slotType (struct) = TTypeDesc {
+          01: types (list) = list<struct>[1] {
+            [0] = TTypeNode {
+              01: type (i32) = 0,
+              02: scalar_type (struct) = TScalarType {
+                01: type (i32) = 4,
+              },
+            },
+          },
+        },
+        04: columnPos (i32) = -1,
+        05: byteOffset (i32) = 2,
+        06: nullIndicatorByte (i32) = 0,
+        07: nullIndicatorBit (i32) = 0,
+        08: colName (string) = "citycode",
+        09: slotIdx (i32) = 0,
+        10: isMaterialized (bool) = true,
+      },
+      [1] = TSlotDescriptor {
+        01: id (i32) = 1,
+        02: parent (i32) = 1,
+        03: slotType (struct) = TTypeDesc {
+          01: types (list) = list<struct>[1] {
+            [0] = TTypeNode {
+              01: type (i32) = 0,
+              02: scalar_type (struct) = TScalarType {
+                01: type (i32) = 4,
+              },
+            },
+          },
+        },
+        04: columnPos (i32) = -1,
+        05: byteOffset (i32) = 2,
+        06: nullIndicatorByte (i32) = 0,
+        07: nullIndicatorBit (i32) = 0,
+        08: colName (string) = "",
+        09: slotIdx (i32) = 0,
+        10: isMaterialized (bool) = true,
+      },
+      [2] = TSlotDescriptor {
+        01: id (i32) = 2,
+        02: parent (i32) = 1,
+        03: slotType (struct) = TTypeDesc {
+          01: types (list) = list<struct>[1] {
+            [0] = TTypeNode {
+              01: type (i32) = 0,
+              02: scalar_type (struct) = TScalarType {
+                01: type (i32) = 6,
+              },
+            },
+          },
+        },
+        04: columnPos (i32) = -1,
+        05: byteOffset (i32) = 8,
+        06: nullIndicatorByte (i32) = 0,
+        07: nullIndicatorBit (i32) = -1,
+        08: colName (string) = "",
+        09: slotIdx (i32) = 1,
+        10: isMaterialized (bool) = true,
+      },
+    },
+    02: tupleDescriptors (list) = list<struct>[2] {
+      [0] = TTupleDescriptor {
+        01: id (i32) = 0,
+        02: byteSize (i32) = 4,
+        03: numNullBytes (i32) = 1,
+        04: tableId (i64) = 10016,
+        05: numNullSlots (i32) = 1,
+      },
+      [1] = TTupleDescriptor {
+        01: id (i32) = 1,
+        02: byteSize (i32) = 16,
+        03: numNullBytes (i32) = 1,
+        05: numNullSlots (i32) = 1,
+      },
+    },
+    03: tableDescriptors (list) = list<struct>[1] {
+      [0] = TTableDescriptor {
+        01: id (i64) = 10016,
+        02: tableType (i32) = 1,
+        03: numCols (i32) = 4,
+        04: numClusteringCols (i32) = 0,
+        07: tableName (string) = "table2",
+        08: dbName (string) = "",
+        11: olapTable (struct) = TOlapTable {
+          01: tableName (string) = "table2",
+        },
+      },
+    },
+  },
+  04: params (struct) = TPlanFragmentExecParams {
+    01: query_id (struct) = TUniqueId {
+      01: hi (i64) = 5803873253712807336,
+      02: lo (i64) = -6169801823134726636,
+    },
+    02: fragment_instance_id (struct) = TUniqueId {
+      01: hi (i64) = 5803873253712807336,
+      02: lo (i64) = -6169801823134726635,
+    },
+    03: per_node_scan_ranges (map) = map<i32,list>[1] {
+      0 -> list<struct>[1] {
+        [0] = TScanRangeParams {
+          01: scan_range (struct) = TScanRange {
+            04: palo_scan_range (struct) = TPaloScanRange {
+              01: hosts (list) = list<struct>[1] {
+                [0] = TNetworkAddress {
+                  01: hostname (string) = "172.17.0.2",
+                  02: port (i32) = 9060,
+                },
+              },
+              02: schema_hash (string) = "1639769700",
+              03: version (string) = "2",
+              04: version_hash (string) = "1152916539004056937",
+              05: tablet_id (i64) = 10017,
+              06: db_name (string) = "",
+            },
+          },
+          02: volume_id (i32) = -1,
+        },
+      },
+    },
+    04: per_exch_num_senders (map) = map<i32,i32>[0] {
+    },
+    05: destinations (list) = list<struct>[0] {
+    },
+    09: sender_id (i32) = 0,
+  },
+  05: coord (struct) = TNetworkAddress {
+    01: hostname (string) = "172.17.0.2",
+    02: port (i32) = 9020,
+  },
+  06: backend_num (i32) = 0,
+  07: query_globals (struct) = TQueryGlobals {
+    01: now_string (string) = "2018-05-16 12:35:47",
+  },
+  08: query_options (struct) = TQueryOptions {
+    01: abort_on_error (bool) = false,
+    02: max_errors (i32) = 0,
+    03: disable_codegen (bool) = true,
+    04: batch_size (i32) = 0,
+    05: num_nodes (i32) = 0,
+    06: max_scan_range_length (i64) = 0,
+    07: num_scanner_threads (i32) = 0,
+    08: max_io_buffers (i32) = 0,
+    09: allow_unsupported_formats (bool) = false,
+    10: default_order_by_limit (i64) = -1,
+    11: debug_action (string) = "",
+    12: mem_limit (i64) = 2147483648,
+    13: abort_on_default_limit_exceeded (bool) = false,
+    14: query_timeout (i32) = 300,
+    15: is_report_success (bool) = false,
+    16: codegen_level (i32) = 0,
+    17: kudu_latest_observed_ts (i64) = 9223372036854775807,
+    18: query_type (i32) = 0,
+  },
+  10: resource_info (struct) = TResourceInfo {
+    01: user (string) = "root",
+    02: group (string) = "normal",
+  },
+}
+I0516 12:35:47.703462 81768 plan_fragment_executor.cpp:73] Prepare(): query_id=508b7ff958f145a8:aa6075ee4d7f4614 instance_id=508b7ff958f145a8:aa6075ee4d7f4615 backend_num=0
+I0516 12:35:47.703496 81768 plan_fragment_executor.cpp:130] Using query memory limit: 2.00 GB
+I0516 12:35:47.703660 81768 udf.cpp:197] Created FunctionContext: 0x4c96458 with pool 0x5010fc0
+I0516 12:35:47.703677 81768 plan_fragment_executor.cpp:172] scan_nodes.size()=1
+I0516 12:35:47.703680 81768 plan_fragment_executor.cpp:173] params.per_node_scan_ranges.size()=1
+I0516 12:35:47.703694 81768 olap_scan_node.cpp:327] palo_scan_range table= version2
+I0516 12:35:47.703697 81768 plan_fragment_executor.cpp:180] scan_node_Id=0 size=1
+I0516 12:35:47.703729 81768 plan_fragment_executor.cpp:226] plan_root=
+AggregationNode(intermediate_tuple_id=1 output_tuple_id=1 needs_finalize=1 agg_exprs=[AggFnEvaluator(op=0)] conjuncts=[] id=1 type=AGGREGATION_NODE tuple_ids=[1, ]
+)
+I0516 12:35:47.703785 81582 plan_fragment_executor.cpp:256] Open(): instance_id=TUniqueId(hi=5803873253712807336, lo=-6169801823134726635)
+I0516 12:35:47.703807 81582 olap_scan_node.cpp:143] OlapScanNode::Open
+I0516 12:35:47.703816 81582 olap_scan_node.cpp:339] NormalizeConjuncts
+I0516 12:35:47.703832 81582 olap_scan_node.cpp:343] BuildOlapFilters
+I0516 12:35:47.703838 81582 olap_scan_node.cpp:347] SelectScanRanges
+I0516 12:35:47.703841 81582 olap_scan_node.cpp:351] BuildScanKey
+I0516 12:35:47.703862 81582 olap_common.h:192] ScanKeys:
+I0516 12:35:47.703866 81582 olap_scan_node.cpp:355] SplitScanRange
+I0516 12:35:47.703869 81582 olap_scan_node.cpp:550] _palo_scan_ranges.size()=1
+I0516 12:35:47.703896 81582 olap_reader.cpp:44] Show hints:TShowHintsRequest {
+  01: tablet_id (i64) = 10017,
+  02: schema_hash (i32) = 1639769700,
+  03: block_row_count (i32) = 524288,
+  04: end_range (string) = "lt",
+  05: start_key (list) = list<struct>[0] {
+  },
+  06: end_key (list) = list<struct>[0] {
+  },
+}
+I0516 12:35:47.703940 81582 olap_engine.cpp:299] begin to get olap table. [table=10017]
+I0516 12:35:47.703948 81582 olap_engine.cpp:305] get olap table success. [table=10017]
+I0516 12:35:47.704027 81582 utils.cpp:1479] find file. [d_name='10017.hdr']
+I0516 12:35:47.704042 81582 utils.cpp:1479] find file. [d_name='10017_0_1_0_0.dat']
+I0516 12:35:47.704056 81582 utils.cpp:1479] find file. [d_name='10017_2_2_1152916539004056937_0.idx']
+I0516 12:35:47.704067 81582 utils.cpp:1479] find file. [d_name='10017_2_2_1152916539004056937_0.dat']
+I0516 12:35:47.704078 81582 utils.cpp:1479] find file. [d_name='10017_0_1_0_0.idx']
+I0516 12:35:47.704095 81582 olap_table.cpp:280] begin to load indices. [version_size=2 table='10017.1639769700']
+I0516 12:35:47.704133 81582 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.idx' flag=0 fd=49]
+I0516 12:35:47.704147 81582 file_helper.h:364] fix head loaded. [file_length = 67, checksum = 1, protobuf_length = 15, proto_checksum = 150864235, magic_number = 0, version = 1
+I0516 12:35:47.704172 81582 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.dat' flag=0 fd=49]
+I0516 12:35:47.704182 81582 file_helper.h:364] fix head loaded. [file_length = 411, checksum = -1, protobuf_length = 275, proto_checksum = 3801821575, magic_number = 0, version = 1
+I0516 12:35:47.704229 81582 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_2_1152916539004056937_0.idx' flag=0 fd=49]
+I0516 12:35:47.704238 81582 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 1114114, protobuf_length = 23, proto_checksum = 1843267674, magic_number = 0, version = 1
+I0516 12:35:47.704258 81582 file_helper.cpp:67] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_2_1152916539004056937_0.dat' flag=0 fd=49]
+I0516 12:35:47.704267 81582 file_helper.h:364] fix head loaded. [file_length = 592, checksum = -555881287, protobuf_length = 276, proto_checksum = 2096313077, magic_number = 0, version = 1
+I0516 12:35:47.704303 81582 file_helper.cpp:102] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_2_1152916539004056937_0.dat' flag=0 fd=49]
+I0516 12:35:47.704313 81582 file_helper.h:364] fix head loaded. [file_length = 592, checksum = -555881287, protobuf_length = 276, proto_checksum = 2096313077, magic_number = 0, version = 1
+I0516 12:35:47.704358 81582 file_helper.cpp:102] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_2_1152916539004056937_0.idx' flag=0 fd=50]
+I0516 12:35:47.704367 81582 file_helper.h:364] fix head loaded. [file_length = 84, checksum = 1114114, protobuf_length = 23, proto_checksum = 1843267674, magic_number = 0, version = 1
+I0516 12:35:47.704385 81582 olap_table.cpp:368] load OLAPIndex success. [version='2-2' version_hash=1152916539004056937 num_segments=1 table='10017.1639769700']
+I0516 12:35:47.704404 81582 file_helper.cpp:102] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.dat' flag=0 fd=51]
+I0516 12:35:47.704411 81582 file_helper.h:364] fix head loaded. [file_length = 411, checksum = -1, protobuf_length = 275, proto_checksum = 3801821575, magic_number = 0, version = 1
+I0516 12:35:47.704443 81582 file_helper.cpp:102] success to open file. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_0_1_0_0.idx' flag=0 fd=52]
+I0516 12:35:47.704452 81582 file_helper.h:364] fix head loaded. [file_length = 67, checksum = 1, protobuf_length = 15, proto_checksum = 150864235, magic_number = 0, version = 1
+I0516 12:35:47.704463 81582 olap_table.cpp:368] load OLAPIndex success. [version='0-1' version_hash=0 num_segments=1 table='10017.1639769700']
+I0516 12:35:47.704517 81582 olap_index.cpp:855] show real offset iterator value. [off=0]
+I0516 12:35:47.704524 81582 olap_index.cpp:856] show result offset. [seg_off=0 off=0]
+I0516 12:35:47.704530 81582 olap_index.cpp:388] [seg='0', offset='0']
+I0516 12:35:47.704536 81582 olap_index.cpp:967] MemIndex::get_row_block_position: {segment=0 block_size=592 data_offset=0 index_offset=75}
+I0516 12:35:47.704545 81582 olap_table.cpp:819] start post = 0, 75
+I0516 12:35:47.704551 81582 olap_index.cpp:855] show real offset iterator value. [off=1]
+I0516 12:35:47.704555 81582 olap_index.cpp:856] show result offset. [seg_off=0 off=1]
+I0516 12:35:47.704560 81582 olap_index.cpp:388] [seg='0', offset='0']
+I0516 12:35:47.704566 81582 olap_index.cpp:967] MemIndex::get_row_block_position: {segment=0 block_size=592 data_offset=0 index_offset=75}
+I0516 12:35:47.704571 81582 olap_table.cpp:829] end post = 0, 75
+I0516 12:35:47.704592 81582 olap_scan_node.cpp:557] SubScanKey=[-2147483648 : 2147483647]
+I0516 12:35:47.704599 81582 olap_scan_node.cpp:359] StartScanThread
+I0516 12:35:47.704603 81582 olap_scan_node.cpp:572] Query ScanRange Num: 1
+I0516 12:35:47.704815 81523 olap_scanner.cpp:93] Slot: name=citycode type=SMALLINT
+I0516 12:35:47.704857 81523 olap_reader.cpp:118] fetch request:TFetchRequest {
+  01: use_compression (bool) = false,
+  02: num_rows (i32) = 256,
+  03: schema_hash (i32) = 1639769700,
+  04: tablet_id (i64) = 10017,
+  05: version (i32) = 2,
+  06: version_hash (i64) = 1152916539004056937,
+  07: field (list) = list<string>[1] {
+    [0] = "citycode",
+  },
+  09: output (string) = "palo2",
+  10: range (string) = "ge",
+  11: start_key (list) = list<struct>[1] {
+    [0] = TFetchStartKey {
+      01: key (list) = list<string>[1] {
+        [0] = "-2147483648",
+      },
+    },
+  },
+  12: end_key (list) = list<struct>[1] {
+    [0] = TFetchEndKey {
+      01: key (list) = list<string>[1] {
+        [0] = "2147483647",
+      },
+    },
+  },
+  13: where (list) = list<struct>[0] {
+  },
+  14: end_range (string) = "le",
+  15: aggregation (bool) = false,
+}
+I0516 12:35:47.704874 81523 olap_engine.cpp:299] begin to get olap table. [table=10017]
+I0516 12:35:47.704877 81523 olap_engine.cpp:305] get olap table success. [table=10017]
+I0516 12:35:47.704907 81523 olap_reader.cpp:341] reader_params info :table=10017.1639769700 reader_type=0 aggregation=0 version=0-2 range=ge end_range=le keys=TFetchStartKey {
+  01: key (list) = list<string>[1] {
+    [0] = "-2147483648",
+  },
+} end_keys=TFetchEndKey {
+  01: key (list) = list<string>[1] {
+    [0] = "2147483647",
+  },
+}
+I0516 12:35:47.704911 81523 reader.cpp:149] Reader::init
+I0516 12:35:47.704941 81523 olap_header.cpp:397] calculated shortest path. [version='0-2' path='0-1 2-2 ']
+I0516 12:35:47.704947 81523 i_data.cpp:35] create COLUMN_ORIENTED_FILE
+I0516 12:35:47.704952 81523 i_data.cpp:35] create COLUMN_ORIENTED_FILE
+I0516 12:35:47.704962 81523 reader.cpp:393] Reader::_attach_data_to_merge_set
+I0516 12:35:47.704967 81523 reader.cpp:474] filter delta in query in condition: 0, 1
+I0516 12:35:47.704969 81523 reader.cpp:491] not filter delta in query: 2, 2
+I0516 12:35:47.704984 81523 column_data.cpp:357] ColumnData::find_row,key:0&2147483647
+I0516 12:35:47.705005 81523 olap_index.cpp:855] show real offset iterator value. [off=1]
+I0516 12:35:47.705008 81523 olap_index.cpp:856] show result offset. [seg_off=0 off=1]
+I0516 12:35:47.705014 81523 olap_index.cpp:388] [seg='0', offset='0']
+I0516 12:35:47.705018 81523 olap_index.cpp:967] MemIndex::get_row_block_position: {segment=0 block_size=592 data_offset=0 index_offset=75}
+I0516 12:35:47.705025 81523 olap_index.cpp:967] MemIndex::get_row_block_position: {segment=0 block_size=592 data_offset=0 index_offset=75}
+I0516 12:35:47.705032 81523 column_data.cpp:184] ColumnData::_seek_to_block
+I0516 12:35:47.705040 81523 segment_reader.cpp:254] SegmentReader::init 
+I0516 12:35:47.705044 81523 segment_reader.cpp:134] SegmentReader::_load_segment_file
+I0516 12:35:47.705049 81523 file_helper.cpp:89] success to open file with cache. [file_name='/opt/palo/output/be/data/data/0/10017/1639769700/10017_2_2_1152916539004056937_0.dat' flag=0 fd=49]
+I0516 12:35:47.705085 81523 file_stream.h:252] ReadOnlyFileStream::read_all 
+I0516 12:35:47.705092 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705096 81523 file_stream.cpp:57] STREAM EOF.[length=46 used=0]
+I0516 12:35:47.705102 81523 file_stream.h:154] FILE read from 316 to 324 [316 - 362], length 8
+I0516 12:35:47.705108 81523 file_stream.cpp:176] ReadOnlyFileStream::_fill_compressed,length 38
+I0516 12:35:47.705114 81523 file_stream.h:154] FILE read from 324 to 362 [316 - 362], length 38
+W0516 12:35:47.705118 81523 file_stream.cpp:102] _uncompressed data : 
+I0516 12:35:47.705127 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705130 81523 file_stream.cpp:57] STREAM EOF.[length=46 used=46]
+I0516 12:35:47.705134 81523 file_stream.cpp:63] STREAM EOF.[length=46 used=46]
+I0516 12:35:47.705142 81523 file_stream.h:252] ReadOnlyFileStream::read_all 
+I0516 12:35:47.705145 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705148 81523 file_stream.cpp:57] STREAM EOF.[length=42 used=0]
+I0516 12:35:47.705152 81523 file_stream.h:154] FILE read from 362 to 370 [362 - 404], length 8
+I0516 12:35:47.705155 81523 file_stream.cpp:176] ReadOnlyFileStream::_fill_compressed,length 34
+I0516 12:35:47.705159 81523 file_stream.h:154] FILE read from 370 to 404 [362 - 404], length 34
+W0516 12:35:47.705163 81523 file_stream.cpp:102] _uncompressed data : 
+I0516 12:35:47.705168 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705171 81523 file_stream.cpp:57] STREAM EOF.[length=42 used=42]
+I0516 12:35:47.705174 81523 file_stream.cpp:63] STREAM EOF.[length=42 used=42]
+I0516 12:35:47.705180 81523 segment_reader.cpp:810] found index entry count 1
+I0516 12:35:47.705185 81523 column_data.cpp:226] ###---### seek from 0 to 0
+I0516 12:35:47.705189 81523 segment_reader.cpp:312] SegmentReader::seek_to_block
+I0516 12:35:47.705193 81523 segment_reader.cpp:1057] 0 stream in total.
+I0516 12:35:47.705198 81523 segment_reader.cpp:872] SegmentReader::_read_all_data_streams
+I0516 12:35:47.705201 81523 segment_reader.cpp:912]  init stream: name 2, type 0 
+I0516 12:35:47.705206 81523 segment_reader.cpp:912]  init stream: name 3, type 0 
+I0516 12:35:47.705209 81523 segment_reader.cpp:912]  init stream: name 0, type 2 
+I0516 12:35:47.705214 81523 segment_reader.cpp:912]  init stream: name 1, type 2 
+I0516 12:35:47.705217 81523 segment_reader.cpp:912]  init stream: name 2, type 2 
+I0516 12:35:47.705221 81523 segment_reader.cpp:912]  init stream: name 2, type 3 
+I0516 12:35:47.705225 81523 segment_reader.cpp:912]  init stream: name 3, type 2 
+I0516 12:35:47.705229 81523 segment_reader.cpp:936] SegmentReader::_create_reader
+I0516 12:35:47.705232 81523 column_reader.cpp:462] ColumnReader::create,column_id :0 
+I0516 12:35:47.705238 81523 column_reader.cpp:471] ColumnReader::create,field_info :{name='siteid' type='INT' aggregation='NONE' length=4 is_key=1 is_allow_null=1} 
+I0516 12:35:47.705242 81523 column_reader.cpp:655] ColumnReader::init
+I0516 12:35:47.705245 81523 column_reader.cpp:39] IntegerColumnReader::init
+I0516 12:35:47.705250 81523 column_reader.cpp:51] data_stream offset :502 , length : 12
+I0516 12:35:47.705252 81523 column_reader.cpp:462] ColumnReader::create,column_id :1 
+I0516 12:35:47.705256 81523 column_reader.cpp:471] ColumnReader::create,field_info :{name='citycode' type='SMALLINT' aggregation='REPLACE' length=2 is_key=0 is_allow_null=1} 
+I0516 12:35:47.705260 81523 column_reader.cpp:655] ColumnReader::init
+I0516 12:35:47.705262 81523 column_reader.cpp:39] IntegerColumnReader::init
+I0516 12:35:47.705265 81523 column_reader.cpp:51] data_stream offset :514 , length : 13
+I0516 12:35:47.705271 81523 segment_reader.cpp:355] first 0 end 0; tol 1
+I0516 12:35:47.705274 81523 segment_reader.cpp:1096] --> entry 0 cur 0 tol 5
+I0516 12:35:47.705282 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705286 81523 file_stream.cpp:57] STREAM EOF.[length=12 used=0]
+I0516 12:35:47.705297 81523 file_stream.h:154] FILE read from 502 to 510 [502 - 514], length 8
+I0516 12:35:47.705303 81523 file_stream.cpp:176] ReadOnlyFileStream::_fill_compressed,length 4
+I0516 12:35:47.705309 81523 file_stream.h:154] FILE read from 510 to 514 [502 - 514], length 4
+W0516 12:35:47.705313 81523 file_stream.cpp:102] _uncompressed data : À
+I0516 12:35:47.705319 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705322 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=0]
+I0516 12:35:47.705327 81523 file_stream.h:154] FILE read from 514 to 522 [514 - 527], length 8
+I0516 12:35:47.705329 81523 file_stream.cpp:176] ReadOnlyFileStream::_fill_compressed,length 5
+I0516 12:35:47.705333 81523 file_stream.h:154] FILE read from 522 to 527 [514 - 527], length 5
+W0516 12:35:47.705337 81523 file_stream.cpp:102] _uncompressed data : Â
+I0516 12:35:47.705343 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705348 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705350 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705354 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705358 81523 file_stream.cpp:57] STREAM EOF.[length=12 used=12]
+I0516 12:35:47.705360 81523 run_length_integer_reader.cpp:44] decoding with 3
+I0516 12:35:47.705364 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705368 81523 file_stream.cpp:57] STREAM EOF.[length=12 used=12]
+I0516 12:35:47.705370 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705374 81523 file_stream.cpp:57] STREAM EOF.[length=12 used=12]
+I0516 12:35:47.705375 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705379 81523 file_stream.cpp:57] STREAM EOF.[length=12 used=12]
+I0516 12:35:47.705390 81523 segment_reader.h:390] attach _cursor : 0&1|0&0|0&|0&0  
+I0516 12:35:47.705394 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705396 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705399 81523 run_length_integer_reader.cpp:44] decoding with 3
+I0516 12:35:47.705402 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705405 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705409 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705411 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705415 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705417 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705420 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705423 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705430 81523 segment_reader.h:390] attach _cursor : 0&1|0&11|0&|0&0  
+I0516 12:35:47.705433 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705436 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705438 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705444 81523 segment_reader.h:390] attach _cursor : 0&2|0&11|0&|0&0  
+I0516 12:35:47.705449 81523 segment_reader.h:390] attach _cursor : 0&2|0&12|0&|0&0  
+I0516 12:35:47.705452 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705456 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705458 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705463 81523 segment_reader.h:390] attach _cursor : 0&3|0&12|0&|0&0  
+I0516 12:35:47.705469 81523 segment_reader.h:390] attach _cursor : 0&3|0&12|0&|0&0  
+I0516 12:35:47.705472 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705474 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705477 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705482 81523 segment_reader.h:390] attach _cursor : 0&4|0&12|0&|0&0  
+I0516 12:35:47.705488 81523 segment_reader.h:390] attach _cursor : 0&4|0&13|0&|0&0  
+I0516 12:35:47.705497 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705500 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705503 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705509 81523 segment_reader.h:390] attach _cursor : 0&5|0&13|0&|0&0  
+I0516 12:35:47.705514 81523 segment_reader.h:390] attach _cursor : 0&5|0&13|0&|0&0  
+I0516 12:35:47.705518 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705520 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705528 81523 column_data.cpp:447] end_key can't be found.[end_key=0&2147483647]
+I0516 12:35:47.705531 81523 column_data.cpp:357] ColumnData::find_row,key:1&NULL
+I0516 12:35:47.705538 81523 olap_index.cpp:855] show real offset iterator value. [off=0]
+I0516 12:35:47.705541 81523 olap_index.cpp:856] show result offset. [seg_off=0 off=0]
+I0516 12:35:47.705544 81523 olap_index.cpp:388] [seg='0', offset='0']
+I0516 12:35:47.705549 81523 olap_index.cpp:967] MemIndex::get_row_block_position: {segment=0 block_size=592 data_offset=0 index_offset=75}
+I0516 12:35:47.705552 81523 olap_index.cpp:967] MemIndex::get_row_block_position: {segment=0 block_size=592 data_offset=0 index_offset=75}
+I0516 12:35:47.705555 81523 column_data.cpp:184] ColumnData::_seek_to_block
+I0516 12:35:47.705559 81523 column_data.cpp:226] ###---### seek from 0 to 0
+I0516 12:35:47.705561 81523 segment_reader.cpp:312] SegmentReader::seek_to_block
+I0516 12:35:47.705564 81523 segment_reader.cpp:551] pick from 0 to 0
+I0516 12:35:47.705569 81523 segment_reader.cpp:464] pick for 0 to 0 for delete_condition
+I0516 12:35:47.705572 81523 segment_reader.cpp:355] first 0 end 0; tol 1
+I0516 12:35:47.705576 81523 segment_reader.cpp:1096] --> entry 0 cur 0 tol 5
+I0516 12:35:47.705579 81523 column_data.cpp:403] !find_last_key and _get_next_row
+I0516 12:35:47.705584 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705586 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705588 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705591 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705595 81523 file_stream.cpp:57] STREAM EOF.[length=12 used=12]
+I0516 12:35:47.705597 81523 run_length_integer_reader.cpp:44] decoding with 3
+I0516 12:35:47.705600 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705603 81523 file_stream.cpp:57] STREAM EOF.[length=12 used=12]
+I0516 12:35:47.705606 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705610 81523 file_stream.cpp:57] STREAM EOF.[length=12 used=12]
+I0516 12:35:47.705612 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705615 81523 file_stream.cpp:57] STREAM EOF.[length=12 used=12]
+I0516 12:35:47.705621 81523 segment_reader.h:390] attach _cursor : 0&1|0&13|0&|0&0  
+I0516 12:35:47.705624 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705626 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705629 81523 run_length_integer_reader.cpp:44] decoding with 3
+I0516 12:35:47.705632 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705636 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705638 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705641 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705644 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705647 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705649 81523 file_stream.cpp:55] ReadOnlyFileStream::_assure_data
+I0516 12:35:47.705652 81523 file_stream.cpp:57] STREAM EOF.[length=13 used=13]
+I0516 12:35:47.705658 81523 segment_reader.h:390] attach _cursor : 0&1|0&11|0&|0&0  
+I0516 12:35:47.705670 81523 olap_scanner.cpp:153] OlapScanner::get_next
+I0516 12:35:47.705674 81523 olap_reader.cpp:181] OLAPReader::next_tuple
+I0516 12:35:47.705678 81523 reader.cpp:183] Reader::next_row_with_aggregation
+I0516 12:35:47.705689 81523 reader.cpp:85] MergeSet::next
+I0516 12:35:47.705693 81523 reader.cpp:95] MergeSet::_pop_from_heap
+I0516 12:35:47.705696 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705699 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705701 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705708 81523 segment_reader.h:390] attach _cursor : 0&2|0&11|0&|0&0  
+I0516 12:35:47.705713 81523 segment_reader.h:390] attach _cursor : 0&2|0&12|0&|0&0  
+I0516 12:35:47.705721 81523 olap_scan_node.cpp:1569] OlapScanner input row: (11)
+I0516 12:35:47.705726 81523 olap_scan_node.cpp:1626] OlapScanner output row: (11)
+I0516 12:35:47.705729 81523 olap_scanner.cpp:153] OlapScanner::get_next
+I0516 12:35:47.705732 81523 olap_reader.cpp:181] OLAPReader::next_tuple
+I0516 12:35:47.705735 81523 reader.cpp:183] Reader::next_row_with_aggregation
+I0516 12:35:47.705739 81523 reader.cpp:85] MergeSet::next
+I0516 12:35:47.705742 81523 reader.cpp:95] MergeSet::_pop_from_heap
+I0516 12:35:47.705745 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705749 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705751 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705756 81523 segment_reader.h:390] attach _cursor : 0&3|0&12|0&|0&0  
+I0516 12:35:47.705762 81523 segment_reader.h:390] attach _cursor : 0&3|0&12|0&|0&0  
+I0516 12:35:47.705766 81523 olap_scan_node.cpp:1569] OlapScanner input row: (12)
+I0516 12:35:47.705770 81523 olap_scan_node.cpp:1626] OlapScanner output row: (12)
+I0516 12:35:47.705773 81523 olap_scanner.cpp:153] OlapScanner::get_next
+I0516 12:35:47.705776 81523 olap_reader.cpp:181] OLAPReader::next_tuple
+I0516 12:35:47.705780 81523 reader.cpp:183] Reader::next_row_with_aggregation
+I0516 12:35:47.705782 81523 reader.cpp:85] MergeSet::next
+I0516 12:35:47.705785 81523 reader.cpp:95] MergeSet::_pop_from_heap
+I0516 12:35:47.705788 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705791 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705793 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705799 81523 segment_reader.h:390] attach _cursor : 0&4|0&12|0&|0&0  
+I0516 12:35:47.705804 81523 segment_reader.h:390] attach _cursor : 0&4|0&13|0&|0&0  
+I0516 12:35:47.705808 81523 olap_scan_node.cpp:1569] OlapScanner input row: (12)
+I0516 12:35:47.705812 81523 olap_scan_node.cpp:1626] OlapScanner output row: (12)
+I0516 12:35:47.705816 81523 olap_scanner.cpp:153] OlapScanner::get_next
+I0516 12:35:47.705818 81523 olap_reader.cpp:181] OLAPReader::next_tuple
+I0516 12:35:47.705821 81523 reader.cpp:183] Reader::next_row_with_aggregation
+I0516 12:35:47.705824 81523 reader.cpp:85] MergeSet::next
+I0516 12:35:47.705827 81523 reader.cpp:95] MergeSet::_pop_from_heap
+I0516 12:35:47.705830 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705833 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705837 81523 segment_reader.h:376] SegmentReader::_read_next_and_attach
+I0516 12:35:47.705842 81523 segment_reader.h:390] attach _cursor : 0&5|0&13|0&|0&0  
+I0516 12:35:47.705847 81523 segment_reader.h:390] attach _cursor : 0&5|0&13|0&|0&0  
+I0516 12:35:47.705852 81523 olap_scan_node.cpp:1569] OlapScanner input row: (13)
+I0516 12:35:47.705854 81523 olap_scan_node.cpp:1626] OlapScanner output row: (13)
+I0516 12:35:47.705857 81523 olap_scanner.cpp:153] OlapScanner::get_next
+I0516 12:35:47.705860 81523 olap_reader.cpp:181] OLAPReader::next_tuple
+I0516 12:35:47.705863 81523 reader.cpp:183] Reader::next_row_with_aggregation
+I0516 12:35:47.705866 81523 reader.cpp:85] MergeSet::next
+I0516 12:35:47.705869 81523 reader.cpp:95] MergeSet::_pop_from_heap
+I0516 12:35:47.705873 81523 column_data.cpp:98] ColumnData::_get_next_row
+I0516 12:35:47.705875 81523 segment_reader.cpp:368] SegmentReader::get_next_row
+I0516 12:35:47.705878 81523 segment_reader.h:138] SegmentReader _filted_rows: 0
+I0516 12:35:47.705889 81523 olap_scan_node.cpp:1569] OlapScanner input row: (13)
+I0516 12:35:47.705893 81523 olap_scan_node.cpp:1626] OlapScanner output row: (13)
+I0516 12:35:47.705896 81523 olap_scanner.cpp:153] OlapScanner::get_next
+I0516 12:35:47.705899 81523 olap_reader.cpp:181] OLAPReader::next_tuple
+I0516 12:35:47.705901 81523 reader.cpp:183] Reader::next_row_with_aggregation
+I0516 12:35:47.705905 81523 reader.cpp:393] Reader::_attach_data_to_merge_set
+I0516 12:35:47.705909 81523 reader.cpp:408] can NOT attach while start_key has been used.
+I0516 12:35:47.705912 81523 olap_scan_node.cpp:1661] Stop Using PushDown Conjuncts. PushDownReturnRate: 100% MaxPushDownReturnRate: 90%
+I0516 12:35:47.705917 81523 progress_updater.cpp:56] ScanThread complete (node=0): 100% Complete (1 out of 1)
+I0516 12:35:47.705945 81784 olap_scan_node.cpp:1950] Push row_batch to materialized_row_batches
+I0516 12:35:47.705958 81784 olap_scan_node.cpp:1495] TransferThread finish.
+I0516 12:35:47.705987 81582 olap_scan_node.cpp:245] OlapScanNode output row: (11)
+I0516 12:35:47.705996 81582 olap_scan_node.cpp:245] OlapScanNode output row: (12)
+I0516 12:35:47.706001 81582 olap_scan_node.cpp:245] OlapScanNode output row: (12)
+I0516 12:35:47.706004 81582 olap_scan_node.cpp:245] OlapScanNode output row: (13)
+I0516 12:35:47.706008 81582 olap_scan_node.cpp:245] OlapScanNode output row: (13)
+I0516 12:35:47.706017 81582 aggregation_node.cpp:212] id=1 input row: [(11)]
+I0516 12:35:47.706022 81582 aggregation_node.cpp:212] id=1 input row: [(12)]
+I0516 12:35:47.706027 81582 aggregation_node.cpp:212] id=1 input row: [(12)]
+I0516 12:35:47.706032 81582 aggregation_node.cpp:212] id=1 input row: [(13)]
+I0516 12:35:47.706035 81582 aggregation_node.cpp:212] id=1 input row: [(13)]
+I0516 12:35:47.706048 81582 aggregation_node.cpp:259] id=1 aggregated 5 input rows into 3 output rows
+I0516 12:35:47.706061 81582 aggregation_node.cpp:297] output row: [(12 2)]
+I0516 12:35:47.706068 81582 aggregation_node.cpp:297] output row: [(11 1)]
+I0516 12:35:47.706073 81582 aggregation_node.cpp:297] output row: [(13 2)]
+I0516 12:35:47.706089 81582 plan_fragment_executor.cpp:309] open_internal: #rows=3 desc=tuple_desc_map: [Tuple(id=1 size=16 slots=[Slot(id=1 type=SMALLINT col=-1 offset=2 null=(offset=0 mask=80)), Slot(id=2 type=BIGINT col=-1 offset=8 null=(offset=0 mask=0))] has_varlen_slots=0)] tuple_id_map: [-1, 0] tuple_is_nullable: [0] 
+I0516 12:35:47.706094 81582 plan_fragment_executor.cpp:314] [(12 2)]
+I0516 12:35:47.706099 81582 plan_fragment_executor.cpp:314] [(11 1)]
+I0516 12:35:47.706104 81582 plan_fragment_executor.cpp:314] [(13 2)]
+I0516 12:35:47.706228 81582 plan_fragment_executor.cpp:341] Fragment 508b7ff958f145a8:aa6075ee4d7f4615:(Active: 2.294ms, % non-child: 0.00%)
+   - AverageThreadTokens: 0.00 
+   - RowsProduced: 3
+  BlockMgr:
+     - BlockWritesOutstanding: 0
+     - BlocksCreated: 0
+     - BlocksRecycled: 0
+     - BufferedPins: 0
+     - BytesWritten: 0
+     - MaxBlockSize: 8.00 MB
+     - MemoryLimit: 2.00 GB
+     - TotalBufferWaitTime: 0.000ns
+     - TotalEncryptionTime: 0.000ns
+     - TotalIntegrityCheckTime: 0.000ns
+     - TotalReadBlockTime: 0.000ns
+  DataBufferSender (dst_id=TUniqueId(hi=5803873253712807336, lo=-6169801823134726635)):
+  AGGREGATION_NODE (id=1):(Active: 2.328ms, % non-child: 0.00%)
+     - BuildBuckets: 1.02K
+     - BuildTime: 0.000ns
+     - GetResultsTime: 19.671us
+     - LoadFactor: 0.00 
+     - MemoryUsed: 32.05 KB
+     - RowsReturned: 3
+     - RowsReturnedRate: 1.29 K/sec
+  OLAP_SCAN_NODE (id=0):(Active: 2.199ms, % non-child: 0.00%)
+     - BytesRead: 0
+     - DirectFilterReturnCount : 5
+     - EvalTime: 0.000ns
+     - MemoryUsed: 0
+     - NumThread: 0
+     - OlapScanTime: 0.000ns
+     - PerReadThreadRawHdfsThroughput: 0.00 /sec
+     - PushDownFilterReturnCount : 5
+     - RowsRead: 5
+     - RowsReturned: 5
+     - RowsReturnedRate: 2.27 K/sec
+     - ScanRangesComplete: 0
+     - ScannerThreadsInvoluntaryContextSwitches: 0
+     - ScannerThreadsTotalWallClockTime: 0.000ns
+       - MaterializeTupleTime(*): 0.000ns
+       - ScannerThreadsSysTime: 0.000ns
+       - ScannerThreadsUserTime: 0.000ns
+     - ScannerThreadsVoluntaryContextSwitches: 0
+     - SortMergeTime: 0.000ns
+     - TabletCount : 1
+     - TotalRawReadTime(*): 0.000ns
+     - TotalReadThroughput: 0.00 /sec
+    OlapScanner:
+       - GetTabletTime: 17.553us
+       - InitReaderTime: 779.323us
+       - RawRowsRead: 5
+       - ReadDataTime: 0.000ns
+       - ShowHintsTime: 665.859us
+I0516 12:35:47.706260 81582 reader.cpp:263] scan rows:5, filted rows:0, merged rows:0
+I0516 12:35:47.706277 81582 olap_scan_node.cpp:317] OlapScanNode::close()
+I0516 12:35:47.706282 81582 fragment_mgr.cpp:197] execute time is 2
+I0516 12:35:48.769608 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:49.000202 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=53]
+I0516 12:35:53.769732 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:54.000211 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=53]
+I0516 12:35:54.769400 81673 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
+I0516 12:35:54.769418 81673 client_cache.cpp:63] get_client(): cached client for TNetworkAddress(hostname=172.17.0.2, port=9020)
+I0516 12:35:54.769572 81673 task_worker_pool.cpp:1506] finish report task success. return code: 0
+I0516 12:35:58.769891 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:35:59.000200 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=53]
+I0516 12:36:03.770031 81745 heartbeat_server.cpp:54] get heartbeat, host: 172.17.0.2, port: 9020, cluster id: 1968422503
+I0516 12:36:04.000227 81518 file_helper.cpp:127] success to open file. [file_name='/opt/palo/output/be/data/.testfile' flag=16450 mode=384 fd=53]
+I0516 12:36:04.769718 81673 task_worker_pool.cpp:1500] master host: 172.17.0.2, port: 9020
