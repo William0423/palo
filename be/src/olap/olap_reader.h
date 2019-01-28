@@ -75,14 +75,6 @@ public:
     Status close();
 
     Status next_tuple(Tuple *tuple, int64_t* raw_rows_read, bool* eof);
-
-    uint64_t scan_row_total_count(){
-        return _reader.scan_row_total_count();
-    }
-
-    uint64_t scan_row_current_index(){
-        return _reader.scan_row_current_index();
-    }
     
 private: 
     OLAPStatus _init_params(TFetchRequest& fetch_request, RuntimeProfile* profile);

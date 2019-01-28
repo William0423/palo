@@ -96,7 +96,7 @@ OLAPStatus ColumnDataWriter::init() {
     return res;
 }
 
-OLAPStatus ColumnDataWriter::attached_by(RowCursor* row_cursor) {   //jungle comment: attached by the row_cursor ,when reader write to the row_cursor, actually write to the rowblock buf , data of the same version is sorted
+OLAPStatus ColumnDataWriter::attached_by(RowCursor* row_cursor) {   //jungle comment: attached by the row_cursor ,when reader write to the row_cursor, actually write to the rowblock buf
     if (_row_index >= _table->num_rows_per_row_block()) {
         if (OLAP_SUCCESS != _flush_row_block(false)) {
             OLAP_LOG_WARNING("failed to flush data while attaching row cursor.");

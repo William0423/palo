@@ -63,10 +63,6 @@ public:
     virtual LargeIntVal get_large_int_val(ExprContext* context, TupleRow*);
     virtual FloatVal get_float_val(ExprContext* context, TupleRow*);
     virtual DoubleVal get_double_val(ExprContext* context, TupleRow*);
-
-    std::string debug_string() const override {
-        return "(addExpr)" ;
-    }
 };
 
 class SubExpr : public ArithmeticExpr {
@@ -84,10 +80,6 @@ public:
     virtual LargeIntVal get_large_int_val(ExprContext* context, TupleRow*);
     virtual FloatVal get_float_val(ExprContext* context, TupleRow*);
     virtual DoubleVal get_double_val(ExprContext* context, TupleRow*);
-    std::string debug_string() const override {
-        return "(SubExpr)" ;
-    }
-
 };
 
 class MulExpr : public ArithmeticExpr {

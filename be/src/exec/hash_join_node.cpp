@@ -281,8 +281,8 @@ Status HashJoinNode::open(RuntimeState* state) {
         add_runtime_exec_option("Hash Table Built Asynchronously");
         boost::thread(bind(&HashJoinNode::build_side_thread, this, state, &thread_status));
     } else {
-        thread_status.set_value(construct_hash_table(state));  //jungle comment : sync model ,get_next from child(1) and build table in memory
-     }
+        thread_status.set_value(construct_hash_table(state));
+    }
 
     if (_children[0]->type() == TPlanNodeType::EXCHANGE_NODE
             && _children[1]->type() == TPlanNodeType::EXCHANGE_NODE) {

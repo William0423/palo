@@ -111,7 +111,7 @@ OLAPStatus StreamIndexReader::init(
 }
 
 const PositionEntryReader& StreamIndexReader::entry(uint64_t entry_id) {   //when write ,create_row_index_entry and add add_index_entry sequencely , so entry_id = block_id
-    _entry.attach(_buffer + _start_offset + _step_size * entry_id);  //jungle commet :_step_size = position num * sizeof(int32) + sizeof(statistics)
+    _entry.attach(_buffer + _start_offset + _step_size * entry_id);  //jungle commet :_step_size = position num * 4 + sizeof(statistics)
     return _entry;
 }
 

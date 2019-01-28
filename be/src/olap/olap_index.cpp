@@ -278,15 +278,12 @@ OLAPStatus OLAPIndex::load() {
         // get full path for one segment
         string path = _table->construct_index_file_path(_version, _version_hash, seg_id);
         OLAP_LOG_DEBUG("start to load index  segment. [path='%s'] ,seg id :%d", path.c_str(),seg_id);
-        size_t segment_row_cnt = 0;
-        if ((res = _index.load_segment(path.c_str(), &_current_num_rows_per_row_block,&segment_row_cnt))
+        if ((res = _index.load_segment(path.c_str(), &_current_num_rows_per_row_block))
                 != OLAP_SUCCESS) {
             OLAP_LOG_WARNING("fail to load segment. [path='%s']", path.c_str());
             _check_io_error(res);
             return res;
         }
-        _segmentid_to_row_count.insert(std::pair<uint32_t ,uint32_t >(seg_id,segment_row_cnt));
-
     }
 
     _index_loaded = true;
@@ -653,7 +650,7 @@ MemIndex::~MemIndex() {
     }
 }
 
-OLAPStatus MemIndex::load_segment(const char* file, size_t *current_num_rows_per_row_block,size_t * segment_row_count) {
+OLAPStatus MemIndex::load_segment(const char* file, size_t *current_num_rows_per_row_block) {
     OLAP_LOG_DEBUG("MemIndex::load_segment");
     OLAPStatus res = OLAP_SUCCESS;
 
@@ -684,7 +681,7 @@ OLAPStatus MemIndex::load_segment(const char* file, size_t *current_num_rows_per
 
     // 允许索引内容为空
     // 索引长度必须为索引项长度的整数倍
-    meta.buffer.length = meta.file_header.file_length() - meta.file_header.size();// jungle comment : rowblock count * (short_key_length() + sizeof(data_file_offset_t);)
+    meta.buffer.length = meta.file_header.file_length() - meta.file_header.size();
     bool null_supported = false;
     //null_supported是为了兼容之前没有NULL字节的数据。
     //目前索引里面都加入了NULL的标志位，entry length都算了NULL标志位构成的bytes
@@ -744,7 +741,6 @@ OLAPStatus MemIndex::load_segment(const char* file, size_t *current_num_rows_per
     }
     _data_size += meta.file_header.extra().data_length; //jungle comment:all segment data_length added to _data_size
     _num_rows += meta.file_header.extra().num_rows;
-    OLAP_LOG_INFO("_num_rows :%d " ,_num_rows);
 
     // checksum validation
     adler_checksum = olap_adler32(ADLER32_INIT, meta.buffer.data, meta.buffer.length);
@@ -779,16 +775,13 @@ OLAPStatus MemIndex::load_segment(const char* file, size_t *current_num_rows_per
         }
     }
 
-    OLAP_LOG_INFO("_num_entries 1 :%d" ,_num_entries);
     meta.range.first = _num_entries;
     meta.range.last = meta.range.first + num_entries;
     _num_entries = meta.range.last;
-    OLAP_LOG_INFO("_num_entries 2: %d" ,_num_entries);
     _meta.push_back(meta);
 
     (current_num_rows_per_row_block == NULL
-         || (*current_num_rows_per_row_block = meta.file_header.message().num_rows_per_block()));
-    (segment_row_count == NULL || (*segment_row_count = meta.file_header.extra().num_rows));
+         || (*current_num_rows_per_row_block = meta.file_header.message().num_rows_per_block())); 
 
     file_handler.close();
 
@@ -850,7 +843,7 @@ const OLAPIndexOffset MemIndex::find(const RowCursor& k,   //jungle comment : th
         }
 
         // set segment id
-        offset.segment = off;    //jungle comment : first find the segment
+        offset.segment = off;    //jungle comment : find the segment
         IndexComparator index_comparator(this, helper_cursor);
         // second step, binary search index item in given segment
         BinarySearchIterator index_beg(0);
@@ -966,7 +959,7 @@ OLAPStatus MemIndex::get_row_block_position(
     }
 
     rbp->segment = pos.segment;
-    rbp->data_offset = *reinterpret_cast<uint32_t*>(           //jungle comment :is _block_id , set in  OLAPIndex::add_row_block
+    rbp->data_offset = *reinterpret_cast<uint32_t*>(
                            _meta[pos.segment].buffer.data +
                            pos.offset * entry_length() + short_key_length());
     rbp->index_offset = _meta[pos.segment].file_header.size() + pos.offset * entry_length();

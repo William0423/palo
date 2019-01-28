@@ -124,8 +124,8 @@ OLAPStatus FileHandler::open_with_mode(const string& file_name, int flag, int mo
         return OLAP_ERR_IO_ERROR;
     }
 
-    //OLAP_LOG_DEBUG("success to open file. [file_name='%s' flag=%d mode=%d fd=%d]",
-    //               file_name.c_str(), flag, mode, _fd);
+    OLAP_LOG_DEBUG("success to open file. [file_name='%s' flag=%d mode=%d fd=%d]",
+                   file_name.c_str(), flag, mode, _fd);
     _file_name = file_name;
     return OLAP_SUCCESS;
 }

@@ -123,7 +123,6 @@ public:
             if (bytes < 0) release(-bytes);
             return;
         }
-        //LOG(INFO) << "current mem_tracker :" << label()<< "  consume " << bytes << "  bytes";
 
         if (_consumption_metric != NULL) {
             RefreshConsumptionFromMetric();
@@ -132,7 +131,6 @@ public:
         for (std::vector<MemTracker*>::iterator tracker = _all_trackers.begin();
              tracker != _all_trackers.end(); ++tracker) {
             (*tracker)->_consumption->Add(bytes);
-            //LOG(INFO) << "ancestors mem_tracker :" << (*tracker)->label()<< "  consume " << bytes << "  bytes"<< " ,now value:" << (*tracker)->_consumption->current_value();
             if ((*tracker)->_consumption_metric == NULL) {
                 DCHECK_GE((*tracker)->_consumption->current_value(), 0);
             }
@@ -164,7 +162,6 @@ public:
     /// Returns true if the try succeeded.
     WARN_UNUSED_RESULT
     bool try_consume(int64_t bytes) {
-        LOG(INFO) << "current mem_tracker " << label() << " try_consume " << bytes << " bytes";
         if (_consumption_metric != NULL) RefreshConsumptionFromMetric();
         if (UNLIKELY(bytes <= 0)) return true;
         int i;
@@ -174,26 +171,20 @@ public:
             const int64_t limit = tracker->limit();
             if (limit < 0) {
                 tracker->_consumption->Add(bytes); // No limit at this tracker.
-                LOG(INFO) << "ancestors mem_tracker " << tracker->label() << " add  " << bytes << " bytes" << " ,now value:" << tracker->_consumption->value();
             } else {
                 // If TryConsume fails, we can try to GC, but we may need to try several times if
                 // there are concurrent consumers because we don't take a lock before trying to
                 // update _consumption.
                 while (true) {
-                    if (LIKELY(tracker->_consumption->TryAdd(bytes, limit))){
-                        LOG(INFO) << "ancestors mem_tracker " << tracker->label() << " tryAdd  " << bytes << " bytes" << " ,now value:" << tracker->_consumption->value();
-                        break;
-                    }
+                    if (LIKELY(tracker->_consumption->TryAdd(bytes, limit))) break;
 
-                    LOG(INFO) << "TryConsume failed, bytes=" << bytes
+                    VLOG_RPC << "TryConsume failed, bytes=" << bytes
                         << " consumption=" << tracker->_consumption->current_value()
                         << " limit=" << limit << " attempting to GC";
                     if (UNLIKELY(tracker->GcMemory(limit - bytes))) {
                         DCHECK_GE(i, 0);
                         // Failed for this mem tracker. Roll back the ones that succeeded.
                         for (int j = _all_trackers.size() - 1; j > i; --j) {
-
-                            LOG(INFO) << "ancestors mem_tracker " <<  _all_trackers[j]->label() << " minuse  " << bytes << " bytes" << " ,now value:" << tracker->_consumption->value();
                             _all_trackers[j]->_consumption->Add(-bytes);
                         }
                         return false;
@@ -215,7 +206,6 @@ public:
             if (bytes < 0) consume(-bytes);
             return;
         }
-        //LOG(INFO) << "parenent mem_tracker :" << label() << " ,release " << bytes << "  bytes" << " ,now value:" << _consumption->current_value();
 
         if (_consumption_metric != NULL) {
             RefreshConsumptionFromMetric();
@@ -223,9 +213,7 @@ public:
         }
         for (std::vector<MemTracker*>::iterator tracker = _all_trackers.begin();
              tracker != _all_trackers.end(); ++tracker) {
-
             (*tracker)->_consumption->Add(-bytes);
-            //LOG(INFO) << "ancestors mem_tracker :" << (*tracker)->label()<< " ,release " << bytes << "  bytes" << " ,now value:" << (*tracker)->_consumption->current_value();
             /// If a UDF calls FunctionContext::TrackAllocation() but allocates less than the
             /// reported amount, the subsequent call to FunctionContext::Free() may cause the
             /// process mem tracker to go negative until it is synced back to the tcmalloc
@@ -311,7 +299,6 @@ public:
     int64_t consumption() const {
         return _consumption->current_value();;
     }
-
 
 
     /// Note that if _consumption is based on _consumption_metric, this will the max value

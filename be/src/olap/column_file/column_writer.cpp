@@ -282,7 +282,7 @@ OLAPStatus ColumnWriter::create_row_index_entry() {
     _index.add_index_entry(_index_entry);   //copy the new one
     _index_entry.reset_write_offset();
     _block_statistics.reset();
-    record_position();      //jungle comment : call subclass function ,eg:IntegerColumnWriterWrapper ,record the start of the block entry in steam
+    record_position();      //jungle comment : call subclass function ,eg:IntegerColumnWriterWrapper
 
     if (is_bf_column()) {
         _bf_index.add_bloom_filter(_bf);

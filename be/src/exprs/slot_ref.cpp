@@ -120,7 +120,6 @@ bool SlotRef::is_bound(std::vector<TupleId>* tuple_ids) const {
     return false;
 }
 
-/*
 std::string SlotRef::debug_string() const {
     std::stringstream out;
     out << "SlotRef(slot_id=" << _slot_id
@@ -129,7 +128,6 @@ std::string SlotRef::debug_string() const {
         << " " << Expr::debug_string() << ")";
     return out.str();
 }
-*/
 
 // There are four possible cases we may generate:
 //   1. Tuple is non-nullable and slot is non-nullable

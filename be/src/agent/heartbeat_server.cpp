@@ -48,12 +48,10 @@ void HeartbeatServer::heartbeat(
     TStatusCode::type status_code = TStatusCode::OK;
     vector<string> error_msgs;
     TStatus heartbeat_status;
-    /***
     OLAP_LOG_INFO("get heartbeat, host: %s, port: %d, cluster id: %d",
                   master_info.network_address.hostname.c_str(),
                   master_info.network_address.port,
                   master_info.cluster_id);
-     ***/
 
     // Check cluster id
     if (_master_info->cluster_id == -1) {

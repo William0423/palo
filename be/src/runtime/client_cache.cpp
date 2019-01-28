@@ -60,7 +60,7 @@ Status ClientCacheHelper::get_client(
 
     if (!info_list.empty()) {
         *client_key = info_list.front();
-        //VLOG_RPC << "get_client(): cached client for " << hostport;
+        VLOG_RPC << "get_client(): cached client for " << hostport;
         info_list.pop_front();
     } else {
         RETURN_IF_ERROR(create_client(hostport, factory_method, client_key, timeout_ms));

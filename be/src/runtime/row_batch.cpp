@@ -171,9 +171,7 @@ void RowBatch::clear() {
         return;
     }
 
-    LOG(INFO) << " before rowBatch::clear :"  <<  _tuple_data_pool->local_mem_tracker()->consumption();
     _tuple_data_pool->free_all();
-    LOG(INFO) << " after  rowBatch::clear :"  <<  _tuple_data_pool->local_mem_tracker()->consumption();
     for (int i = 0; i < _io_buffers.size(); ++i) {
         _io_buffers[i]->return_buffer();
     }
@@ -300,17 +298,13 @@ void RowBatch::add_block(BufferedBlockMgr2::Block* block) {
 }
 
 void RowBatch::reset() {
-    //LOG(INFO)<< "rowBatch reset , _tuple_data_pool free_all" ;
     DCHECK(_tuple_data_pool.get() != NULL);
     _num_rows = 0;
     _capacity = _tuple_ptrs_size / (_num_tuples_per_row * sizeof(Tuple*));
     _has_in_flight_row = false;
     // TODO: Change this to Clear() and investigate the repercussions.
-
-
-    //LOG(INFO) << ">>>>>>>>>>>>>> before row batch free_all,now consumption :" <<  _tuple_data_pool->mem_tracker()->consumption();
     _tuple_data_pool->free_all();
-    //LOG(INFO) << ">>>>>>>>>>>>>> after row batch free_all,now consumption :" <<  _tuple_data_pool->mem_tracker()->consumption();
+    OLAP_LOG_DEBUG("_tuple_data_pool->free_all()");
     for (int i = 0; i < _io_buffers.size(); ++i) {
         _io_buffers[i]->return_buffer();
     }
@@ -323,9 +317,7 @@ void RowBatch::reset() {
     _blocks.clear();
     _auxiliary_mem_usage = 0;
     if (!config::enable_partitioned_aggregation) {
-        //LOG(INFO) << ">>>>>>>>>>>>>> before row batch allocate,now consumption :" <<  _tuple_data_pool->mem_tracker()->consumption();
         _tuple_ptrs = reinterpret_cast<Tuple**>(_tuple_data_pool->allocate(_tuple_ptrs_size));
-        //LOG(INFO) << ">>>>>>>>>>>>>> after row batch allocate,now consumption :" <<  _tuple_data_pool->mem_tracker()->consumption();
     }
     _need_to_return = false;
     _flush = FlushMode::NO_FLUSH_RESOURCES;
@@ -342,7 +334,6 @@ void RowBatch::close_tuple_streams() {
 
 void RowBatch::transfer_resource_ownership(RowBatch* dest) {
     dest->_auxiliary_mem_usage += _tuple_data_pool->total_allocated_bytes();
-    LOG(INFO)<<"RowBatch::transfer_resource_ownership acquire_data ";
     dest->_tuple_data_pool->acquire_data(_tuple_data_pool.get(), false);
     for (int i = 0; i < _io_buffers.size(); ++i) {
         DiskIoMgr::BufferDescriptor* buffer = _io_buffers[i];
@@ -383,7 +374,6 @@ int RowBatch::get_batch_size(const TRowBatch& batch) {
 }
 
 void RowBatch::acquire_state(RowBatch* src) {
-    LOG(INFO) << "RowBatch::acquire_state" ;
     // DCHECK(_row_desc.equals(src->_row_desc));
     DCHECK_EQ(_num_tuples_per_row, src->_num_tuples_per_row);
     DCHECK_EQ(_tuple_ptrs_size, src->_tuple_ptrs_size);

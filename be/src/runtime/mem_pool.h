@@ -168,11 +168,6 @@ public:
     int64_t total_reserved_bytes() const {
         return _total_reserved_bytes;
     }
-
-    MemTracker* local_mem_tracker() {
-        return _local_mem_tracker.get();
-    }
-
     MemTracker* mem_tracker() {
         return _mem_tracker;
     }
@@ -263,8 +258,6 @@ private:
     // The current and peak memory footprint of this pool. This is different from
     // total _allocated_bytes since it includes bytes in chunks that are not used.
     MemTracker* _mem_tracker;
-
-    std::unique_ptr<MemTracker> _local_mem_tracker;
 
     // Find or allocated a chunk with at least min_size spare capacity and update
     // _current_chunk_idx. Also updates _chunks, _chunk_sizes and _allocated_bytes

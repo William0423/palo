@@ -29,7 +29,6 @@
 #include "runtime/raw_value.h"
 #include "runtime/tuple_row.h"
 #include "runtime/string_value.h"
-#include "runtime/types.h"
 #include "util/debug_util.h"
 
 namespace palo {
@@ -205,90 +204,4 @@ template void Tuple::materialize_exprs<false>(TupleRow* row, const TupleDescript
 template void Tuple::materialize_exprs<true>(TupleRow* row, const TupleDescriptor& desc,
     const std::vector<ExprContext*>& materialize_expr_ctxs, MemPool* pool,
     std::vector<StringValue*>* non_null_var_values, int* total_var_len);
-}
-
-
-std::string palo::Tuple::debug_print_slot(const palo::SlotDescriptor* slot_desc, palo::Tuple* tuple){
-
-
-    void* slot = tuple->get_slot(slot_desc->tuple_offset());
-
-    return palo::Tuple::debug_print_slot(slot,slot_desc->type());
-
-
-}
-
-
-// Utility to put val into an AnyVal struct
-std::string palo::Tuple::debug_print_slot(const void * slot ,const palo::TypeDescriptor& type){
-
-    std::string ret = "";
-    switch (type.type) {
-        case palo::TYPE_NULL:
-            break;
-        case palo::TYPE_BOOLEAN: {
-            bool v = *reinterpret_cast<const bool *>(slot);
-            ret = std::to_string(v);
-            break;
-        }
-        case palo::TYPE_TINYINT: {
-            int8_t v = *reinterpret_cast<const int8_t *>(slot);
-            ret = std::to_string(v);
-            break;
-        }
-        case palo::TYPE_SMALLINT:{
-            int16_t v = *reinterpret_cast<const int16_t *>(slot);
-            ret = std::to_string(v);
-            break;
-        }
-        case palo::TYPE_INT:{
-            int32_t v = *reinterpret_cast<const int32_t *>(slot);
-            ret = std::to_string(v);
-            break;
-        }
-        case palo::TYPE_BIGINT:{
-            int64_t v = *reinterpret_cast<const int64_t *>(slot);
-            ret = std::to_string(v);
-            break;
-        }
-        case palo::TYPE_FLOAT:{
-            float v = *reinterpret_cast<const float *>(slot);
-            ret = std::to_string(v);
-            break;
-        }
-
-        case palo::TYPE_DOUBLE:{
-            double v = *reinterpret_cast<const double *>(slot);
-            ret = std::to_string(v);
-            break;
-        }
-
-        case palo::TYPE_CHAR:
-        case palo::TYPE_VARCHAR:
-        case palo::TYPE_HLL:{
-            ret += reinterpret_cast<const StringValue *>(slot)->debug_string();
-            break;
-        }
-
-        case palo::TYPE_DATE:
-        case palo::TYPE_DATETIME:{
-            ret += reinterpret_cast<const DateTimeValue *>(slot)->debug_string();
-            break;
-        }
-
-        case palo::TYPE_DECIMAL:{
-            ret += reinterpret_cast<const DecimalValue *>(slot)->to_string();
-            break;
-        }
-
-        case palo::TYPE_LARGEINT:{
-            ret += *reinterpret_cast<const __int128 *>(slot);
-            break;
-        }
-
-        default:
-            break;
-
-    }
-    return ret;
 }

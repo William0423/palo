@@ -194,9 +194,6 @@ public:
     const std::string& fn_name() const {
         return _fn.name.function_name;
     }
-    const SlotDescriptor* get_intermediate_slot_desc (){ return _intermediate_slot_desc;}
-    //std::string debug_print_slot(const void * slot ,const TypeDescriptor& type);
-    //std::string debug_print_slot(const SlotDescriptor* slot_desc, Tuple* tuple);
 private:
     const TFunction _fn;
 
@@ -297,9 +294,6 @@ private:
             Tuple* dst);
     // Sets 'dst' to the value from 'slot'.
     void set_any_val(const void* slot, const TypeDescriptor& type, palo_udf::AnyVal* dst);
-
-
-
 };
 
 inline void AggFnEvaluator::add(

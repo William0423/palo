@@ -87,25 +87,11 @@ Status AggregationNode::init(const TPlanNode& tnode) {
     RETURN_IF_ERROR(Expr::create_expr_trees(
             _pool, tnode.agg_node.grouping_exprs, &_probe_expr_ctxs));
 
-
-    for(int i=0;i< tnode.agg_node.grouping_exprs.size(); ++i){
-
-        for(int j=0; j < tnode.agg_node.grouping_exprs[i].nodes.size();++j ){
-            OLAP_LOG_DEBUG("number %d grouping_exprs create in put %d expr :%s",i,j,apache::thrift::ThriftDebugString(tnode.agg_node.grouping_exprs[i].nodes[j]).c_str());
-        }
-    }
-
-
-    for (int i=0; i < tnode.agg_node.aggregate_functions.size(); ++i){
+    for (int i = 0; i < tnode.agg_node.aggregate_functions.size(); ++i) {
         AggFnEvaluator* evaluator = NULL;
         AggFnEvaluator::create(
             _pool, tnode.agg_node.aggregate_functions[i], &evaluator);
         _aggregate_evaluators.push_back(evaluator);
-
-        for(int j=0;j < tnode.agg_node.aggregate_functions[i].nodes.size();++j ){
-            OLAP_LOG_DEBUG("number %d AggFnEvaluator create in put %d expr :%s",i,j,apache::thrift::ThriftDebugString(tnode.agg_node.aggregate_functions[i].nodes[j]).c_str());
-        }
-
     }
     return Status::OK;
 }
@@ -123,23 +109,18 @@ Status AggregationNode::prepare(RuntimeState* state) {
 
     _intermediate_tuple_desc =
         state->desc_tbl().get_tuple_descriptor(_intermediate_tuple_id);
-
     _output_tuple_desc = state->desc_tbl().get_tuple_descriptor(_output_tuple_id);
-    OLAP_LOG_DEBUG("agg node _intermediate_tuple_id  : %d" ,_intermediate_tuple_id );
-    OLAP_LOG_DEBUG("agg node _output_tuple_id  : %d" ,_output_tuple_id );
     DCHECK_EQ(_intermediate_tuple_desc->slots().size(), _output_tuple_desc->slots().size());
     RETURN_IF_ERROR(Expr::prepare(
             _probe_expr_ctxs, state, child(0)->row_desc(), expr_mem_tracker()));
 
     // Construct build exprs from _agg_tuple_desc
-    for (int i = 0; i < _probe_expr_ctxs.size(); ++i) { //jungle comment ,all grouping slot
+    for (int i = 0; i < _probe_expr_ctxs.size(); ++i) {
         SlotDescriptor* desc = _intermediate_tuple_desc->slots()[i];
         Expr* expr = new SlotRef(desc);
         state->obj_pool()->add(expr);
-        _build_expr_ctxs.push_back(new ExprContext(expr)); //jungle comment :_build_expr_ctxs  is slot expr
+        _build_expr_ctxs.push_back(new ExprContext(expr));
         state->obj_pool()->add(_build_expr_ctxs.back());
-
-        OLAP_LOG_DEBUG("grouping expr slotId id %d, name %s" ,desc->id(),desc->col_name().c_str() );
     }
 
     // Construct a new row desc for preparing the build exprs because neither the child's
@@ -163,8 +144,6 @@ Status AggregationNode::prepare(RuntimeState* state) {
         // }
         SlotDescriptor* intermediate_slot_desc = _intermediate_tuple_desc->slots()[j];
         SlotDescriptor* output_slot_desc = _output_tuple_desc->slots()[j];
-
-        OLAP_LOG_DEBUG("agg expr intermediate_slot id :%d , name :%s " ,intermediate_slot_desc->id(),intermediate_slot_desc->col_name().c_str());
         RETURN_IF_ERROR(_aggregate_evaluators[i]->prepare(
                 state, child(0)->row_desc(), _tuple_pool.get(),
                 intermediate_slot_desc, output_slot_desc, mem_tracker(), &_agg_fn_ctxs[i]));
@@ -229,7 +208,7 @@ Status AggregationNode::open(RuntimeState* state) {
         // SCOPED_TIMER(_build_timer);
         if (VLOG_ROW_IS_ON) {
             for (int i = 0; i < batch.num_rows(); ++i) {
-                TupleRow* row = batch.get_row(i);       //jungle comment: may has several tuple in join case
+                TupleRow* row = batch.get_row(i);
                 VLOG_ROW << "id=" << id() << " input row: "
                         << print_row(row, _children[0]->row_desc());
             }
@@ -396,11 +375,9 @@ Tuple* AggregationNode::construct_intermediate_tuple() {
         if (_hash_tbl->last_expr_value_null(i)) {
             agg_tuple->set_null((*slot_desc)->null_indicator_offset());
         } else {
-            void* src = _hash_tbl->last_expr_value(i);    //jungle comment : key of group by
+            void* src = _hash_tbl->last_expr_value(i);
             void* dst = agg_tuple->get_slot((*slot_desc)->tuple_offset());
             RawValue::write(src, dst, (*slot_desc)->type(), _tuple_pool.get());
-
-           OLAP_LOG_DEBUG("init grouping slot :id  %d, name %s , value %s" ,(*slot_desc)->id(),(*slot_desc)->col_name().c_str(), Tuple::debug_print_slot(dst,(*slot_desc)->type()).c_str()) ;
         }
     }
 
@@ -412,10 +389,6 @@ Tuple* AggregationNode::construct_intermediate_tuple() {
 
         AggFnEvaluator* evaluator = _aggregate_evaluators[i];
         evaluator->init(_agg_fn_ctxs[i], agg_tuple);
-
-        const SlotDescriptor* agg_slot_desc = evaluator->get_intermediate_slot_desc();
-        OLAP_LOG_DEBUG("init agg slot :id  %d, name %s , value %s " ,agg_slot_desc->id(), agg_slot_desc->col_name().c_str() ,Tuple::debug_print_slot(agg_slot_desc,agg_tuple).c_str()) ;
-
 
         // Codegen specific path.
         // To minimize branching on the UpdateAggTuple path, initialize the result value

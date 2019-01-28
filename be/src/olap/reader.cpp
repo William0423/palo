@@ -19,7 +19,6 @@
 #include "olap/olap_table.h"
 #include "olap/row_block.h"
 #include "olap/row_cursor.h"
-#include "olap/column_file/column_data.h"
 
 using std::nothrow;
 using std::set;
@@ -89,7 +88,6 @@ bool Reader::MergeSet::next(const RowCursor** element, bool* delete_flag) {
     }
 
     (element == NULL || (*element = curr(delete_flag)));
-
     return true;
 }
 
@@ -116,8 +114,6 @@ bool Reader::MergeSet::_pop_from_heap() {  //jungle comment :  reorder the heap
 
     _heap->pop();
     return attach(merge_element, row);   //jungle comment :columnData compare the current row and reorder the heap, heap is inited when _attach_data_to_merge_set
-    // if row is null , then  the columnData will not be push to heap again , and read the new columnData next time
-
 }
 
 bool Reader::MergeSet::clear() {
@@ -177,8 +173,6 @@ OLAPStatus Reader::init(const ReaderParams& read_params) {
     return OLAP_SUCCESS;
 }
 
-
-
 OLAPStatus Reader::next_row_with_aggregation(
         RowCursor* row_cursor,
         int64_t* raw_rows_read,
@@ -217,9 +211,8 @@ OLAPStatus Reader::next_row_with_aggregation(
                 res = OLAP_ERR_READER_READING_ERROR;
                 break;
             }
-            _scan_row_current_index ++;
             
-            if (NULL == _next_key) {     //jungle comment : _heap->top() all columnData read all segments
+            if (NULL == _next_key) {
                 row_cursor->finalize_one_merge();
                 break;
             }
@@ -500,20 +493,7 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
                 }
 
                 (*it)->set_end_key(end_key, end_key_find_last_row);
-
-
-                column_file::ColumnData *  columnData = reinterpret_cast<column_file::ColumnData *>(*it);
-                if(columnData->get_end_key() == NULL) {
-                    columnData->set_end_row_index(columnData->olap_index()->num_rows());
-                }
-                start_row_cursor = (*it)->find_row(*start_key, find_last_row, false); //jungle comment : find the row in the *it , _data_sources will be scan by multe thread ,but the different key , see start_scan_thread in olap_scan_node.cpp
-
-
-                OLAP_LOG_INFO("version :%d-%d ,start scan index : %ld ,end scan index :%ld",
-                              columnData->olap_index()->version().first,
-                              columnData->olap_index()->version().second,
-                              columnData->get_start_row_index(),
-                              columnData->get_end_row_index() );
+                start_row_cursor = (*it)->find_row(*start_key, find_last_row, false); //jungle comment : find the row in the *it
             } else {
                 if ((*it)->empty()) {
                     continue;
@@ -537,16 +517,6 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
                 }
 
                 start_row_cursor = (*it)->get_first_row();
-
-                column_file::ColumnData *  columnData = reinterpret_cast<column_file::ColumnData *>(*it);
-                columnData->set_start_row_index(0);
-                columnData->set_end_row_index(columnData->olap_index()->num_rows());
-
-                OLAP_LOG_INFO("version :%d-%d ,start scan index : %ld ,end scan index :%ld",
-                              columnData->olap_index()->version().first,
-                              columnData->olap_index()->version().second,
-                              columnData->get_start_row_index(),
-                              columnData->get_end_row_index() );
             }
 
             if ((*it)->eof()) {
@@ -564,12 +534,7 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
             }
 
             _merge_set.attach(*it, start_row_cursor);   //jungle comment : MergeElement is not sort global ,use heap to sort , see RowCursorComparator
-            column_file::ColumnData *  columnData = reinterpret_cast<column_file::ColumnData *>(*it);
-
-            _scan_row_total_count +=  columnData->get_end_row_index() - columnData->get_start_row_index() + 1;
-
         }
-        OLAP_LOG_INFO("reader neeed to scan total %ld row" , _scan_row_total_count);
 
         _next_key = _merge_set.curr(&_next_delete_flag);
         if (_next_key != NULL) {

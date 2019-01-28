@@ -161,7 +161,6 @@ Status OlapScanNode::open(RuntimeState* state) {
 }
 
 Status OlapScanNode::get_next(RuntimeState* state, RowBatch* row_batch, bool* eos) {
-    LOG(INFO) << "OlapScanNode::get_next";
     RETURN_IF_ERROR(exec_debug_action(TExecNodePhase::GETNEXT));
     SCOPED_TIMER(_runtime_profile->total_time_counter());
 
@@ -501,7 +500,7 @@ Status OlapScanNode::select_scan_ranges() {
                 VLOG(1) << "Remove ScanRange";
             }
 
-            _palo_scan_ranges.erase(scan_range_iter++); //jungle comment : _partition_column_range have no intersection with _column_value_ranges ,then erase
+            _palo_scan_ranges.erase(scan_range_iter++);
         } else {
             scan_range_iter++;
         }
@@ -556,7 +555,7 @@ Status OlapScanNode::split_scan_range() {
 
         for (auto sub_range : sub_ranges) {
             VLOG(1) << "SubScanKey=" << (sub_range.begin_include ? "[" : "(")
-                    << OlapScanKeys::to_print_key(sub_range.begin_scan_range)   //jungle comment:use vector because maybe more than one key
+                    << OlapScanKeys::to_print_key(sub_range.begin_scan_range)
                     << " : " << OlapScanKeys::to_print_key(sub_range.end_scan_range) <<
                     (sub_range.end_include ? "]" : ")");
             _query_key_ranges.push_back(sub_range);
@@ -679,7 +678,7 @@ Status OlapScanNode::create_conjunct_ctxs(
         }
     }
 #endif
-    RETURN_IF_ERROR(Expr::clone_if_not_exists(_conjunct_ctxs, state, row_ctxs));  //jungle comment :only  row_ctxs is  assigned ,_conjunct_ctxs inited in exec_node.h create_tree
+    RETURN_IF_ERROR(Expr::clone_if_not_exists(_conjunct_ctxs, state, row_ctxs));
 
     if (-1 == _direct_vec_conjunct_size) {
         _direct_vec_conjunct_size = vec_ctxs->size();
@@ -697,7 +696,7 @@ Status OlapScanNode::normalize_predicate(ColumnValueRange<T>& range, SlotDescrip
     RETURN_IF_ERROR(normalize_in_predicate(slot, &range));
 
     // 2. Normalize BinaryPredicate , add to ColumnValueRange
-    RETURN_IF_ERROR(normalize_binary_predicate(slot, &range)); //use  _conjunct_ctxs to limit _column_value_ranges  range
+    RETURN_IF_ERROR(normalize_binary_predicate(slot, &range));
 
     // 3. Add range to Column->ColumnValueRange map
     _column_value_ranges[slot->col_name()] = range;
@@ -1489,7 +1488,7 @@ void OlapScanNode::transfer_thread(RuntimeState* state) {
         }
 
         if (NULL != scan_batch) {
-            add_one_batch(scan_batch);  //jungle comment: add until _scanner_done  ?
+            add_one_batch(scan_batch);
         }
     }
 
@@ -1520,13 +1519,11 @@ void OlapScanNode::scanner_thread(OlapScanner* scanner) {
     }
 
     std::vector<RowBatch*> row_batchs;
-    std::vector<ExprContext*>* row_conjunct_ctxs = scanner->row_conjunct_ctxs(); //jungle comment : what is this used for
+    std::vector<ExprContext*>* row_conjunct_ctxs = scanner->row_conjunct_ctxs();
     //std::vector<ExprContext*>* vec_conjunct_ctxs = scanner->vec_conjunct_ctxs();
 
     bool _use_pushdown_conjuncts = true;
     int64_t total_rows_reader_counter = 0;
-    ScopedTimer<MonotonicStopWatch> scan_timer(_olap_thread_scan_timer);
-    scan_timer.start();
     while (!eos && total_rows_reader_counter < config::palo_scanner_row_num) {
         // 1. Allocate one row batch
         // RowBatch *row_batch = new RowBatch(this->row_desc(), state->batch_size(), mem_tracker());
@@ -1577,7 +1574,7 @@ void OlapScanNode::scanner_thread(OlapScanner* scanner) {
             row->set_tuple(_tuple_idx, tuple);
 
             do {
-                ScopedTimer<MonotonicStopWatch> eval_timer(_eval_timer);
+                // SCOPED_TIMER(_eval_timer);
 
                 // 3.5.1 Using direct conjuncts to filter data
                 if (_eval_conjuncts_fn != NULL) {
@@ -1675,7 +1672,6 @@ void OlapScanNode::scanner_thread(OlapScanner* scanner) {
         }
     }
 
-    scan_timer.stop();
 
     // update raw rows number readed from tablet
     RuntimeProfile::Counter* raw_rows_counter = _scanner_profile->get_counter("RawRowsRead");
@@ -1717,7 +1713,7 @@ void OlapScanNode::scanner_thread(OlapScanner* scanner) {
             _fin_olap_scanners[scanner->id()] = scanner;
         }
     } else {
-        _olap_scanners.push_front(scanner);   //jungle comment : not eos but  reach palo_scanner_row_num
+        _olap_scanners.push_front(scanner);
     }
     _running_thread--;
     _scan_batch_added_cv.notify_one();
@@ -1962,24 +1958,6 @@ Status OlapScanNode::add_one_batch(RowBatchInterface* row_batch) {
 void OlapScanNode::debug_string(
     int /* indentation_level */,
     std::stringstream* /* out */) const {
-
-    for (auto scanner : _all_olap_scanners) {
-
-        scanner->scan_row_total_count();
-        scanner->scan_row_current_index();
-    }
-    _tablet_counter->value();
-    _olap_thread_scan_timer->value();
-    _eval_timer->value();
-    _pushdown_return_counter->value();
-    _direct_return_counter->value();
-
-    RuntimeProfile::Counter* raw_rows_counter =  _scanner_profile->get_counter("RawRowsRead");
-    if(raw_rows_counter != NULL){
-        raw_rows_counter->value();
-    }
-
-
 }
 
 } // namespace palo

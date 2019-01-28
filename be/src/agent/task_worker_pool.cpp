@@ -1501,15 +1501,15 @@ void* TaskWorkerPool::_report_task_worker_thread_callback(void* arg_this) {
             lock_guard<MutexLock> task_signatures_lock(_s_task_signatures_lock);
             request.__set_tasks(_s_task_signatures);
         }
-        //OLAP_LOG_INFO("master host: %s, port: %d",
-        //              worker_pool_this->_master_info.network_address.hostname.c_str(),
-        //              worker_pool_this->_master_info.network_address.port);
+        OLAP_LOG_INFO("master host: %s, port: %d",
+                      worker_pool_this->_master_info.network_address.hostname.c_str(),
+                      worker_pool_this->_master_info.network_address.port);
         TMasterResult result;
         AgentStatus status = worker_pool_this->_master_client->report(request, &result);
 
         if (status == PALO_SUCCESS) {
-            //OLAP_LOG_INFO("finish report task success. return code: %d",
-            //              result.status.status_code);
+            OLAP_LOG_INFO("finish report task success. return code: %d",
+                          result.status.status_code);
         } else {
             OLAP_LOG_WARNING("finish report task failed. status: %d", status);
         }
@@ -1626,8 +1626,8 @@ void* TaskWorkerPool::_report_olap_table_worker_thread_callback(void* arg_this) 
         status = worker_pool_this->_master_client->report(request, &result);
 
         if (status == PALO_SUCCESS) {
-            //OLAP_LOG_INFO("finish report olap table success. return code: %d",
-            //              result.status.status_code);
+            OLAP_LOG_INFO("finish report olap table success. return code: %d",
+                          result.status.status_code);
         } else {
             OLAP_LOG_WARNING("finish report olap table failed. status: %d", status);
         }

@@ -41,10 +41,10 @@ void AggregationNode::process_row_batch_with_grouping(RowBatch* batch, MemPool* 
         HashTable::Iterator it = _hash_tbl->find(row);
 
         if (it.at_end()) {
-            agg_tuple = construct_intermediate_tuple();    //jungle comment:the agg_tuple include group by slot and agg slot
+            agg_tuple = construct_intermediate_tuple();    //jungle comment:the agg_tuple value is copy from _expr_values_buffer which is set in _hash_tbl->find(row)
             _hash_tbl->insert(reinterpret_cast<TupleRow*>(&agg_tuple));
         } else {
-            agg_tuple = it.get_row()->get_tuple(0); //jungle comment : why use the first element
+            agg_tuple = it.get_row()->get_tuple(0);
         }
 
         update_tuple(agg_tuple, row);   //jungle comment:maybe add value to the agg_tuple

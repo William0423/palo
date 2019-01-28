@@ -104,10 +104,7 @@ public:
         if (_timeout_second <= 0) {
             return false;
         }
-        int64_t diff = now.second_diff(_start_time) ;
-        LOG(INFO) << "start time:" << _start_time.debug_string()  << " , now:" << now.debug_string() << ",diff :" << diff << ", _timeout_second :" << _timeout_second;
-        if (diff > _timeout_second) {
-            LOG(ERROR) << "diff > _timeout_second";
+        if (now.second_diff(_start_time) > _timeout_second) {
             return true;
         }
         return false;
@@ -175,8 +172,6 @@ Status FragmentExecState::prepare(const TExecPlanFragmentParams& params) {
         set_group(params.resource_info);
     }
 
-    //jungle comment: bug
-    _start_time = DateTimeValue::local_time();
     return _executor.prepare(params);
 }
 
@@ -204,7 +199,7 @@ Status FragmentExecState::execute() {
 
     _executor.open();
     _executor.close();
-    LOG(INFO) << "============= execute time is " << watch.elapsed_time() / 1000000;
+    LOG(INFO) << "execute time is " << watch.elapsed_time() / 1000000;
     return Status::OK;
 }
 
