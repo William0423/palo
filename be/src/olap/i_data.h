@@ -39,8 +39,10 @@ class Conditions;
 // 提供对不同数据文件类型的统一访问接口
 class IData {
 public:
+
     // 工厂方法, 生成IData对象, 调用者获得新建的对象, 并负责delete释放
     static IData* create(OLAPIndex* olap_index);
+
     virtual ~IData() {}
 
     // 为了与之前兼容, 暴露部分index的接口
@@ -85,6 +87,7 @@ public:
     // 下面两个接口用于schema_change.cpp, 我们需要改功能继续做roll up,
     // 所以继续暴露该接口
     virtual OLAPStatus get_first_row_block(RowBlock** row_block) = 0;
+
     virtual OLAPStatus get_next_row_block(RowBlock** row_block) = 0;
 
     // 设置读取数据的参数, 这是一个后加入的接口, IData的实现可以根据这个接口提供
@@ -163,6 +166,7 @@ public:
 protected:
     // 基类必须指定data_file_type, 也必须关联一个OLAPIndex
     IData(DataFileType data_file_type, OLAPIndex* olap_index):
+
         _data_file_type(data_file_type),
         _olap_index(olap_index),
         _eof(false),
@@ -170,6 +174,7 @@ protected:
         _delete_status(DEL_NOT_SATISFIED),
         _profile(NULL),
         _runtime_state(NULL) {
+
     }
 
 protected:
@@ -184,7 +189,9 @@ protected:
     RuntimeState* _runtime_state;
 
 private:
+
     DISALLOW_COPY_AND_ASSIGN(IData);
+
 };
 
 }  // namespace palo

@@ -139,60 +139,105 @@ Status OlapScanNode::prepare(RuntimeState* state) {
     return Status::OK;
 }
 
+/**
+ *
+ * 这一部分
+ *
+ * @param state
+ * @return
+ */
 Status OlapScanNode::open(RuntimeState* state) {
+
     VLOG(1) << "OlapScanNode::Open";
+
     SCOPED_TIMER(_runtime_profile->total_time_counter());
+
     RETURN_IF_CANCELLED(state);
+
     RETURN_IF_ERROR(ExecNode::open(state));
 
     for (int conj_idx = 0; conj_idx < _conjunct_ctxs.size(); ++conj_idx) {
+
         // if conjunct is constant, compute direct and set eos = true
         if (_conjunct_ctxs[conj_idx]->root()->is_constant()) {
+
             void* value = _conjunct_ctxs[conj_idx]->get_value(NULL);
+
             if (value == NULL || *reinterpret_cast<bool*>(value) == false) {
+
                 _eos = true;
+
             }
+
         }
     }
 
     _resource_info = ResourceTls::get_resource_tls();
 
     return Status::OK;
+
 }
 
+/**
+ * 这个get_next方法在哪个地方被调用
+ *
+ * 答： 这个方法是在plan_fragment_executor.cpp的get_next_internal调用
+ *
+ */
 Status OlapScanNode::get_next(RuntimeState* state, RowBatch* row_batch, bool* eos) {
+
     RETURN_IF_ERROR(exec_debug_action(TExecNodePhase::GETNEXT));
+
     SCOPED_TIMER(_runtime_profile->total_time_counter());
 
     // check if Canceled.
     if (state->is_cancelled()) {
+
         boost::unique_lock<boost::mutex> l(_row_batches_lock);
+
         _transfer_done = true;
+
         boost::lock_guard<boost::mutex> guard(_status_mutex);
+
         _status = Status::CANCELLED;
+
         return _status;
+
     }
 
     if (_eos) {
+
         *eos = true;
+
         return Status::OK;
+
     }
 
     // check if started.
     if (!_start) {
+
+        /**
+         * 开始扫描
+         */
         Status status = start_scan(state);
 
         if (!status.ok()) {
+
             LOG(ERROR) << "StartScan Failed cause " << status.get_error_msg();
+
             *eos = true;
+
             return status;
+
         }
 
         _start = true;
+
     }
 
     // wait for batch from queue
     RowBatch* materialized_batch = NULL;
+
     {
         boost::unique_lock<boost::mutex> l(_row_batches_lock);
 
@@ -209,6 +254,7 @@ Status OlapScanNode::get_next(RuntimeState* state, RowBatch* row_batch, bool* eo
             DCHECK(materialized_batch != NULL);
             _materialized_row_batches.pop_front();
         }
+
     }
 
     // return batch
@@ -257,6 +303,7 @@ Status OlapScanNode::get_next(RuntimeState* state, RowBatch* row_batch, bool* eo
     *eos = true;
     boost::lock_guard<boost::mutex> guard(_status_mutex);
     return _status;
+
 }
 
 Status OlapScanNode::close(RuntimeState* state) {
@@ -318,44 +365,84 @@ Status OlapScanNode::close(RuntimeState* state) {
     return ExecNode::close(state);
 }
 
+/**
+ * 这个函数主要做的功能是什么？
+ *
+ * @param scan_ranges
+ * @return
+ */
 Status OlapScanNode::set_scan_ranges(const std::vector<TScanRangeParams>& scan_ranges) {
+
     BOOST_FOREACH(const TScanRangeParams & scan_range, scan_ranges) {
+
         DCHECK(scan_range.scan_range.__isset.palo_scan_range);
+
         boost::shared_ptr<PaloScanRange> palo_scan_range(
             new PaloScanRange(scan_range.scan_range.palo_scan_range));
+
         RETURN_IF_ERROR(palo_scan_range->init());
+
         VLOG(1) << "palo_scan_range table=" << scan_range.scan_range.palo_scan_range.table_name <<
                 " version" << scan_range.scan_range.palo_scan_range.version;
+
         _palo_scan_ranges.push_back(palo_scan_range);
+
         COUNTER_UPDATE(_tablet_counter, 1);
+
     }
 
     return Status::OK;
 }
 
+/**
+ *
+ *
+ * 开始扫描：
+ *
+ * @param state
+ *
+ * @return
+ *
+ */
 Status OlapScanNode::start_scan(RuntimeState* state) {
+
+
     RETURN_IF_CANCELLED(state);
 
     VLOG(1) << "NormalizeConjuncts";
+
     // 1. Convert conjuncts to ColumnValueRange in each column
     RETURN_IF_ERROR(normalize_conjuncts());
 
+    /**
+     * 检查过滤
+     */
     VLOG(1) << "BuildOlapFilters";
     // 2. Using ColumnValueRange to Build OlapEngine filters
     RETURN_IF_ERROR(build_olap_filters());
 
+    /**
+     * 查询范围
+     */
     VLOG(1) << "SelectScanRanges";
     // 3. Using `Partition Column`'s ColumnValueRange to select ScanRange
     RETURN_IF_ERROR(select_scan_ranges());
 
+    /**
+     * 创建
+     */
     VLOG(1) << "BuildScanKey";
     // 4. Using `Key Column`'s ColumnValueRange to split ScanRange to serval `Sub ScanRange`
     RETURN_IF_ERROR(build_scan_key());
+
 
     VLOG(1) << "SplitScanRange";
     // 5. Query OlapEngine to split `Sub ScanRange` to serval `Sub Sub ScanRange`
     RETURN_IF_ERROR(split_scan_range());
 
+    /**
+     * 开始扫描线程：
+     */
     VLOG(1) << "StartScanThread";
     // 6. Start multi thread to read serval `Sub Sub ScanRange`
     RETURN_IF_ERROR(start_scan_thread(state));
@@ -510,16 +597,22 @@ Status OlapScanNode::select_scan_ranges() {
 }
 
 Status OlapScanNode::build_scan_key() {
+
     const std::vector<std::string>& column_names = _olap_scan_node.key_column_name;
+
     const std::vector<TPrimitiveType::type>& column_types = _olap_scan_node.key_column_type;
+
     DCHECK(column_types.size() == column_names.size());
 
     // 1. construct scan key except last olap engine short key
     int order_column_index = -1;
+
     int column_index = 0;
+
     _scan_keys.set_is_convertible(limit() == -1);
 
     for (; column_index < column_names.size() && !_scan_keys.has_range_value(); ++column_index) {
+
         if (_is_result_order && _sort_column == column_names[column_index]) {
             order_column_index = column_index;
         }
@@ -532,7 +625,9 @@ Status OlapScanNode::build_scan_key() {
         }
 
         ExtendScanKeyVisitor visitor(_scan_keys);
+
         RETURN_IF_ERROR(boost::apply_visitor(visitor, column_range_iter->second));
+
     }
 
     // 3. check order column
@@ -540,44 +635,87 @@ Status OlapScanNode::build_scan_key() {
         return Status("OlapScanNode unsupport order by " + _sort_column);
     }
 
+    /**
+     * 这个_scan_keys在olap.scan.node.h中定义： OlapScanKeys _scan_keys;
+     * 而 OlapScanKeys 又在olap_common.h 中定义
+     */
     _scan_keys.debug();
 
     return Status::OK;
 }
 
 Status OlapScanNode::split_scan_range() {
+
     std::vector<OlapScanRange> sub_ranges;
+
     VLOG(1) << "_palo_scan_ranges.size()=" << _palo_scan_ranges.size();
 
     for (auto scan_range : _palo_scan_ranges) {
+
         sub_ranges.clear();
+
+        /**
+         * 下面语句会打印：
+         *
+         * I0724 09:05:34.784632  1503 olap_reader.cpp:44] Show hints:TShowHintsRequest {
+         *
+         * get_sub_scan_range()方法中又会调用其他类的方法，
+         */
         RETURN_IF_ERROR(get_sub_scan_range(scan_range, &sub_ranges));
 
+        /**
+         * 遍历sub_ranges，这个sub_ranges是什么样的值，并且是如何存储的？
+         */
         for (auto sub_range : sub_ranges) {
+
+
+            /**
+             * 打印：
+             * I0724 09:05:34.784727  1503 olap_scan_node.cpp:557] SubScanKey=[-2147483648 : 2147483647]
+             */
             VLOG(1) << "SubScanKey=" << (sub_range.begin_include ? "[" : "(")
                     << OlapScanKeys::to_print_key(sub_range.begin_scan_range)
                     << " : " << OlapScanKeys::to_print_key(sub_range.end_scan_range) <<
                     (sub_range.end_include ? "]" : ")");
+
             _query_key_ranges.push_back(sub_range);
+
             _query_scan_ranges.push_back(scan_range);
+
         }
+
     }
 
     DCHECK(_query_key_ranges.size() == _query_scan_ranges.size());
 
     return Status::OK;
+
 }
 
+
+/**
+ * 这一步主要完成什么功能？
+ */
 Status OlapScanNode::start_scan_thread(RuntimeState* state) {
+
+    /**
+     * 上一步获得的结果取出来进行处理
+     *
+     * 打印：
+     * I0724 09:05:34.784734  1503 olap_scan_node.cpp:572] Query ScanRange Num: 1
+     */
     VLOG(1) << "Query ScanRange Num: " << _query_scan_ranges.size();
 
     // thread num
     if (0 == _query_scan_ranges.size()) {
+
         _transfer_done = true;
         return Status::OK;
+
     }
 
     int key_range_size = _query_key_ranges.size();
+
     int key_range_num_per_scanner = key_range_size / 64;
 
     if (0 == key_range_num_per_scanner) {
@@ -586,20 +724,30 @@ Status OlapScanNode::start_scan_thread(RuntimeState* state) {
 
     // scan range per therad
     for (int i = 0; i < key_range_size;) {
+
         boost::shared_ptr<PaloScanRange> scan_range = _query_scan_ranges[i];
+
         std::vector<OlapScanRange> key_ranges;
+
         key_ranges.push_back(_query_key_ranges[i]);
+
         ++i;
 
         if (!_is_result_order) {
+
             for (int j = 1;
+
                     j < key_range_num_per_scanner
                     && i < key_range_size
                     && _query_scan_ranges[i] == _query_scan_ranges[i - 1]
                     && _query_key_ranges[i].end_include == _query_key_ranges[i - 1].end_include;
+
                     j++, i++) {
+
                 key_ranges.push_back(_query_key_ranges[i]);
+
             }
+
         }
 
         OlapScanner* scanner = new OlapScanner(
@@ -610,11 +758,18 @@ Status OlapScanNode::start_scan_thread(RuntimeState* state) {
             *_tuple_desc,
             _scanner_profile,
             _is_null_vector);
+
         scanner->set_aggregation(_olap_scan_node.is_preaggregation);
 
+        /**
+         * 把scanner 添加到 _scanner_pool
+         */
         _scanner_pool->add(scanner);
+
         _olap_scanners.push_back(scanner);
+
         _all_olap_scanners = _olap_scanners;
+
     }
 
     // init progress
@@ -624,16 +779,21 @@ Status OlapScanNode::start_scan_thread(RuntimeState* state) {
     _progress.set_logging_level(1);
 
     if (_is_result_order) {
+
         _transfer_thread.add_thread(
             new boost::thread(
                 &OlapScanNode::merge_transfer_thread, this, state));
+
     } else {
+
         _transfer_thread.add_thread(
             new boost::thread(
                 &OlapScanNode::transfer_thread, this, state));
+
     }
 
     return Status::OK;
+
 }
 
 Status OlapScanNode::create_conjunct_ctxs(
@@ -1021,9 +1181,20 @@ Status OlapScanNode::get_sub_scan_range(
             sub_range->resize(1);
         }
     } else {
+
         EngineMetaReader olap_meta_reader(scan_range);
+
         RETURN_IF_ERROR(olap_meta_reader.open());
 
+        /**
+         *
+         * 在 olap_reader.cpp中调用 get_hints(
+         * 会打印如下内容：
+         *
+         * I0724 09:05:34.784632  1503 olap_reader.cpp:44] Show hints:TShowHintsRequest {
+         *
+         * 下面的函数会进一步调用
+         */
         if (!olap_meta_reader.get_hints(
                     config::palo_scan_range_row_count,
                     _scan_keys.begin_include(),
@@ -1031,11 +1202,13 @@ Status OlapScanNode::get_sub_scan_range(
                     scan_key_range,
                     sub_range,
                     _scanner_profile).ok()) {
+
             if (scan_key_range.size() != 0) {
                 *sub_range = scan_key_range;
             } else { // [-oo, +oo]
                 sub_range->resize(1);
             }
+
         }
 
         RETURN_IF_ERROR(olap_meta_reader.close());

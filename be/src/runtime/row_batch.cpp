@@ -297,31 +297,56 @@ void RowBatch::add_block(BufferedBlockMgr2::Block* block) {
     _auxiliary_mem_usage += block->buffer_len();
 }
 
+
+
 void RowBatch::reset() {
+
     DCHECK(_tuple_data_pool.get() != NULL);
+
     _num_rows = 0;
+
     _capacity = _tuple_ptrs_size / (_num_tuples_per_row * sizeof(Tuple*));
+
     _has_in_flight_row = false;
     // TODO: Change this to Clear() and investigate the repercussions.
     _tuple_data_pool->free_all();
+
+    /**
+     * 打印下面的内容
+     * I0724 09:05:34.784564  1503 row_batch.cpp:307] _tuple_data_pool->free_all()
+     *
+     */
     OLAP_LOG_DEBUG("_tuple_data_pool->free_all()");
+
     for (int i = 0; i < _io_buffers.size(); ++i) {
         _io_buffers[i]->return_buffer();
     }
+
     _io_buffers.clear();
 
     close_tuple_streams();
+
     for (int i = 0; i < _blocks.size(); ++i) {
         _blocks[i]->del();
     }
+
     _blocks.clear();
+
     _auxiliary_mem_usage = 0;
+
     if (!config::enable_partitioned_aggregation) {
+
         _tuple_ptrs = reinterpret_cast<Tuple**>(_tuple_data_pool->allocate(_tuple_ptrs_size));
+
     }
+
     _need_to_return = false;
+
     _flush = FlushMode::NO_FLUSH_RESOURCES;
+
     _needs_deep_copy = false;
+
+
 }
 
 void RowBatch::close_tuple_streams() {

@@ -141,7 +141,9 @@ public:
     }
 private:
     ExecEnv* _exec_env;  // not owned
+
     ExecNode* _plan;  // lives in _runtime_state->obj_pool() //jungle comment: root of the plan node in the fragment
+
     TUniqueId _query_id;
     // MemTracker* _mem_tracker;
     boost::scoped_ptr<MemTracker> _mem_tracker;
@@ -187,7 +189,18 @@ private:
     // Output sink for rows sent to this fragment. May not be set, in which case rows are
     // returned via get_next's row batch
     // Created in prepare (if required), owned by this object.
+
+    /**
+     * 成员变量：
+     *
+     * 关于boost::scoped_ptr的定义了处理，看下面链接
+     *
+     * https://www.cnblogs.com/TianFang/archive/2008/09/15/1291050.html
+     *
+     */
     boost::scoped_ptr<DataSink> _sink;
+
+
     boost::scoped_ptr<RuntimeState> _runtime_state;
     boost::scoped_ptr<RowBatch> _row_batch;
     boost::scoped_ptr<TRowBatch> _thrift_batch;

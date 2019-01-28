@@ -30,15 +30,32 @@ namespace column_file {
 
 class SegmentReader;
 
+/**
+ * 派生类ColumnData 继承自基类IData
+ */
 // 定义文件的读取接口, 接口定义见IData的定义
 class ColumnData : public IData {
+
 public:
+    /**
+     * explicit 防止隐式调用
+     * @param olap_index
+     */
     explicit ColumnData(OLAPIndex* olap_index);
+
+    /**
+     * 声明为virtual，在调用的时候，会调用派生类而不是基类中的方法
+     */
     virtual ~ColumnData();
 
     virtual OLAPStatus init();
     virtual void set_conjuncts(std::vector<ExprContext*>* query_conjuncts, 
                                std::vector<ExprContext*>* delete_conjuncts);
+
+    /**
+     *
+     * @return
+     */
     virtual const RowCursor* get_first_row();
     virtual const RowCursor* get_current_row();
     virtual const RowCursor* get_next_row();
@@ -92,19 +109,30 @@ private:
 
 private:
     OLAPTable* _table;
+
     RowCursor* _end_key;                  // 非NULL表示设置了end key
+
     bool _last_end_key;
+
     bool _is_using_cache;
+
     RowBlockPosition _end_key_block_position;
+
     std::vector<uint32_t> _return_columns;
+
     std::set<uint32_t> _load_bf_columns;
     
     SegmentReader* _segment_reader;
+
     uint64_t _filted_rows;
+
     uint32_t _current_segment;
+
     // 下面两个成员只用于block接口
     RowBlock* _row_block;                 // 用于get_first_row_block缓存数据
+
     RowBlockPosition _row_block_pos;      // 与_row_block对应的pos
+
 };
 
 class ColumnDataComparator {

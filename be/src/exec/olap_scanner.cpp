@@ -33,10 +33,12 @@ namespace palo {
 
 static const std::string SCANNER_THREAD_TOTAL_WALLCLOCK_TIME =
     "ScannerThreadsTotalWallClockTime";
+
 static const std::string MATERIALIZE_TUPLE_TIMER =
     "MaterializeTupleTime(*)";
 
 OlapScanner::OlapScanner(
+
     RuntimeState* runtime_state,
     const boost::shared_ptr<PaloScanRange> scan_range,
     const std::vector<OlapScanRange>& key_ranges,
@@ -54,6 +56,7 @@ OlapScanner::OlapScanner(
     _is_null_vector(is_null_vector) {
     _reader.reset(OLAPReader::create(tuple_desc, runtime_state));
     DCHECK(_reader.get() != NULL);
+
 }
 
 OlapScanner::~OlapScanner() {
@@ -67,6 +70,7 @@ void OlapScanner::set_opened() {
 }
 
 Status OlapScanner::open() {
+
     TFetchRequest fetch_request;
     fetch_request.__set_use_compression(false);
     fetch_request.__set_num_rows(256);
@@ -84,13 +88,25 @@ Status OlapScanner::open() {
         return Status("Failed to BuildOlapQuery, no query slot!");
     }
 
+
+    /**
+     *
+     * 会打印下面内容：
+     * I0724 09:05:34.788071  1430 olap_scanner.cpp:93] Slot: name=siteid type=INT
+     * I0724 09:05:34.788084  1430 olap_scanner.cpp:93] Slot: name=citycode type=SMALLINT
+     * I0724 09:05:34.788090  1430 olap_scanner.cpp:93] Slot: name=username type=VARCHAR
+     * I0724 09:05:34.788095  1430 olap_scanner.cpp:93] Slot: name=pv type=BIGINT
+     *
+     */
     for (int i = 0; i < slots.size(); ++i) {
+
         if (!slots[i]->is_materialized()) {
             continue;
         }
 
         fetch_request.field.push_back(slots[i]->col_name());
         VLOG(3) << "Slot: name=" << slots[i]->col_name() << " type=" << slots[i]->type();
+
     }
 
     if (fetch_request.field.size() <= 0) {

@@ -352,70 +352,110 @@ OLAPStatus ColumnData::_find_position_by_full_key(
 }
 
 const RowCursor* ColumnData::find_row(const RowCursor& key, bool find_last_key, bool is_end_key) {
+
     OLAPStatus res = OLAP_SUCCESS;
+
     RowBlockPosition position;
+
+    /**
+     * 打印消息
+     *
+     * I0724 09:05:34.788329  1430 column_data.cpp:357] @ ColumnData::find_row,key:0&2147483647
+     */
     OLAP_LOG_DEBUG("@ ColumnData::find_row,key:%s",key.to_string().c_str());
+
+
     _eof = false;
+
     FieldType type = _table->get_field_type_by_index(key.field_count() - 1);
+
     if (key.field_count() > _table->num_short_key_fields() || OLAP_FIELD_TYPE_VARCHAR == type) {
+
         res = _find_position_by_full_key(key, find_last_key, &position);
+
     } else {
+
         res = _find_position_by_short_key(key, find_last_key, &position);
+
     }
 
     if (OLAP_SUCCESS != res) {
-        OLAP_LOG_WARNING("Fail to find the key.[res=%d key=%s find_last_key=%d]", 
+
+        OLAP_LOG_WARNING("Fail to find the key.[res=%d key=%s find_last_key=%d]",
                 res, key.to_string().c_str(), find_last_key);
+
         return NULL;
+
     } else if (_eof) {
-        OLAP_LOG_DEBUG("EOF when find the key.[res=%d key=%s find_last_key=%d]", 
+
+        OLAP_LOG_DEBUG("EOF when find the key.[res=%d key=%s find_last_key=%d]",
                 res, key.to_string().c_str(), find_last_key);
+
         return NULL;
+
     }
 
     bool without_filter = is_end_key;
+
     res = _seek_to_block(position, without_filter);
+
     if (OLAP_SUCCESS != res) {
+
         if (OLAP_ERR_DATA_EOF == res) {
+
             OLAP_LOG_WARNING("stream EOF. "
                     "[res=%d segment=%d block_size=%d data_offset=%d index_offset=%d]",
                     res,
                     position.segment, position.block_size,
                     position.data_offset, position.index_offset);
+
             set_eof(true);
+
         } else {
+
             OLAP_LOG_WARNING("fail to get row block. "
                     "[res=%d segment=%d block_size=%d data_offset=%d index_offset=%d]",
                     res,
                     position.segment, position.block_size,
                     position.data_offset, position.index_offset);
+
         }
 
         return NULL;
+
     }
 
     const RowCursor* row_cursor = NULL;
+
     if (!find_last_key) {
         // 不找last key。 那么应该返回大于等于这个key的第一个，也就是
         // row_cursor >= key
         // 此处比较2个block的行数，是存在一种极限情况：若未找到满足的block，
         // Index模块会返回倒数第二个block，此时key可能是最后一个block的最后一行
+
         OLAP_LOG_DEBUG("!find_last_key and _get_next_row");
+
         while (NULL != (row_cursor = _get_next_row(without_filter)) && !eof() //jungle comment : here or in MergeSet::_pop_from_heap
                 && row_cursor->cmp(key) < 0) {
             OLAP_LOG_DEBUG("_get_next_row loop ... ,row_cursor : %s , key :%s " , row_cursor->to_string().c_str(), key.to_string().c_str());
         }
+
     } else {
+
         // 找last key。返回大于这个key的第一个。也就是
         // row_cursor > key
+
         OLAP_LOG_DEBUG("find_last_key and _get_next_row");
+
         while (NULL != (row_cursor = _get_next_row(without_filter)) && !eof()
                 && row_cursor->cmp(key) <= 0) {
             OLAP_LOG_DEBUG("_get_next_row loop ... ,row_cursor : %s , key :%s " , row_cursor->to_string().c_str(), key.to_string().c_str());
         }
+
     }
 
     return row_cursor;
+
 }
 
 const RowCursor* ColumnData::seek_and_get_current_row(const RowBlockPosition& position) {
@@ -440,6 +480,7 @@ const RowCursor* ColumnData::seek_and_get_current_row(const RowBlockPosition& po
 }
 
 OLAPStatus ColumnData::set_end_key(const RowCursor* end_key, bool find_last_end_key) {
+
     OLAP_LOG_DEBUG("ColumnData::set_end_key");
     OLAPStatus res;
 

@@ -370,7 +370,12 @@ static void empty_function(PlanFragmentExecutor* exec) {
 void FragmentMgr::exec_actual(
         std::shared_ptr<FragmentExecState> exec_state,
         FinishCallback cb) {
+
+    /**
+     * I0724 09:05:34.784520  1503 fragment_mgr.cpp:373] FragmentMgr::exec_actual
+     */
     OLAP_LOG_DEBUG("FragmentMgr::exec_actual");
+
     exec_state->execute();
 
     {
@@ -392,7 +397,17 @@ void FragmentMgr::exec_actual(
 
 Status FragmentMgr::exec_plan_fragment(
         const TExecPlanFragmentParams& params) {
+
+    /**
+     * std::placeholders::_1 ————占位符参数创建函数对象
+     * https://zh.cppreference.com/w/cpp/utility/functional/placeholders
+     *
+     *
+     * 这个方法会调用下面的方法：
+     */
     return exec_plan_fragment(params, std::bind<void>(&empty_function, std::placeholders::_1));
+
+
 }
 
 static void* fragment_executor(void* param) {
@@ -405,16 +420,22 @@ static void* fragment_executor(void* param) {
 Status FragmentMgr::exec_plan_fragment(
         const TExecPlanFragmentParams& params,
         FinishCallback cb) {
+
     const TUniqueId& fragment_instance_id = params.params.fragment_instance_id;
+
     std::shared_ptr<FragmentExecState> exec_state;
+
     {
+
         std::lock_guard<std::mutex> lock(_lock);
         auto iter = _fragment_map.find(fragment_instance_id);
         if (iter != _fragment_map.end()) {
             // Duplicated
             return Status::OK;
         }
+
     }
+
     exec_state.reset(new FragmentExecState(
             params.params.query_id,
             fragment_instance_id,
@@ -422,8 +443,11 @@ Status FragmentMgr::exec_plan_fragment(
             _exec_env,
             params.coord));
     RETURN_IF_ERROR(exec_state->prepare(params));
+
     bool use_pool = true;
+
     {
+
         std::lock_guard<std::mutex> lock(_lock);
         auto iter = _fragment_map.find(fragment_instance_id);
         if (iter != _fragment_map.end()) {
@@ -437,29 +461,40 @@ Status FragmentMgr::exec_plan_fragment(
         if (_fragment_map.size() >= config::fragment_pool_thread_num) {
             use_pool = false;
         }
+
     }
 
     if (use_pool) {
+
         if (!_thread_pool.offer(
+
                 boost::bind<void>(&FragmentMgr::exec_actual, this, exec_state, cb))) {
             {
                 // Remove the exec state added
                 std::lock_guard<std::mutex> lock(_lock);
                 _fragment_map.erase(fragment_instance_id);
             }
+
             return Status("Put planfragment to failed.");
+
         }
+
     } else {
+
         pthread_t id;
+
         pthread_create(&id,
                        nullptr,
                        fragment_executor,
                        new ThreadPool::WorkFunction(
                            std::bind<void>(&FragmentMgr::exec_actual, this, exec_state, cb)));
+
         pthread_detach(id);
+
     }
 
     return Status::OK;
+
 }
 
 Status FragmentMgr::cancel(const TUniqueId& id) {

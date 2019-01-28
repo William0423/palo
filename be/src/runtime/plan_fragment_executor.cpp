@@ -66,10 +66,28 @@ PlanFragmentExecutor::~PlanFragmentExecutor() {
     DCHECK(!_report_thread_active);
 }
 
+/**
+ * 会打印下面内容：
+ *
+
+ *
+ *
+ * @param request
+ * @return
+ */
 Status PlanFragmentExecutor::prepare(const TExecPlanFragmentParams& request) {
+
     const TPlanFragmentExecParams& params = request.params;
+
     _query_id = params.query_id;
 
+
+    /**
+     * I0724 09:05:34.784302  2384
+     * plan_fragment_executor.cpp:73] PlanFragmentExecutor::Prepare():
+     * query_id=ea677a15c304e9b:860a76494c44e68a instance_id=ea677a15c304e9b:860a76494c44e68b backend_num=0
+     *
+     */
     LOG(INFO) << "PlanFragmentExecutor::Prepare(): query_id=" << print_id(_query_id)
                << " instance_id=" << print_id(params.fragment_instance_id)
                << " backend_num=" << request.backend_num;
@@ -79,22 +97,37 @@ Status PlanFragmentExecutor::prepare(const TExecPlanFragmentParams& request) {
             request, request.query_options, request.query_globals.now_string, _exec_env));
 
     RETURN_IF_ERROR(_runtime_state->init_mem_trackers(_query_id));
+
     _runtime_state->set_be_number(request.backend_num);
+
     if (request.__isset.import_label) {
+
         _runtime_state->set_import_label(request.import_label);
+
     }
+
     if (request.__isset.db_name) {
+
         _runtime_state->set_db_name(request.db_name);
+
     }
+
     if (request.__isset.load_job_id) {
+
         _runtime_state->set_load_job_id(request.load_job_id);
+
     }
+
     if (request.__isset.load_error_hub_info) {
+
         _runtime_state->set_load_error_hub_info(request.load_error_hub_info);
+
     }
 
     if (request.query_options.__isset.is_report_success) {
+
         _is_report_success = request.query_options.is_report_success;
+
     }
 
     // Reserve one main thread from the pool
@@ -167,17 +200,36 @@ Status PlanFragmentExecutor::prepare(const TExecPlanFragmentParams& request) {
 
     // set scan ranges
     std::vector<ExecNode*> scan_nodes;
+
     std::vector<TScanRangeParams> no_scan_ranges;
+
     _plan->collect_scan_nodes(&scan_nodes);
+
+
+    // I0724 09:05:34.784428  2384 plan_fragment_executor.cpp:172] scan_nodes.size()=1
     VLOG(1) << "scan_nodes.size()=" << scan_nodes.size();
+
+    // I0724 09:05:34.784431  2384 plan_fragment_executor.cpp:173] params.per_node_scan_ranges.size()=1
     VLOG(1) << "params.per_node_scan_ranges.size()=" << params.per_node_scan_ranges.size();
 
     for (int i = 0; i < scan_nodes.size(); ++i) {
+
         ScanNode* scan_node = static_cast<ScanNode*>(scan_nodes[i]);
+
         const std::vector<TScanRangeParams>& scan_ranges =
             find_with_default(params.per_node_scan_ranges, scan_node->id(), no_scan_ranges);
+
+        /**
+         * 遍历scan_nodes，然后调用olap_scan_node.cpp中的set_scan_ranges()方法；
+         */
         scan_node->set_scan_ranges(scan_ranges);
+
+        /**
+         * I0724 09:05:34.784440  2384 plan_fragment_executor.cpp:180] scan_node_Id=0 size=1
+         */
         VLOG(1) << "scan_node_Id=" << scan_node->id() << " size=" << scan_ranges.size();
+
+
     }
 
     print_volume_ids(params.per_node_scan_ranges);
@@ -222,10 +274,18 @@ Status PlanFragmentExecutor::prepare(const TExecPlanFragmentParams& request) {
             _plan->row_desc(),
             _runtime_state->batch_size(),
             _runtime_state->instance_mem_tracker()));
+
+    /**
+     * I0724 09:05:34.784466  2384 plan_fragment_executor.cpp:226] plan_root=
+     */
+
     // _row_batch->tuple_data_pool()->set_limits(*_runtime_state->mem_trackers());
     VLOG(3) << "plan_root=\n" << _plan->debug_string();
+
     _prepared = true;
+
     return Status::OK;
+
 }
 
 void PlanFragmentExecutor::optimize_llvm_module() {
@@ -253,8 +313,21 @@ void PlanFragmentExecutor::print_volume_ids(
 }
 
 Status PlanFragmentExecutor::open() {
+
+
+    /**
+     * I0724 09:05:34.784535  1503 plan_fragment_executor.cpp:256] PlanFragmentExecutor::open
+     */
     OLAP_LOG_DEBUG("PlanFragmentExecutor::open");
+
+
+    /**
+     * I0724 09:05:34.784539  1503 plan_fragment_executor.cpp:257] Open():
+     * instance_id=TUniqueId(hi=1055662697585069723, lo=-8788081665675827573)
+     */
     LOG(INFO) << "Open(): instance_id=" << _runtime_state->fragment_instance_id();
+
+
 
     // we need to start the profile-reporting thread before calling Open(), since it
     // may block
@@ -271,6 +344,9 @@ Status PlanFragmentExecutor::open() {
 
     optimize_llvm_module();
 
+    /**
+     * 调用方法
+     */
     Status status = open_internal();    //jungle comment:if the fragment has sink ,then exec the plan and send to sink
 
     if (!status.ok() && !status.is_cancelled() && _runtime_state->log_has_space()) {
@@ -280,45 +356,88 @@ Status PlanFragmentExecutor::open() {
         _runtime_state->log_error(status.get_error_msg());
     }
 
+    /**
+     * 更新状态
+     */
     update_status(status);
+
+
     return status;
+
+
 }
 
 Status PlanFragmentExecutor::open_internal() {
+
     OLAP_LOG_DEBUG("PlanFragmentExecutor::open_internal");
+
     {
         SCOPED_TIMER(profile()->total_time_counter());
         RETURN_IF_ERROR(_plan->open(_runtime_state.get()));
     }
 
+    /**
+     *
+     * 这个_sink是一个实例对象，
+     *
+     *
+     */
     if (_sink.get() == NULL) {
         return Status::OK;
     }
+
     RETURN_IF_ERROR(_sink->open(runtime_state()));
 
     // If there is a sink, do all the work of driving it here, so that
     // when this returns the query has actually finished
     RowBatch* batch = NULL;
 
+    /**
+     * 死循环：
+     */
     while (true) {
+
+        /**
+         * 第一步
+         */
         RETURN_IF_ERROR(get_next_internal(&batch));
 
         if (batch == NULL) {
+
             break;
+
         }
 
         if (VLOG_ROW_IS_ON) {
+
+            /**
+             *
+             * 下面需要打印的的内容：
+             * I0724 09:05:34.791965  1503 plan_fragment_executor.cpp:311] open_internal: #rows=5
+             * desc=tuple_desc_map: [Tuple(id=0 size=32 slots=[Slot(id=0 type=INT col=-1 offset=4 null=(offset=0 mask=40)), Slot(id=1 type=SMALLINT col=-1 offset=2 null=(offset=0 mask=80)), Slot(id=2 type=VARCHAR col=-1 offset=16 null=(offset=0 mask=10)), Slot(id=3 type=BIGINT col=-1 offset=8 null=(offset=0 mask=20))] has_varlen_slots=1)] tuple_id_map: [0] tuple_is_nullable: [0]
+             *
+             */
             VLOG_ROW << "open_internal: #rows=" << batch->num_rows()
                 << " desc=" << row_desc().debug_string();
 
+            /**
+             * 遍历batch
+             */
             for (int i = 0; i < batch->num_rows(); ++i) {
+
                 TupleRow* row = batch->get_row(i);
 
                 VLOG_ROW << print_row(row, row_desc());
+
             }
+
         }
 
         SCOPED_TIMER(profile()->total_time_counter());
+
+        /**
+         *
+         */
         RETURN_IF_ERROR(_sink->send(runtime_state(), batch));
 
     }
@@ -334,12 +453,22 @@ Status PlanFragmentExecutor::open_internal() {
 
     // TODO: If this returns an error, the d'tor will call Close again. We should
     // audit the sinks to check that this is ok, or change that behaviour.
+
     {
+
         SCOPED_TIMER(profile()->total_time_counter());
+
         Status status = _sink->close(runtime_state(), _status);
-        OLAP_LOG_DEBUG("_sink->close ");
+
+        /**
+         * 循环结束的时候关闭DataSink
+         */
+        OLAP_LOG_DEBUG("_sink->close");
+
         RETURN_IF_ERROR(status);
+
     }
+
     {
         std::stringstream ss;
         profile()->pretty_print(&ss);
@@ -348,14 +477,21 @@ Status PlanFragmentExecutor::open_internal() {
 
     // Setting to NULL ensures that the d'tor won't double-close the sink.
     _sink.reset(NULL);
+
     _done = true;
 
+    /**
+     *
+     */
     release_thread_token();
 
     stop_report_thread();
+
     send_report(true);
 
     return Status::OK;
+
+
 }
 
 void PlanFragmentExecutor::report_profile() {
@@ -443,8 +579,11 @@ void PlanFragmentExecutor::stop_report_thread() {
 }
 
 Status PlanFragmentExecutor::get_next(RowBatch** batch) {
+
     VLOG_FILE << "GetNext(): instance_id=" << _runtime_state->fragment_instance_id();
+
     Status status = get_next_internal(batch);
+
     update_status(status);
 
     if (_done) {
@@ -459,27 +598,63 @@ Status PlanFragmentExecutor::get_next(RowBatch** batch) {
     return status;
 }
 
+/**
+ *
+ * 此处
+ *
+ * @param batch
+ * @return
+ */
 Status PlanFragmentExecutor::get_next_internal(RowBatch** batch) {
+
+    /**
+     * 这个在plan_fragment.executor.h文件里面定义
+     */
     if (_done) {
         *batch = NULL;
         return Status::OK;
     }
 
+    /**
+     * 如果_done=false，进入循环
+     */
     while (!_done) {
+
+        /**
+         * reset()这个方法在 RowBatch中
+         */
         _row_batch->reset(); //jungle comment : _row_batch already send in open_internal,and reset
+
+        /**
+         * profile()在olap_scan.node.cpp中定义：RuntimeProfile* profile();
+         *
+         * 而这个 total_time_counter()是在 runtime_profile.h中定义，返回的是一个数
+         *
+         */
         SCOPED_TIMER(profile()->total_time_counter());
+
+        /**
+         * get_next()函数是在olap_scan.node.cpp中定义的
+         */
         RETURN_IF_ERROR(_plan->get_next(_runtime_state.get(), _row_batch.get(), &_done));
 
+
         if (_row_batch->num_rows() > 0) {
+
             COUNTER_UPDATE(_rows_produced_counter, _row_batch->num_rows());
+
             *batch = _row_batch.get();
+
             break;
+
         }
 
         *batch = NULL;
+
     }
 
     return Status::OK;
+
 }
 
 void PlanFragmentExecutor::update_status(const Status& status) {
@@ -519,10 +694,16 @@ RuntimeProfile* PlanFragmentExecutor::profile() {
 }
 
 void PlanFragmentExecutor::release_thread_token() {
+
+
     if (_has_thread_token) {
+
         _has_thread_token = false;
+
         _runtime_state->resource_pool()->release_thread_token(true);
+
         profile()->stop_sampling_counters_updates(_average_thread_tokens);
+
     }
 }
 

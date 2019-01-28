@@ -195,6 +195,9 @@ private:
     // column -> ColumnValueRange map
     std::map<std::string, ColumnValueRangeType> _column_value_ranges;
 
+    /**
+     * OlapScanKeys 在olap_common.h 中定义
+     */
     OlapScanKeys _scan_keys;
 
     std::list<boost::shared_ptr<PaloScanRange> > _palo_scan_ranges;

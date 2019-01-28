@@ -102,21 +102,47 @@ Status BackendService::create_rpc_service(ExecEnv* exec_env) {
     return status;
 }
 
+/**
+ *
+ * 通过thrift接口，接受从Fe传过来的查询请求。
+ *
+ *
+ * @param return_val
+ * @param params
+ */
+
 void BackendService::exec_plan_fragment(TExecPlanFragmentResult& return_val,
                                         const TExecPlanFragmentParams& params) {
+    /**
+     * 此处打印的信息是：
+     * I0724 09:05:34.784127  2384 backend_service.cpp:107]
+     * exec_plan_fragment() instance_id=TUniqueId(hi=1055662697585069723, lo=-8788081665675827573) coord=TNetworkAddress(hostname=172.17.0.3, port=9020) backend#=0
+     *
+     */
     LOG(INFO) << "exec_plan_fragment() instance_id=" << params.params.fragment_instance_id
         << " coord=" << params.coord << " backend#=" << params.backend_num;
+
     VLOG_ROW << "exec_plan_fragment params is "
             << apache::thrift::ThriftDebugString(params).c_str();
+
     start_plan_fragment_execution(params).set_t_status(&return_val);
+
+
 }
 
+/**
+ *
+ * @param exec_params 内存地址作为参数传递：
+ * @return
+ */
 Status BackendService::start_plan_fragment_execution(const TExecPlanFragmentParams& exec_params) {
     if (!exec_params.fragment.__isset.output_sink) {      //jungle comment : output_sink must be set ,then plan get next and send data in PlanFragmentExecutor::open()
         return Status("missing sink in plan fragment");
     }
     return _exec_env->fragment_mgr()->exec_plan_fragment(exec_params);
 }
+
+
 
 void BackendService::cancel_plan_fragment(TCancelPlanFragmentResult& return_val,
                                           const TCancelPlanFragmentParams& params) {

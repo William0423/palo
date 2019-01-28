@@ -20,7 +20,16 @@
 
 namespace palo {
 
+
+/**
+ * 这个传入的参数是  OLAPIndex
+ *
+ * @param index
+ * @return
+ *
+ */
 IData* IData::create(OLAPIndex* index) {
+
     IData* data = NULL;
     DataFileType file_type = index->table()->data_file_type();
 
@@ -30,6 +39,9 @@ IData* IData::create(OLAPIndex* index) {
         OLAP_LOG_DEBUG("create OLAP_DATA_FILE");
         break;
 
+        /**
+         * 会打印下面的内容
+         */
     case COLUMN_ORIENTED_FILE:
         data = new(std::nothrow) column_file::ColumnData(index);
         OLAP_LOG_DEBUG("create COLUMN_ORIENTED_FILE");

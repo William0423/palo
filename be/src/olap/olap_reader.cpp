@@ -41,16 +41,27 @@ Status OLAPShowHints::show_hints(
         TShowHintsRequest& fetch_request,
         std::vector<std::vector<std::vector<std::string>>>* ranges, 
         RuntimeProfile* profile) {
+
     OLAP_LOG_DEBUG("Show hints:%s", apache::thrift::ThriftDebugString(fetch_request).c_str());
+
     {
         RuntimeProfile::Counter* show_hints_timer = profile->get_counter("ShowHintsTime");
         SCOPED_TIMER(show_hints_timer);
     
         OLAPStatus res = OLAP_SUCCESS;
         ranges->clear();
-    
+
+        /**
+         *
+         * get_table(）这个方法在olap_engine.cpp中被调用
+         *
+         * 打印
+         * I0724 09:05:34.784647  1503 olap_engine.cpp:302] begin to get olap table. [table=10805]
+         */
         SmartOLAPTable table = OLAPEngine::get_instance()->get_table(
                 fetch_request.tablet_id, fetch_request.schema_hash);
+
+
         if (table.get() == NULL) {
             OLAP_LOG_WARNING("table does not exists. [tablet_id=%ld schema_hash=%d]",
                              fetch_request.tablet_id, fetch_request.schema_hash);
@@ -60,21 +71,31 @@ Status OLAPShowHints::show_hints(
         vector<string> start_key_strings;
         vector<string> end_key_strings;
         vector<vector<string>> range;
+
         if (fetch_request.start_key.size() == 0) {
+
+            /**
+             * 调用oalp_table.cpp中的方法，这个方法
+             */
             res = table->split_range(start_key_strings,
                                      end_key_strings,
                                      fetch_request.block_row_count,
                                      &range);
     
             if (res != OLAP_SUCCESS) {
+
                 OLAP_LOG_WARNING("fail to show hints by split range. [res=%d]", res);
                 return Status("fail to show hints");
+
             }
     
             ranges->push_back(range);
+
         } else {
+
             for (int key_pair_index = 0;
                     key_pair_index < fetch_request.start_key.size(); ++key_pair_index) {
+
                 start_key_strings.clear();
                 end_key_strings.clear();
                 range.clear();
@@ -112,9 +133,23 @@ OLAPReader *OLAPReader::create(const TupleDescriptor &tuple_desc, RuntimeState* 
     return new (std::nothrow) OLAPReader(tuple_desc, runtime_state);
 }
 
+/**
+ *
+ * 怎么从olap_scan_node.cpp中到这个方法的？
+ *
+ * @param fetch_request
+ * @param conjunct_ctxs
+ * @param profile
+ * @return
+ */
 Status OLAPReader::init(TFetchRequest& fetch_request, 
                         std::vector<ExprContext*> *conjunct_ctxs,
                         RuntimeProfile* profile) {
+
+
+    /**
+     * 这个是thrift 请求
+     */
     OLAP_LOG_DEBUG("fetch request:%s", apache::thrift::ThriftDebugString(fetch_request).c_str());
 
     if (PaloMetrics::palo_fetch_count() != NULL) {
@@ -131,22 +166,35 @@ Status OLAPReader::init(TFetchRequest& fetch_request,
 
     {
         SCOPED_TIMER(_get_tablet_timer);
+
+        /**
+         * 获取表内容
+         */
         _olap_table = OLAPEngine::get_instance()->get_table(
                 fetch_request.tablet_id, fetch_request.schema_hash);
+
         if (_olap_table.get() == NULL) {
+
             OLAP_LOG_WARNING("table does not exists. [tablet_id=%ld schema_hash=%d]",
                              fetch_request.tablet_id, fetch_request.schema_hash);
+
             return Status("table does not exists");
+
         }
+
     }
 
     {
         AutoRWLock auto_lock(_olap_table->get_header_lock_ptr(), true);
+
         const FileVersionMessage* message = _olap_table->latest_version();
+
         if (message == NULL) {
+
             OLAP_LOG_WARNING("fail to get latest version. [tablet_id=%ld]",
                              fetch_request.tablet_id);
             return Status("fail to get latest version");
+
         }
 
         if (message->end_version() == fetch_request.version
@@ -157,15 +205,24 @@ Status OLAPReader::init(TFetchRequest& fetch_request,
                              message->version_hash(), fetch_request.version_hash);
             return Status("fail to check version hash");
         }
+
     }
 
     {
+
         SCOPED_TIMER(_init_reader_timer);
+
+        /**
+         * 这个初始化参数的方法在这个文件的下面
+         */
         res = _init_params(fetch_request, profile);
+
+
         if (res != OLAP_SUCCESS) {
             OLAP_LOG_WARNING("fail to init olap reader.[res=%d]", res);
             return Status("fail to init olap reader");
         }
+
     }
 
     _is_inited = true;
@@ -296,9 +353,11 @@ OLAPStatus OLAPReader::_convert_row_to_tuple(Tuple* tuple) {
 }
 
 OLAPStatus OLAPReader::_init_params(TFetchRequest& fetch_request, RuntimeProfile* profile) {
+
     OLAPStatus res = OLAP_SUCCESS;
 
     res = _init_return_columns(fetch_request);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init return columns.[res=%d]", res);
         return res;
@@ -319,11 +378,15 @@ OLAPStatus OLAPReader::_init_params(TFetchRequest& fetch_request, RuntimeProfile
     reader_params.runtime_state = _runtime_state;
 
     if (_aggregation) {
+
         reader_params.return_columns = _return_columns;
+
     } else {
+
         for (size_t i = 0; i < _olap_table->num_key_fields(); ++i) {
             reader_params.return_columns.push_back(i);
         }
+
         for (size_t i = 0; i < fetch_request.field.size(); ++i) {
             int32_t index = _olap_table->get_field_index(fetch_request.field[i]);
             if (_olap_table->tablet_schema()[index].is_key) {
@@ -332,27 +395,48 @@ OLAPStatus OLAPReader::_init_params(TFetchRequest& fetch_request, RuntimeProfile
                 reader_params.return_columns.push_back(index);
             }
         }
+
     }
+
     res = _read_row_cursor.init(_olap_table->tablet_schema(), reader_params.return_columns);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init row cursor.[res=%d]", res);
         return res;
     }
+
+    /**
+     * I0724 09:05:34.788230  1430 olap_reader.cpp:341] reader_params info :table=10805.1421156361 reader_type=0
+     */
     OLAP_LOG_DEBUG("reader_params info :%s" ,reader_params.to_string().c_str());
+
+
+    /**
+     * I0724 09:05:34.788236  1430 reader.cpp:149] Reader::init
+     */
     res = _reader.init(reader_params);
+
+
     if (res != OLAP_SUCCESS) {
+
         OLAP_LOG_WARNING("fail to init reader.[res=%d]", res);
+
         return res;
+
     }
 
     for (int i = 0; i < _tuple_desc.slots().size(); ++i) {
+
         if (!_tuple_desc.slots()[i]->is_materialized()) {
             continue;
         }
+
         _query_slots.push_back(_tuple_desc.slots()[i]);
+
     }
 
     return res;
+
 }
 
 OLAPStatus OLAPReader::_init_return_columns(TFetchRequest& fetch_request) {

@@ -144,29 +144,61 @@ bool Reader::MergeSet::RowCursorComparator::operator()(
     return a->version().second > b->version().second;
 }
 
+/**
+ *
+ * 初始化：
+ *
+ *
+ * @param read_params
+ * @return
+ */
 OLAPStatus Reader::init(const ReaderParams& read_params) {
+
+
     OLAPStatus res = OLAP_SUCCESS;
+
     OLAP_LOG_DEBUG("Reader::init");
+
     res = _init_params(read_params);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init reader when init params.[res=%d]", res);
         return res;
     }
 
+    /**
+     * 这一步，会根据 res = _init_params(read_params) 这一步初始化的 _olap_table，进行表的相关操作，其中在 olap_table.cpp中，会调用 olap_header.cpp类中的相关方法，
+     *
+     * 这一步也会打印：
+     *
+     * I0724 09:05:34.788274  1430 olap_header.cpp:399] calculated shortest path. [version='0-2' path='0-1 2-2 ']
+     *
+     */
     res = _acquire_data_sources(read_params);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init reader when acquire data sources.[res=%d]", res);      
         return res;
     }
 
     bool eof = false;
+
+
+    /**
+     * 通过下面的方法进入   column_data.cpp 类中
+     */
     if (OLAP_SUCCESS != (res = _attach_data_to_merge_set(true, &eof))) {
         OLAP_LOG_WARNING("failed to attaching data to merge set. [res=%d]", res);
         return res;
     }
 
     for (auto i_data: _data_sources) {
+
+        /**
+         * 设置参数属性
+         */
         i_data->set_profile(read_params.profile);
+
     }
 
     _is_inited = true;
@@ -269,36 +301,71 @@ void Reader::close() {
 }
 
 OLAPStatus Reader::_acquire_data_sources(const ReaderParams& read_params) {
+
     _data_sources.clear();
+
     if (read_params.reader_type == READER_ALTER_TABLE
             || read_params.reader_type == READER_BASE_EXPANSION
             || read_params.reader_type == READER_CUMULATIVE_EXPANSION) {
+
+        /**
+         * 初始化     std::vector<IData*> _data_sources;
+         */
         _data_sources = read_params.olap_data_arr;
+
         _is_set_data_sources = true;
+
     } else {
+
         _olap_table->obtain_header_rdlock();
+
+        /**
+         * 这个函数是 通过 _olap_table调用 olap_header.cpp中的方法
+         *
+         * 如果上面的if 条件不满足，那么 ，传参_data_sources到下面的方法进行初始化
+         *
+         * 打印下面内容：
+         *
+         * I0724 09:05:34.788283  1430 i_data.cpp:35] create COLUMN_ORIENTED_FILE
+         * I0724 09:05:34.788290  1430 i_data.cpp:35] create COLUMN_ORIENTED_FILE
+         *
+         */
         _olap_table->acquire_data_sources(_version, &_data_sources);
+
         _olap_table->release_header_lock();
 
         if (_data_sources.size() < 1) {
+
             OLAP_LOG_WARNING("fail to acquire data sources. [table_name='%s' version=%d-%d]",
                              _olap_table->full_name().c_str(),
                              _version.first,
                              _version.second);
+
             return OLAP_ERR_VERSION_NOT_EXIST;
+
         }
+
     }
     
     // do not use index stream cache when be/ce/alter/checksum,
     // to avoid bringing down lru cache hit ratio
     bool is_using_cache = true;
+
     if (read_params.reader_type != READER_FETCH) {
+
         is_using_cache = false;
+
     }
 
     for (auto i_data: _data_sources) {
+
+        /**
+         * 设置参数属性：
+         */
         i_data->set_conjuncts(_query_conjunct_ctxs, NULL);
+
         i_data->set_delete_handler(_delete_handler);
+
         i_data->set_read_params(_return_columns,
                                 _load_bf_columns,
                                 _conditions,
@@ -306,49 +373,64 @@ OLAPStatus Reader::_acquire_data_sources(const ReaderParams& read_params) {
                                 _keys_param.end_keys,
                                 is_using_cache,
                                 read_params.runtime_state);
+
     }
 
     return OLAP_SUCCESS;
 }
 
 OLAPStatus Reader::_init_params(const ReaderParams& read_params) {
+
     OLAPStatus res = OLAP_SUCCESS;
+
     _aggregation = read_params.aggregation;
+
     _reader_type = read_params.reader_type;
+
+    /**
+     * 初始化表
+     */
     _olap_table = read_params.olap_table;
+
     _version = read_params.version;
     
     res = _init_conditions_param(read_params);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init conditions param. [res=%d]", res);
         return res;
     }
 
     res = _init_load_bf_columns(read_params);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init load bloom filter columns. [res=%d]", res);
         return res;
     }
 
     res = _init_delete_condition(read_params);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init delete param. [res=%d]", res);
         return res;
     }
 
     res = _init_return_columns(read_params);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init return columns. [res=%d]", res);
         return res;
     }
 
     res = _init_keys_param(read_params);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init keys param. [res=%d]", res);
         return res;
     }
 
     res = _merge_set.init(this, false);
+
     if (res != OLAP_SUCCESS) {
         OLAP_LOG_WARNING("fail to init merge set. [res=%d]", res);
         return res;
@@ -388,6 +470,17 @@ OLAPStatus Reader::_init_return_columns(const ReaderParams& read_params) {
     return OLAP_SUCCESS;
 }
 
+
+/**
+ * 打印：
+ *
+ * I0724 09:05:34.788302  1430 reader.cpp:393] Reader::_attach_data_to_merge_set
+ *
+ *
+ * @param first
+ * @param eof
+ * @return
+ */
 OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
 
     OLAP_LOG_DEBUG("Reader::_attach_data_to_merge_set");
@@ -403,11 +496,13 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
         _merge_set.clear();
 
         if (_keys_param.start_keys.size() > 0) {
+
             if (_current_key_index >= _keys_param.start_keys.size()) {
                 *eof = true;
                 OLAP_LOG_DEBUG("can NOT attach while start_key has been used.");
                 return res;
             }
+
             start_key = _keys_param.start_keys[_current_key_index];
 
             if (0 != _keys_param.end_keys.size()) {
@@ -448,11 +543,15 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
                 }
                 
                 find_last_row = false;
+
             } else if (0 == _keys_param.range.compare("eq")) {
+
                 find_last_row = false;
                 end_key = start_key;
                 end_key_find_last_row = true;
+
             } else {
+
                 OLAP_LOG_WARNING(
                         "reader params range is error. [range='%s']", 
                         _keys_param.to_string().c_str());
@@ -460,23 +559,37 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
                 return res;
             }
         } else if (false == first) {
+
             *eof = true;
+
             return res;
+
         }
 
         for (std::vector<IData *>::iterator it = _data_sources.begin();
                 it != _data_sources.end(); ++it) {
+
             const RowCursor *start_row_cursor = NULL;
 
             if (OLAP_LIKELY(start_key != NULL)) {
+
                 if ((*it)->delta_pruning_filter()) {
+
+                    /**
+                     * 打印：
+                     *
+                     * I0724 09:05:34.788308  1430 reader.cpp:474] filter delta in query in condition: 0, 1
+                     *
+                     */
                     OLAP_LOG_DEBUG("filter delta in query in condition: %d, %d",
                                    (*it)->version().first, (*it)->version().second);
+
                     _filted_rows += (*it)->num_rows();
                     continue;
                 }
 
                 int ret = (*it)->delete_pruning_filter();
+
                 if (DEL_SATISFIED == ret) {
                     OLAP_LOG_DEBUG("filter delta in query: %d, %d",
                                    (*it)->version().first, (*it)->version().second);
@@ -487,13 +600,32 @@ OLAPStatus Reader::_attach_data_to_merge_set(bool first, bool *eof) {
                                    (*it)->version().first, (*it)->version().second);
                     (*it)->set_delete_status(DEL_PARTIAL_SATISFIED);
                 } else {
+
+                    /**
+                     *
+                     * 打印
+                     *
+                     * I0724 09:05:34.788313  1430 reader.cpp:491] not filter delta in query: 2, 2
+                     *
+                     */
                     OLAP_LOG_DEBUG("not filter delta in query: %d, %d",
                                    (*it)->version().first, (*it)->version().second);
                     (*it)->set_delete_status(DEL_NOT_SATISFIED);
+
                 }
 
+                /**
+                 *
+                 * 调用这个方法会进入到 column_data.cpp 类中
+                 *
+                 */
                 (*it)->set_end_key(end_key, end_key_find_last_row);
+
+                /**
+                 *
+                 */
                 start_row_cursor = (*it)->find_row(*start_key, find_last_row, false); //jungle comment : find the row in the *it
+
             } else {
                 if ((*it)->empty()) {
                     continue;

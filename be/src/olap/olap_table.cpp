@@ -388,10 +388,19 @@ OLAPStatus OLAPTable::select_versions_to_span( const Version& version,
     return res;
 }
 
+/**
+ *
+ * 被调用的方法，这个方法又会调用 _olap_header类中的 select_versions_to_span
+ *
+ *
+ * @param version
+ * @param sources
+ */
 void OLAPTable::acquire_data_sources(const Version& version, vector<IData*>* sources) const {
     vector<Version> span_versions;
 
     if (_header->select_versions_to_span(version, &span_versions) != OLAP_SUCCESS) {
+
         OLAP_LOG_WARNING("fail to generate shortest version path. [version='%d-%d' table='%s']",
                          version.first,
                          version.second,
@@ -403,11 +412,22 @@ void OLAPTable::acquire_data_sources(const Version& version, vector<IData*>* sou
     return;
 }
 
+
+/**
+ *
+ * I0724 09:05:34.788283  1430 i_data.cpp:35] create COLUMN_ORIENTED_FILE
+ * I0724 09:05:34.788290  1430 i_data.cpp:35] create COLUMN_ORIENTED_FILE
+ *
+ * @param version_list
+ * @param sources
+ */
 void OLAPTable::acquire_data_sources_by_versions(const vector<Version>& version_list,
                                                  vector<IData*>* sources) const {
     if (sources == NULL) {
+
         OLAP_LOG_WARNING("output parameter for data sources is null. [table='%s']",
                          full_name().c_str());
+
         return;
     }
 
@@ -417,18 +437,31 @@ void OLAPTable::acquire_data_sources_by_versions(const vector<Version>& version_
 
     for (vector<Version>::const_iterator it1 = version_list.begin();
             it1 != version_list.end(); ++it1) {
+
         version_olap_index_map_t::const_iterator it2 = _data_sources.find(*it1);
+
         if (it2 == _data_sources.end()) {
+
             OLAP_LOG_WARNING("fail to find OLAPIndex for version. [version='%d-%d' table='%s']",
                              it1->first,
                              it1->second,
                              full_name().c_str());
             release_data_sources(sources);
+
             return;
         }
 
         OLAPIndex* olap_index = it2->second;
+
+        /**
+         * 下面的调用会打印：
+         *
+         * I0724 09:05:34.788283  1430 i_data.cpp:35] create COLUMN_ORIENTED_FILE
+         * I0724 09:05:34.788290  1430 i_data.cpp:35] create COLUMN_ORIENTED_FILE
+         *
+         */
         IData* olap_data = IData::create(olap_index);
+
         if (olap_data == NULL) {
             OLAP_LOG_WARNING("fail to malloc Data. [version='%d-%d' table='%s']",
                              it1->first,
@@ -730,6 +763,7 @@ OLAPStatus OLAPTable::split_range(
         const vector<string>& end_key_strings,
         uint64_t request_block_row_count,
         std::vector<std::vector<std::string>>* ranges) {
+
     if (ranges == NULL) {
         OLAP_LOG_WARNING("parameter end_row is null.");
         return OLAP_ERR_INPUT_PARAMETER_ERROR;
@@ -739,8 +773,13 @@ OLAPStatus OLAPTable::split_range(
     RowCursor start_key;
     RowCursor end_key;
     RowCursor helper_cursor;
+
+    // 起始位置
     RowBlockPosition start_pos;
+
+    // 结束位置
     RowBlockPosition end_pos;
+
     RowBlockPosition step_pos;
 
     // 此helper用于辅助查找，注意它的内容不能拿来使用，是不可预知的，仅作为辅助使用
@@ -809,27 +848,60 @@ OLAPStatus OLAPTable::split_range(
         return OLAP_ERR_TABLE_NOT_FOUND;
     }
 
+    /**
+     * olap_index.cpp类中的 find_short_key()方法是关键
+     */
     // 找到startkey对应的起始位置
     if (base_index->find_short_key(start_key, &helper_cursor, false, &start_pos) != OLAP_SUCCESS) {
+
+        // 查找成功，则不进入这个代码块
+
+        /**
+         * find_first_row_block()方法
+         */
         if (base_index->find_first_row_block(&start_pos) != OLAP_SUCCESS) {
             OLAP_LOG_WARNING("fail to get first block pos");
             return OLAP_ERR_TABLE_INDEX_FIND_ERROR;
         }
+
     }
 
     step_pos = start_pos;
+    /**
+     * 这一步重要：  打印起始的 segment 和 index_offset
+     *
+     * I0724 09:05:34.784694  1503 olap_table.cpp:821] start post = 0, 75
+     *
+     */
     OLAP_LOG_DEBUG("start post = %d, %d", start_pos.segment, start_pos.index_offset);
 
+
+    /**
+     * folap_index.cpp类中的 find_short_key()方法是关键
+     */
     //find last row_block is end_key is given, or using last_row_block
     if (base_index->find_short_key(end_key, &helper_cursor, false, &end_pos) != OLAP_SUCCESS) {
+
+        /**
+         * find_last_row_block()方法
+         */
         if (base_index->find_last_row_block(&end_pos) != OLAP_SUCCESS) {
             OLAP_LOG_WARNING("fail find last row block.");
             return OLAP_ERR_TABLE_INDEX_FIND_ERROR;
         }
+
     }
 
+    /**
+     * 结束的 segment  index_offset
+     *
+     */
     OLAP_LOG_DEBUG("end post = %d, %d", end_pos.segment, end_pos.index_offset);
 
+
+    /**
+     * 获取起始到结束的rows，然后把它们放进一个队列中，等待线程消费？
+     */
     //get rows between first and last
     OLAPStatus res = OLAP_SUCCESS;
     RowCursor cur_start_key;
@@ -852,6 +924,7 @@ OLAPStatus OLAPTable::split_range(
     ranges->push_back(start_key.to_string_vector());
 
     while (end_pos > step_pos) {
+
         res = base_index->advance_row_block(expected_rows, &step_pos);  //jungle comment : expected_rows is the step of block number
         if (res == OLAP_ERR_INDEX_EOF || !(end_pos > step_pos)) {
             break;
@@ -861,16 +934,21 @@ OLAPStatus OLAPTable::split_range(
         }
 
         if (base_index->get_row_block_entry(step_pos, &entry) != OLAP_SUCCESS) {
+
             OLAP_LOG_WARNING("get block entry failed.");
             return OLAP_ERR_ROWBLOCK_FIND_ROW_EXCEPTION;
+
         }
         cur_start_key.attach(entry.data, entry.length);
 
         if (cur_start_key.cmp(last_start_key) != 0) {
+
             ranges->push_back(cur_start_key.to_string_vector()); // end of last section
             ranges->push_back(cur_start_key.to_string_vector()); // start a new section
             last_start_key.copy(cur_start_key);
+
         }
+
     }
 
     ranges->push_back(end_key.to_string_vector());

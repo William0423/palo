@@ -267,15 +267,30 @@ OLAPStatus OLAPHeader::delete_all_versions() {
     return OLAP_SUCCESS;
 }
 
+
+/**
+ *
+ * 会打印下面的内容：
+ *
+ * I0724 09:05:34.788274  1430 olap_header.cpp:399] calculated shortest path. [version='0-2' path='0-1 2-2 ']
+ *
+ * @param target_version
+ * @param span_versions
+ * @return
+ */
+
 // This function is called when base-expansion, cumulative-expansion, quering.
 // we use BFS algorithm to get the shortest version path.
 OLAPStatus OLAPHeader::select_versions_to_span(const Version& target_version,
                                            vector<Version>* span_versions) {
+
     if (target_version.first > target_version.second) {
+
         OLAP_LOG_WARNING("invalid param target_version. [start_version_id=%d end_version_id=%d]",
                          target_version.first,
                          target_version.second);
         return OLAP_ERR_INPUT_PARAMETER_ERROR;
+
     }
 
     if (span_versions == NULL) {
@@ -329,16 +344,22 @@ OLAPStatus OLAPHeader::select_versions_to_span(const Version& target_version,
     }
 
     for (int i = 0; i < static_cast<int>(_version_graph.size()); ++i) {
+
         visited[i] = false;
+
     }
 
     bfs_queue.push(start_vertex_index);
+
     visited[start_vertex_index] = true;
+
     // The predecessor of root is itself.
     predecessor[start_vertex_index] = start_vertex_index;
 
     while (bfs_queue.empty() == false && visited[end_vertex_index] == false) {
+
         int top_vertex_index = bfs_queue.front();
+
         bfs_queue.pop();
 
         for (list<int>::const_iterator it = _version_graph[top_vertex_index].edges->begin();
@@ -354,31 +375,43 @@ OLAPStatus OLAPHeader::select_versions_to_span(const Version& target_version,
                 visited[*it] = true;
                 predecessor[*it] = top_vertex_index;
                 bfs_queue.push(*it);
+
             }
+
         }
+
     }
 
     if (visited[end_vertex_index] == false) {
+
         OLAP_LOG_WARNING("fail to find path to end_version in version list. "
                          "[start_version_id=%d end_version_id=%d]",
                          target_version.first,
                          target_version.second);
+
         return OLAP_ERR_VERSION_NOT_EXIST;
+
     }
 
     vector<int> reversed_path;
+
     int tmp_vertex_index = end_vertex_index;
+
     reversed_path.push_back(tmp_vertex_index);
 
     // For start_vertex_index, its predecessor must be itself.
     while (predecessor[tmp_vertex_index] != tmp_vertex_index) {
+
         tmp_vertex_index = predecessor[tmp_vertex_index];
+
         reversed_path.push_back(tmp_vertex_index);
+
     }
 
     // Make span_versions from reversed_path.
     stringstream shortest_path_for_debug;
     for (int path_id = reversed_path.size() - 1; path_id > 0; --path_id) {
+
         int tmp_start_vertex_value = _version_graph[reversed_path[path_id]].value;
         int tmp_end_vertex_value = _version_graph[reversed_path[path_id - 1]].value;
 
@@ -391,14 +424,20 @@ OLAPStatus OLAPHeader::select_versions_to_span(const Version& target_version,
 
         shortest_path_for_debug << (*span_versions)[span_versions->size() - 1].first << '-'
                                 << (*span_versions)[span_versions->size() - 1].second << ' ';
+
     }
 
+    /**
+     * I0724 09:05:34.788274  1430 olap_header.cpp:399] calculated shortest path. [version='0-2' path='0-1 2-2 ']
+     */
     OLAP_LOG_DEBUG("calculated shortest path. [version='%d-%d' path='%s']",
                    target_version.first,
                    target_version.second,
                    shortest_path_for_debug.str().c_str());
 
+
     return OLAP_SUCCESS;
+
 }
 
 const FileVersionMessage* OLAPHeader::get_lastest_delta_version() const {

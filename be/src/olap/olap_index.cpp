@@ -373,6 +373,18 @@ OLAPStatus OLAPIndex::find_row_block(const RowCursor& key,
     return _index.get_row_block_position(offset, pos);
 }
 
+/**
+ *
+ * 这个方法是主要的调用方法：
+ *
+ *
+ *
+ * @param key
+ * @param helper_cursor
+ * @param find_last
+ * @param pos
+ * @return
+ */
 OLAPStatus OLAPIndex::find_short_key(const RowCursor& key,
                                  RowCursor* helper_cursor,
                                  bool find_last,
@@ -380,20 +392,48 @@ OLAPStatus OLAPIndex::find_short_key(const RowCursor& key,
     TABLE_PARAM_VALIDATE();
     POS_PARAM_VALIDATE(pos);
 
+    /**
+     * 先打印下面内容：
+     *
+     * I0724 09:05:34.784678  1503 olap_index.cpp:863] show real offset iterator value. [off=0]
+     *
+     * I0724 09:05:34.784682  1503 olap_index.cpp:864] show result offset. [seg_off=0 off=0]
+     *
+     */
+
     // 由于find会从前一个segment找起，如果前一个segment中恰好没有该key，
     // 就用前移后移来移动segment的位置.
     OLAPIndexOffset offset = _index.find(key, helper_cursor, find_last);
+
     if (offset.offset > 0) {
+
         offset.offset = offset.offset - 1;
 
         OLAPIndexOffset next_offset = _index.next(offset);
+
         if (!(next_offset == _index.end())) {
             offset = next_offset;
         }
+
     }
 
+    /**
+     * I0724 09:05:34.784684  1503 olap_index.cpp:395] [seg='0', offset='0']
+     */
     OLAP_LOG_DEBUG("[seg='%d', offset='%d']", offset.segment, offset.offset);
+
+
+    /**
+     * 查找 row block
+     *
+     * 会打印：
+     *
+     * I0724 09:05:34.784688  1503 olap_index.cpp:975] MemIndex::get_row_block_position: {segment=0 block_size=579 data_offset=0 index_offset=75}
+     *
+     */
     return _index.get_row_block_position(offset, pos);
+
+
 }
 
 OLAPStatus OLAPIndex::get_row_block_entry(const RowBlockPosition& pos, Slice* entry) const {
@@ -860,8 +900,19 @@ const OLAPIndexOffset MemIndex::find(const RowCursor& k,   //jungle comment : th
         }
 
         offset.offset = *it;
+
+        /**
+         * 打印：
+         *
+         * I0724 09:05:34.784678  1503 olap_index.cpp:863] show real offset iterator value. [off=0]
+         *
+         * I0724 09:05:34.784682  1503 olap_index.cpp:864] show result offset. [seg_off=0 off=0]
+         *
+         */
         OLAP_LOG_DEBUG("show real offset iterator value. [off=%u]", *it);
+
         OLAP_LOG_DEBUG("show result offset. [seg_off=%u off=%u]", offset.segment, offset.offset);
+
     } catch (...) {
         OLAP_LOG_WARNING("fail to compare value in memindex. [cursor='%s' find_last=%d]",
                          k.to_string().c_str(),
@@ -942,6 +993,15 @@ OLAPStatus MemIndex::get_entry(const OLAPIndexOffset& pos, Slice* slice) const {
     return OLAP_SUCCESS;
 }
 
+/**
+ * 找到row block的位置：
+ *
+ *
+ *
+ * @param pos
+ * @param rbp
+ * @return
+ */
 OLAPStatus MemIndex::get_row_block_position(
         const OLAPIndexOffset& pos, RowBlockPosition* rbp) const {
     if (empty()) {
@@ -972,6 +1032,10 @@ OLAPStatus MemIndex::get_row_block_position(
                                    (pos.offset + 1) * entry_length() + short_key_length());
         rbp->block_size = next_offset - rbp->data_offset;
     }
+
+    /**
+     * I0724 09:05:34.784688  1503 olap_index.cpp:975] MemIndex::get_row_block_position: {segment=0 block_size=579 data_offset=0 index_offset=75}
+     */
     OLAP_LOG_DEBUG("MemIndex::get_row_block_position: %s" , rbp->to_string().c_str());
 
     return OLAP_SUCCESS;

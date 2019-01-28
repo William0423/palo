@@ -361,6 +361,10 @@ public:
     // Utility function: returns total size of batch.
     static int get_batch_size(const TRowBatch& batch);
 
+    /**
+     * 统计行数
+     * @return
+     */
     int num_rows() const {
         return _num_rows;
     }

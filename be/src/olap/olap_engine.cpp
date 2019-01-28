@@ -298,35 +298,66 @@ OLAPStatus OLAPEngine::clear() {
     return OLAP_SUCCESS;
 }
 
+/**
+ *
+ * 打印下面的内容：
+ *
+ * I0724 09:05:34.784647  1503 olap_engine.cpp:302] begin to get olap table. [table=10805]
+I0724 09:05:34.784651  1503 olap_engine.cpp:308] get olap table success. [table=10805]
+ *
+ * @param tablet_id
+ * @param schema_hash
+ * @return
+ */
 SmartOLAPTable OLAPEngine::_get_table_with_no_lock(TTabletId tablet_id, SchemaHash schema_hash) {
+
+
     OLAP_LOG_DEBUG("begin to get olap table. [table=%ld]", tablet_id);
 
     tablet_map_t::iterator it = _tablet_map.find(tablet_id);
+
     if (it != _tablet_map.end()) {
+
         for (SmartOLAPTable table : it->second.table_arr) {
+
             if (table->equal(tablet_id, schema_hash)) {
+
                 OLAP_LOG_DEBUG("get olap table success. [table=%ld]", tablet_id);
+
                 return table;
+
             }
+
         }
+
     }
 
     OLAP_LOG_DEBUG("fail to get olap table. [table=%ld]", tablet_id);
+
     // Return empty olap_table if fail
     SmartOLAPTable olap_table;
+
     return olap_table;
 }
 
 SmartOLAPTable OLAPEngine::get_table(TTabletId tablet_id, SchemaHash schema_hash) {
     _tablet_map_lock.rdlock();
     SmartOLAPTable olap_table;
+
+    /**
+     * 下面打印：
+     * I0724 09:05:34.784647  1503 olap_engine.cpp:302] begin to get olap table. [table=10805]
+     */
     olap_table = _get_table_with_no_lock(tablet_id, schema_hash);
+
     _tablet_map_lock.unlock();
 
     if (olap_table.get() != NULL) {
         if (!olap_table->is_used()) {
+
             OLAP_LOG_WARNING("olap table cannot be used. [table=%ld]", tablet_id);
             olap_table.reset();
+
         } else if (!olap_table->is_loaded()) {
             if (olap_table->load() != OLAP_SUCCESS) {
                 OLAP_LOG_WARNING("fail to load olap table. [table=%ld]", tablet_id);
@@ -537,11 +568,16 @@ OLAPStatus OLAPEngine::_drop_table_directly(TTabletId tablet_id, SchemaHash sche
     _tablet_map_lock.wrlock();
 
     SmartOLAPTable dropped_table = _get_table_with_no_lock(tablet_id, schema_hash);
+
     if (dropped_table.get() == NULL) {
+
         OLAP_LOG_WARNING("fail to drop not existed table. [tablet_id=%ld schema_hash=%d]",
                          tablet_id, schema_hash);
+
         _tablet_map_lock.unlock();
+
         return OLAP_ERR_TABLE_NOT_FOUND;
+
     }
 
     for (list<SmartOLAPTable>::iterator it = _tablet_map[tablet_id].table_arr.begin();
